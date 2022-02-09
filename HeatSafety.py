@@ -1,55 +1,10 @@
 import PySpin
 import sys
 import os
-import Trigger #This doesn't quite work the way I need it to, it is a stand in for trigger code that will be added
+import Trigger  # This doesn't quite work the way I need it to, it is a stand in for trigger code that will be added
 
 cameraTemperature = 0
 NUM_IMAGES = 10  # number of images to grab
-
-
-def run_single_camera(cam):
-    """
-    This function acts as the body of the example; please see NodeMapInfo example
-    for more in-depth comments on setting up cameras.
-
-    :param cam: Camera to run on.
-    :type cam: CameraPtr
-    :return: True if successful, False otherwise.
-    :rtype: bool
-    """
-    try:
-        result = True
-        err = False
-
-        # Retrieve TL device nodemap and print device information
-        nodemap_tldevice = cam.GetTLDeviceNodeMap()
-
-        result &= print_device_info(nodemap_tldevice)
-
-        # Initialize camera
-        cam.Init()
-
-        # Retrieve GenICam nodemap
-        nodemap = cam.GetNodeMap()
-
-        # Configure trigger
-        if configure_trigger(cam) is False:
-            return False
-
-        # Acquire images
-        result &= acquire_images(cam, nodemap, nodemap_tldevice)
-
-        # Reset trigger
-        result &= reset_trigger(nodemap)
-
-        # Deinitialize camera
-        cam.DeInit()
-
-    except PySpin.SpinnakerException as ex:
-        print('Error: %s' % ex)
-        result = False
-
-    return result
 
 
 # Grabs the temperature of the camera, returns it as a float
