@@ -47,6 +47,7 @@ def Capture(cam, GoalTemperature):
     cam.DeInit()
 
 
+
 def main():
     system = PySpin.System.GetInstance()
 
@@ -70,7 +71,7 @@ def main():
     # gets the camera temperature.
     # TODO for x in range(40, 85, 5): Loop over the predetermined temperatures and capture 10 images at each.
     for i, cam in enumerate(cam_list):
-        for t in range(50, 80, 5):
+        for t in range(20, 80, 5):
             Capture(cam, t)
 
     del cam

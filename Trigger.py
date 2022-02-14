@@ -206,7 +206,15 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
     :return: True if successful, False otherwise.
     :rtype: bool
     """
+    # Configurs the text file for image numbering
+    config = open("config.txt", "r")
+    image_num_config = int(config.read())
+    config.close()
+    print(image_num_config)
 
+    config = open("config.txt", "w")
+    config.write(str(image_num_config + 10))
+    config.close()
     print('*** IMAGE ACQUISITION ***\n')
     try:
         result = True
@@ -290,9 +298,9 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
 
                     # Create a unique filename
                     if device_serial_number:
-                        filename = 'Trigger-%s-%d.jpg' % (device_serial_number, i)
+                        filename = 'Trigger-%s-%d.jpg' % (device_serial_number, i + image_num_config)
                     else:  # if serial number is empty
-                        filename = 'Trigger-%d.jpg' % i
+                        filename = 'Trigger-%d.jpg' % i + str(image_num_config)
 
                     # Save image
                     #
@@ -442,75 +450,9 @@ def run_single_camera(cam):
 
 
 # def main():
-#     """
-#     Example entry point; please see Enumeration example for more in-depth
-#     comments on preparing and cleaning up the system.
 #
-#     :return: True if successful, False otherwise.
-#     :rtype: bool
-#     """
 #
-#     # Since this application saves images in the current folder
-#     # we must ensure that we have permission to write to this folder.
-#     # If we do not have permission, fail right away.
-#     try:
-#         test_file = open('test.txt', 'w+')
-#     except IOError:
-#         print('Unable to write to current directory. Please check permissions.')
-#         input('Press Enter to exit...')
-#         return False
 #
-#     test_file.close()
-#     os.remove(test_file.name)
-#
-#     result = True
-#
-#     # Retrieve singleton reference to system object
-#     system = PySpin.System.GetInstance()
-#
-#     # Get current library version
-#     version = system.GetLibraryVersion()
-#     print('Library version: %d.%d.%d.%d' % (version.major, version.minor, version.type, version.build))
-#
-#     # Retrieve list of cameras from the system
-#     cam_list = system.GetCameras()
-#
-#     num_cameras = cam_list.GetSize()
-#
-#     print('Number of cameras detected: %d' % num_cameras)
-#
-#     # Finish if there are no cameras
-#     if num_cameras == 0:
-#         # Clear camera list before releasing system
-#         cam_list.Clear()
-#
-#         # Release system instance
-#         system.ReleaseInstance()
-#
-#         print('Not enough cameras!')
-#         input('Done! Press Enter to exit...')
-#         return False
-#
-#     # Run example on each camera
-#     for i, cam in enumerate(cam_list):
-#         print('Running example for camera %d...' % i)
-#         result &= run_single_camera(cam)
-#         print('Camera %d example complete... \n' % i)
-#
-#     # Release reference to camera
-#     # NOTE: Unlike the C++ examples, we cannot rely on pointer objects being automatically
-#     # cleaned up when going out of scope.
-#     # The usage of del is preferred to assigning the variable to None.
-#     del cam
-#
-#     # Clear camera list before releasing system
-#     cam_list.Clear()
-#
-#     # Release system instance
-#     system.ReleaseInstance()
-#
-#     input('Done! Press Enter to exit...')
-#     return result
 #
 #
 # if __name__ == '__main__':
