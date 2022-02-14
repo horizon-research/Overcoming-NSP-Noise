@@ -60,7 +60,8 @@ def configure_trigger(cam):
     print(
         'Note that if the application / user software triggers faster than frame time, the trigger may be dropped / skipped by the camera.\n')
     print(
-        'If several frames are needed per trigger, a more reliable alternative for such case, is to use the multi-frame mode.\n\n')
+        'If several frames are needed per trigger, a more reliable alternative for such case, is to use the '
+        'multi-frame mode.\n\n')
 
     if CHOSEN_TRIGGER == TriggerType.SOFTWARE:
         print('Software trigger chosen ...')
@@ -168,8 +169,8 @@ def grab_next_image_by_trigger(nodemap, cam):
         # When an image is retrieved, it is plucked from the stream.
 
         if CHOSEN_TRIGGER == TriggerType.SOFTWARE:
-            # Get user input
-            input('Press the Enter key to initiate software trigger.')
+            # Get user input, no need.
+            # input('Press the Enter key to initiate software trigger.')
 
             # Execute software trigger
             node_softwaretrigger_cmd = PySpin.CCommandPtr(nodemap.GetNode('TriggerSoftware'))
@@ -412,7 +413,7 @@ def run_single_camera(cam):
         # Retrieve TL device nodemap and print device information
         nodemap_tldevice = cam.GetTLDeviceNodeMap()
 
-        result &= print_device_info(nodemap_tldevice)
+        # result &= print_device_info(nodemap_tldevice)
 
         # Initialize camera
         cam.Init()

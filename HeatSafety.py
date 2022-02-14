@@ -21,18 +21,30 @@ def Cool(cam):
     print('Please cool the camera, it is currently: %s' % GetCameraTemperature(cam))
 
 
-def HeatSafety(cam, GoalTemperature):
+def Capture(cam, GoalTemperature):
+    # Initialize Camera
+    cam.Init()
+
+    # Get Temperature of Camera
     Temp = GetCameraTemperature(cam)
     print(GoalTemperature)
-    nodeMap = cam.GetNodeMap()
+
+    # Heating
     while Temp < GoalTemperature:
         Temp = GetCameraTemperature(cam)
-        print("Heating")
+        print(Temp)
+        # print("Heating")
 
+    # Capture 10 images
     if Temp > GoalTemperature:
         print("Capturing, please stop heating")
         Trigger.run_single_camera(cam)  # Cites : FLIR TELEDYNE
+
+    # Instruct User to Cool Camera
     Cool(cam)
+
+    # Deinitialize the Camera
+    cam.DeInit()
 
 
 def main():
@@ -56,10 +68,10 @@ def main():
         return False
 
     # gets the camera temperature.
-    # for x in range(40, 85, 5):
+    # TODO for x in range(40, 85, 5): Loop over the predetermined temperatures and capture 10 images at each.
     for i, cam in enumerate(cam_list):
-        cam.Init()
-        HeatSafety(cam, 34)
+        for t in range(50, 80, 5):
+            Capture(cam, t)
 
     del cam
 
