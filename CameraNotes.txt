@@ -1,0 +1,10 @@
+Camera Notes
+
+-Camera and software communicate well. 
+
+-When heated the camera will get hot and get hotter even after the heat gun is pulled away. 
+ i. 1-2°C, after the heat gun was removed. 
+
+—Two Minutes of no power and no heat cooled the camera from 46°C down to 33°C, (-13°C). 
+
+—Camera now can take photos on its own using Trigger.py from Spinnaker SDK and the heat safety script. 
