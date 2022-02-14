@@ -1,6 +1,7 @@
 import PySpin
 import sys
 import os
+import time
 import Trigger  # This doesn't quite work the way I need it to, it is a stand in for trigger code that will be added
 
 cameraTemperature = 0
@@ -18,34 +19,33 @@ def GetCameraTemperature(cam):
 
 
 def Cool(cam):
+    cam.Init()
     print('Please cool the camera, it is currently: %s' % GetCameraTemperature(cam))
+    cam.DeInit()
 
 
 def Capture(cam, GoalTemperature):
-    # Initialize Camera
-    cam.Init()
-
     # Get Temperature of Camera
+
     Temp = GetCameraTemperature(cam)
     print(GoalTemperature)
 
     # Heating
     while Temp < GoalTemperature:
+        cam.Init()
         Temp = GetCameraTemperature(cam)
         print(Temp)
-        # print("Heating")
+        if Temp < GoalTemperature:
+            time.sleep(10)
 
     # Capture 10 images
     if Temp > GoalTemperature:
+        cam.DeInit()
         print("Capturing, please stop heating")
         Trigger.run_single_camera(cam)  # Cites : FLIR TELEDYNE
 
     # Instruct User to Cool Camera
     Cool(cam)
-
-    # Deinitialize the Camera
-    cam.DeInit()
-
 
 
 def main():
@@ -63,15 +63,15 @@ def main():
 
         # Release system instance
         system.ReleaseInstance()
-
-        print('Not enough cameras!')
-        input('Done! Press Enter to exit...')
+        print("\n")
+        print('Oops, Camera(s) not detected, please check your connection and try again.')
+        print("\n")
         return False
 
     # gets the camera temperature.
-    # TODO for x in range(40, 85, 5): Loop over the predetermined temperatures and capture 10 images at each.
     for i, cam in enumerate(cam_list):
-        for t in range(20, 80, 5):
+        for t in range(40, 80, 5):
+            # Initiates Capture
             Capture(cam, t)
 
     del cam
@@ -84,7 +84,4 @@ def main():
 
 
 if __name__ == '__main__':
-    if main():
-        sys.exit(0)
-    else:
-        sys.exit(1)
+    main()
