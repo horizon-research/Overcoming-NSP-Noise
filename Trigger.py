@@ -41,6 +41,9 @@ class TriggerType:
 CHOSEN_TRIGGER = TriggerType.SOFTWARE
 
 
+# TODO : EXPOSURE?
+
+
 def configure_trigger(cam):
     """
     This function configures the camera to use a trigger. First, trigger mode is
@@ -207,12 +210,12 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
     :rtype: bool
     """
     # Configurs the text file for image numbering
-    config = open("config.txt", "r")
+    config = open("config.json", "r")
     image_num_config = int(config.read())
     config.close()
     print(image_num_config)
 
-    config = open("config.txt", "w")
+    config = open("config.json", "w")
     config.write(str(image_num_config + 10))
     config.close()
     print('*** IMAGE ACQUISITION ***\n')
@@ -447,7 +450,6 @@ def run_single_camera(cam):
         result = False
 
     return result
-
 
 # def main():
 #
