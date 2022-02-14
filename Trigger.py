@@ -29,7 +29,7 @@
 import PySpin
 import time
 
-NUM_IMAGES = 10  # number of images to grab
+NUM_IMAGES = 2  # number of images to grab
 
 
 class TriggerType:
@@ -313,12 +313,12 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
     :rtype: bool
     """
     # Configurs the text file for image numbering
-    config = open("config.json", "r")
+    config = open("CamConfig.json", "r")
     image_num_config = int(config.read())
     config.close()
     print(image_num_config)
 
-    config = open("config.json", "w")
+    config = open("CamConfig.json", "w")
     config.write(str(image_num_config + 10))
     config.close()
     print('*** IMAGE ACQUISITION ***\n')
@@ -329,14 +329,14 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
         # In order to access the node entries, they have to be casted to a pointer type (CEnumerationPtr here)
         node_acquisition_mode = PySpin.CEnumerationPtr(nodemap.GetNode('AcquisitionMode'))
         if not PySpin.IsAvailable(node_acquisition_mode) or not PySpin.IsWritable(node_acquisition_mode):
-            print('Unable to set acquisition mode to continuous (enum retrieval). Aborting...')
+            # print('Unable to set acquisition mode to continuous (enum retrieval). Aborting...')
             return False
 
         # Retrieve entry node from enumeration node
         node_acquisition_mode_continuous = node_acquisition_mode.GetEntryByName('Continuous')
         if not PySpin.IsAvailable(node_acquisition_mode_continuous) or not PySpin.IsReadable(
                 node_acquisition_mode_continuous):
-            print('Unable to set acquisition mode to continuous (entry retrieval). Aborting...')
+            # print('Unable to set acquisition mode to continuous (entry retrieval). Aborting...')
             return False
 
         # Retrieve integer value from entry node
@@ -345,7 +345,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
         # Set integer value from entry node as new value of enumeration node
         node_acquisition_mode.SetIntValue(acquisition_mode_continuous)
 
-        print('Acquisition mode set to continuous...')
+        # print('Acquisition mode set to continuous...')
 
         #  Begin acquiring images
         cam.BeginAcquisition()
@@ -362,7 +362,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
         node_device_serial_number = PySpin.CStringPtr(nodemap_tldevice.GetNode('DeviceSerialNumber'))
         if PySpin.IsAvailable(node_device_serial_number) and PySpin.IsReadable(node_device_serial_number):
             device_serial_number = node_device_serial_number.GetValue()
-            print('Device serial number retrieved as %s...' % device_serial_number)
+            # print('Device serial number retrieved as %s...' % device_serial_number)
 
         # Retrieve, convert, and save images
         for i in range(NUM_IMAGES):
@@ -386,9 +386,9 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
                     #  Images have quite a bit of available metadata including
                     #  things such as CRC, image status, and offset values, to
                     #  name a few.
-                    width = image_result.GetWidth()
-                    height = image_result.GetHeight()
-                    print('Grabbed Image %d, width = %d, height = %d' % (i, width, height))
+                    # width = image_result.GetWidth()
+                    # height = image_result.GetHeight()
+                    # print('Grabbed Image %d, width = %d, height = %d' % (i, width, height))
 
                     #  Convert image to mono 8
                     #
@@ -429,6 +429,8 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
                 print('Error: %s' % ex)
                 return False
 
+            time.sleep(2)
+
         # End acquisition
         #
         #  *** NOTES ***
@@ -440,7 +442,6 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
         print('Error: %s' % ex)
         return False
 
-    del cam
     return result
 
 
