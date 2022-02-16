@@ -103,3 +103,8 @@ Due to the nature of image processing of noisy images, max-pooling will likely b
 
 
 
+### Works Cited :
+>[1] Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
+Imaging. Kodukula Et Al.
+
+>[2] Dirty Pixels: Towards End-to-End Image Processing and Perception Diamond Et. Al.
