@@ -11,7 +11,7 @@ Images will be captured using a FLIR BlackFly 3 Camera which has noise induced u
 This script is called HeatSafety.py, it is essentially a camera trigger that triggers based on heat. 
 #### Depends on:
 
-```
+```ruby
 import PySpin
 import sys
 import time
@@ -24,7 +24,7 @@ Main additions to FLIR SDK example ```Trigger.py``` are:
 
 for the device temperature: ```GetCameraTemperature(cam)```
 
-```
+```ruby
 def GetCameraTemperature(cam):
     x = 0
     if cam.DeviceTemperature.GetAccessMode() == PySpin.RO:
@@ -32,8 +32,8 @@ def GetCameraTemperature(cam):
     x = float(x)
     return x
 ```
-as well as:  ```Go(cam,GoalTemperature)```:
-```
+as well as:  ```ruby Go(cam,GoalTemperature)```:
+```ruby
 def Go(cam, GoalTemperature):
     # Get Temperature of Camera
 
@@ -56,7 +56,7 @@ def Go(cam, GoalTemperature):
 
 The heat testing is done using a loop in the ``` main()``` method. 
 
-```
+```ruby
 def main():
     ...
     # List of Cameras
