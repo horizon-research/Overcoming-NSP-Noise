@@ -108,3 +108,5 @@ Due to the nature of image processing of noisy images, max-pooling will likely b
 Imaging. Kodukula Et Al.
 
 >[2] Dirty Pixels: Towards End-to-End Image Processing and Perception Diamond Et. Al.
+
+>FLIR. (n.d.). Spinnaker-SDKVersion (Trigger.py). Spinnaker SDK. Retrieved from https://www.flir.com/products/spinnaker-sdk/. 
