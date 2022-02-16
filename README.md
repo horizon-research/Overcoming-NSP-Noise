@@ -22,6 +22,8 @@ import time
 
 Main additions to FLIR SDK example ```Trigger.py``` are:
 
+for the device temperature: ```GetCameraTemperature(cam)```
+
 ```
 def GetCameraTemperature(cam):
     x = 0
@@ -30,7 +32,7 @@ def GetCameraTemperature(cam):
     x = float(x)
     return x
 ```
-as well as:
+as well as:  ```Go(cam,GoalTemperature)```:
 ```
 def Go(cam, GoalTemperature):
     # Get Temperature of Camera
@@ -45,9 +47,9 @@ def Go(cam, GoalTemperature):
         print(Temp)
         time.sleep(3)  # Protects the camera.
 
-    # Capture 10 images
+    # Capture 2 images
     if Temp > GoalTemperature:
-        # cam.DeInit()
+        # cam.DeInit() This makes the who thing crash much more quickly
         print("Capturing, please continue heating")
         Capture(cam)  # Cites : FLIR TELEDYNE
 ```
@@ -55,43 +57,18 @@ def Go(cam, GoalTemperature):
 The heat testing is done using a loop in the ``` main()``` method. 
 
 ```
-# Bootstrap
 def main():
-    system = PySpin.System.GetInstance()
-
-    # Retrieve list of cameras from the system
-    cam_list = system.GetCameras()
-
-    num_cameras = cam_list.GetSize()
-
-    # From Spinnaker SDK Examples
-    if num_cameras == 0:
-        # Clear camera list before releasing system
-        cam_list.Clear()
-
-        # Release system instance
-        system.ReleaseInstance()
-        print("\n")
-        print('Camera(s) not detected, please check your connection and try again.')
-        print("\n")
-        return False
-
+    ...
     # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
-        for t in range(30, 80, 5):
+        for t in range(50, 80, 5):
             # Initiates Capture
             Go(cam, t)
             time.sleep(2)
-
+    
     print("Capture Complete, please cool the camera.")
-    del cam
-
-    # Clear camera list before releasing system, this makes a mess if not cleared
-    cam_list.Clear()
-
-    # Release system instance
-    system.ReleaseInstance()
+    ... 
 ```
 Images are saved as : ```sample-serialNumber-capNum-temp.png```
 
