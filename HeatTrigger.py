@@ -3,12 +3,14 @@
 # This is the driver script for the experimentation with the FLIR BlACKFLY S Camera
 # This script relies on the Trigger.py script provided Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 #
-# Essenitally this script is a temperature trigger for the camera that continues running until all captures are taken
+#
+# Essentially this script is a temperature trigger for the camera that continues running until all captures are taken
 # =============================================================================
 
 import PySpin
 import sys
 import time
+
 
 # Take two images per click.
 NUM_IMAGES = 2  # number of images to grab
@@ -198,7 +200,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
     print(image_num_config)
 
     config = open("CamConfig.json", "w")
-    config.write(str(image_num_config + 10))
+    config.write(str(image_num_config + NUM_IMAGES))
     config.close()
     print('*** IMAGE ACQUISITION ***\n')
     try:
@@ -428,8 +430,8 @@ def Go(cam, GoalTemperature):
     while Temp < GoalTemperature:
         cam.Init()
         Temp = GetCameraTemperature(cam)
-        print(Temp)
-        time.sleep(3)  # Protects the camera.
+        print("Camera is currently", Temp ,"°C")
+        time.sleep(5)  # Protects the camera.
 
     # Capture 10 images
     if Temp > GoalTemperature:
@@ -462,7 +464,7 @@ def main():
     # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
-        for t in range(30, 80, 5):
+        for t in range(50, 80, 5):
             # Initiates Capture
             Go(cam, t)
             time.sleep(2)
