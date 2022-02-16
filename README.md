@@ -32,7 +32,7 @@ def GetCameraTemperature(cam):
     x = float(x)
     return x
 ```
-as well as:  ```ruby Go(cam,GoalTemperature)```:
+as well as:  ```Go(cam,GoalTemperature)```:
 ```ruby
 def Go(cam, GoalTemperature):
     # Get Temperature of Camera
@@ -81,11 +81,11 @@ Due to the nature of image processing of noisy images, max-pooling will likely b
 
 
 ### Works Cited :
->[1] Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
-Imaging. Kodukula Et Al.
+> [1] Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
+    Imaging. Kodukula Et Al.
 
->[2] Dirty Pixels: Towards End-to-End Image Processing and Perception Diamond Et. Al.
+> [2] Dirty Pixels: Towards End-to-End Image Processing and Perception Diamond Et. Al.
 
->FLIR. (n.d.). Spinnaker-SDKVersion (Trigger.py). Spinnaker SDK. Retrieved from https://www.flir.com/products/spinnaker-sdk/. 
+> FLIR. (n.d.). Spinnaker-SDKVersion (Trigger.py). Spinnaker SDK. Retrieved from https://www.flir.com/products/spinnaker-sdk/. 
 
->FLIR Integrated Imaging Solutions, Inc. (n.d.). PySpinDoc. 
+> FLIR Integrated Imaging Solutions, Inc. (n.d.). PySpinDoc. 
