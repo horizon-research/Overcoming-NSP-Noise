@@ -10,3 +10,5 @@ Camera Notes
 —Camera now can take photos on its own using Trigger.py from Spinnaker SDK and the heat safety script. 
 
 —HeatSafety needs an auto exposure method of sorts, exposures are currently quite off from on another. This is a problem
+
+— Need an auto exposure, and need a way to get the raw data. 
