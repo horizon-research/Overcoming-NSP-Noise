@@ -8,7 +8,13 @@ Images will be captured using a FLIR BlackFly 3 Camera which has noise induced u
 
 This script is called HeatSafety.py, it is essentially a camera trigger that triggers based on heat. 
 #### Depends on:
+
 >PySpin https://www.flir.com/products/spinnaker-sdk/
+```
+import PySpin
+import sys
+import time
+```
 
 #### Runs as: 
 > Run as Python3 HeatTrigger.py
