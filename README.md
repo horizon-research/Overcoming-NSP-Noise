@@ -18,7 +18,7 @@ import time
 ```
 
 #### Runs as: 
-```> Python3 HeatTrigger.py```
+```$ Python3 HeatTrigger.py```
 
 Main additions to FLIR SDK example ```Trigger.py``` are:
 
@@ -73,6 +73,19 @@ def main():
 Images are saved as : ```sample-serialNumber-capNum-temp.png```
 
 The numbering relies on the ```CamConfig.json``` which stores the number of captures after each capture. 
+In the terminal it looks like the following :
+```
+...
+$ Acquiring images...
+$ Image saved at sample-18255214-12-39.png
+
+$ Image saved at sample-18255214-13-39.png
+
+$ Trigger mode disabled...
+...
+```
+
+
 
 
 ## Next : Neural Networks
