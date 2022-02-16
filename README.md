@@ -9,7 +9,7 @@ Christopher Bruinsma and Yuhao Zhu at Horizon Research, Univerisity of Rochester
 Images will be captured using a FLIR BlackFly 3 Camera which has noise induced using a heat-gun. The safety of heating the camera will be safely heated using Python code which relies on the Spinnaker SDK from FLIR.
 
 This script is called HeatSafety.py, it is essentially a camera trigger that triggers based on heat. 
-#### Depends on: https://www.flir.com/products/spinnaker-sdk/
+#### Depends on:
 
 ```
 import PySpin
