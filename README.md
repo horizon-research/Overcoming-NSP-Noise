@@ -5,11 +5,13 @@ This project is being carried out as an independent study which has started in t
 #### Collaborators
 Christopher Bruinsma and Yuhao Zhu at Horizon Research, Univerisity of Rochester
 
-## First : Capture
-Images will be captured using a FLIR BlackFly 3 Camera which has noise induced using a heat-gun. The safety of heating the camera will be safely heated using Python code which relies on the Spinnaker SDK from FLIR.
+## Capture
+Images will be captured using a FLIR BlackFly 3 camera which has thermal-noise induced using a heat-gun. 
+The safety of heating the camera will be safely heated using Python code which relies on the Spinnaker SDK from FLIR.
 
-This script is called HeatSafety.py, it is essentially a camera trigger that triggers based on heat. 
-#### Depends on:
+This script is called ```HeatTrigger.py```, it is essentially a camera trigger that triggers based on heat. 
+
+#### Depends on
 
 ```ruby
 import PySpin
@@ -17,10 +19,10 @@ import sys
 import time
 ```
 
-#### Runs as: 
+#### Runs as 
 ```$ Python3 HeatTrigger.py```
 
-Main additions to FLIR SDK example ```Trigger.py``` are:
+Main additions to FLIR SDK example ```Trigger.py``` are
 
 for the device temperature: ```GetCameraTemperature(cam)```
 
@@ -32,7 +34,8 @@ def GetCameraTemperature(cam):
     x = float(x)
     return x
 ```
-as well as:  ```Go(cam,GoalTemperature)```:
+as well as:  ```Go(cam,GoalTemperature)```
+
 ```ruby
 def Go(cam, GoalTemperature):
     # Get Temperature of Camera
@@ -70,10 +73,10 @@ def main():
     print("Capture Complete, please cool the camera.")
     ... 
 ```
-Images are saved as : ```sample-serialNumber-capNum-temp.png```
+Images are saved as  ```sample-serialNumber-capNum-temp.png```
 
 The numbering relies on the ```CamConfig.json``` which stores the number of captures after each capture. 
-In the terminal it looks like the following :
+In the terminal it looks like the following 
 ```
 ...
 $ Acquiring images...
@@ -88,8 +91,14 @@ $ Trigger mode disabled...
 
 
 
-## Next : Neural Networks
+## Neural Network
 Due to the nature of image processing of noisy images, max-pooling will likely be used alongside some kind of edge dectection algorthim. This aspect very much remains in the research stage. 
+
+#### Runs as
+```$ IgnoresDarkCurrent.py``` 
+
+
+
 
 
 
