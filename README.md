@@ -97,7 +97,7 @@ Due to the nature of image processing of noisy images, max-pooling will likely b
 ```$ IgnoresDarkCurrent.py``` 
 
 #### Intent 
-Indentify Cups of coffee that are mine
+Indentify cups of coffee that belong to me
 
 
 
