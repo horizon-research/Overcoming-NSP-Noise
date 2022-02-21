@@ -1,4 +1,4 @@
-v(venv) chris@Chriss-MacBook-Pro-2 CSC_Independent % Python3 HeatTrigger.py
+```ruby v(venv) chris@Chriss-MacBook-Pro-2 CSC_Independent % Python3 HeatTrigger.py
 30
 Camera is currently 45.75 °C
 Capturing, please continue heating
@@ -116,4 +116,4 @@ Image saved at sample-18255214-180-46.png
 Image saved at sample-18255214-181-46.png
 
 Trigger mode disabled...
-Capture Complete, please cool the camera.
+Capture Complete, please cool the camera.```
