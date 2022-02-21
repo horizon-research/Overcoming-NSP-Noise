@@ -1,8 +1,7 @@
 # coding=utf-8
 # =============================================================================
-# This is the driver script for the experimentation with the FLIR BlACKFLY S Camera
+# This is the driver script for the experimentation with the FLIR BLACKFLY S Camera
 # This script relies on the Trigger.py script provided Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
-#
 #
 # Essentially this script is a temperature trigger for the camera that continues running until all captures are taken
 # =============================================================================
@@ -11,10 +10,8 @@ import PySpin
 import sys
 import time
 
-
 # Take two images per click.
 NUM_IMAGES = 2  # number of images to grab
-
 
 # What type of trigger?
 class TriggerType:
@@ -43,7 +40,8 @@ def configure_trigger(cam):
     print('*** CONFIGURING TRIGGER ***\n')
 
     print(
-        'Note that if the application / user software triggers faster than frame time, the trigger may be dropped / skipped by the camera.\n')
+        'Note that if the application / user software triggers faster than frame time, '
+        'the trigger may be dropped / skipped by the camera.\n')
     print(
         'If several frames are needed per trigger, a more reliable alternative for such case, is to use the '
         'multi-frame mode.\n\n')
@@ -134,7 +132,7 @@ def configure_trigger(cam):
 
 
 # From Spinnaker SDK : Examples : (copyright) FLIR
-def grab_next_image_by_trigger(nodemap, cam):
+def grab_next_image_by_trigger(nodemap):
     """
     This function acquires an image by executing the trigger node.
 
@@ -165,8 +163,6 @@ def grab_next_image_by_trigger(nodemap, cam):
                 return False
 
             node_softwaretrigger_cmd.Execute()
-
-
 
         elif CHOSEN_TRIGGER == TriggerType.HARDWARE:
             print('Use the hardware to trigger image acquisition.')
@@ -250,7 +246,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
             try:
 
                 #  Retrieve the next image from the trigger
-                result &= grab_next_image_by_trigger(nodemap, cam)
+                result &= grab_next_image_by_trigger(nodemap)
 
                 #  Retrieve next received image
                 image_result = cam.GetNextImage(1000)
@@ -379,7 +375,7 @@ def Capture(cam):
         # result &= print_device_info(nodemap_tldevice)
 
         # Initialize camera
-        cam.Init()
+        # cam.Init()
 
         # Retrieve GenICam nodemap
         nodemap = cam.GetNodeMap()
@@ -401,7 +397,7 @@ def Capture(cam):
         # result &= reset_exposure(cam)
 
         # Deinitialize camera
-        cam.DeInit()
+        # cam.DeInit()
 
     except PySpin.SpinnakerException as ex:
         print('Error: %s' % ex)
@@ -428,14 +424,13 @@ def Go(cam, GoalTemperature):
 
     # Heating
     while Temp < GoalTemperature:
-        cam.Init()
+
         Temp = GetCameraTemperature(cam)
-        print("Camera is currently", Temp ,"°C")
+        print("Camera is currently", Temp,"°C")
         time.sleep(5)  # Protects the camera.
 
     # Capture 10 images
     if Temp > GoalTemperature:
-        # cam.DeInit()
         print("Capturing, please continue heating")
         Capture(cam)  # Cites : FLIR TELEDYNE
 
@@ -448,6 +443,7 @@ def main():
     cam_list = system.GetCameras()
 
     num_cameras = cam_list.GetSize()
+
 
     # From Spinnaker SDK Examples
     if num_cameras == 0:
@@ -464,10 +460,12 @@ def main():
     # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
-        for t in range(50, 80, 5):
+        for t in range(30, 80, 5):
             # Initiates Capture
+            cam.Init()
             Go(cam, t)
             time.sleep(2)
+            cam.DeInit()
 
     print("Capture Complete, please cool the camera.")
     del cam
