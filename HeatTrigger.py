@@ -424,7 +424,7 @@ def Go(cam, GoalTemperature):
 
     # Heating
     while Temp < GoalTemperature:
-
+        cam.Init()
         Temp = GetCameraTemperature(cam)
         print("Camera is currently", Temp,"°C")
         time.sleep(5)  # Protects the camera.
@@ -460,12 +460,10 @@ def main():
     # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
-        for t in range(30, 80, 5):
+        for t in range(30, 40, 2):
             # Initiates Capture
-            cam.Init()
             Go(cam, t)
-            time.sleep(2)
-            cam.DeInit()
+
 
     print("Capture Complete, please cool the camera.")
     del cam
