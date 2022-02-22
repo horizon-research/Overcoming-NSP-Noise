@@ -77,7 +77,7 @@ Images are saved as  ```sample-serialNumber-capNum-temp.png```
 
 The numbering relies on the ```CamConfig.json``` which stores the number of captures after each capture. 
 In the terminal it looks like the following 
-```
+```ruby
 ...
 $ Acquiring images...
 $ Image saved at sample-18255214-12-39.png
@@ -100,6 +100,14 @@ Due to the nature of image processing of noisy images, max-pooling will likely b
 Indentify cups of coffee that have my name on them. This will be done using a variety of coffee cups the on-campus Starbucks here at the Univeristy. 
 These are contained withing the ```Training_Data``` folder
 
+#### Depends on
+
+```ruby
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+```
+As well as ```pydot``` and ```graphviz```
 
 
 
@@ -112,3 +120,5 @@ These are contained withing the ```Training_Data``` folder
 > FLIR. (n.d.). Spinnaker-SDKVersion (Trigger.py). Spinnaker SDK. Retrieved from https://www.flir.com/products/spinnaker-sdk/. 
 
 > FLIR Integrated Imaging Solutions, Inc. (n.d.). PySpinDoc. 
+
+> Images Classification from Scratch. https://keras.io/examples/vision/image_classification_from_scratch/ 
