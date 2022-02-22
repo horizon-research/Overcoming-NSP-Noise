@@ -94,10 +94,11 @@ $ Trigger mode disabled...
 Due to the nature of image processing of noisy images, max-pooling will likely be used alongside some kind of edge dectection algorthim. This aspect very much remains in the research stage, but as of right now the goal is to train a Convolution Neural Network to indentify cups of coffee that have my name on them. 
 
 #### Runs as
-```$ IgnoresDarkCurrent.py``` 
+```$ IgnoresThermal.py``` 
 
 #### Intent 
-Indentify cups of coffee that belong to me
+Indentify cups of coffee that have my name on them. This will be done using a variety of coffee cups the on-campus Starbucks here at the Univeristy. 
+These are contained withing the ```Training_Data``` folder
 
 
 
