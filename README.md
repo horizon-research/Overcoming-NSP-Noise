@@ -121,4 +121,5 @@ As well as ```pydot``` and ```graphviz```
 
 > FLIR Integrated Imaging Solutions, Inc. (n.d.). PySpinDoc. 
 
-> Images Classification from Scratch. https://keras.io/examples/vision/image_classification_from_scratch/ 
+> Team, K. (n.d.). Keras documentation: Image Classification From Scratch. Keras. Retrieved February 22, 2022, from 
+   https://keras.io/examples/vision/image_classification_from_scratch/ 
