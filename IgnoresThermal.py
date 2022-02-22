@@ -66,18 +66,21 @@ def NModel(input_shape,num_classes):
        x = layers.SeparableConv2D(size,3,padding = "same")(x)
        x = layers.BatchNormalization()(x)
 
+
        x = layers.Activation("relu")(x)
        x = layers.SeparableConv2D(size,3,padding = "same")(x)
        x = layers.BatchNormalization()(x)
 
-       x = layers.MaxPooling2D(3,strides = 2, padding ="same")(x)
+       x = layers.MaxPooling2D(3,strides = 2, padding ="same")(x)  # Key for noisy images, use more than once?
 
        #Residual? TODO : Look up for comprehension
        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
        previous_block_activation
        )
        x = layers.add([x, residual])  
-       previous_block_activation = x 
+       previous_block_activation = x
+
+    # TODO : Look up for comprehension
     x = layers.SeparableConv2D(1024, 3, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
@@ -96,7 +99,7 @@ def NModel(input_shape,num_classes):
 model = NModel(input_shape=image_size + (3,), num_classes=2)
 keras.utils.plot_model(model, show_shapes=True)   
    
-epochs = 50
+epochs = 100
 callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"),
 ]
 
@@ -108,10 +111,25 @@ model.compile(
 
 model.fit(DataSet,epochs = epochs, callbacks = callbacks, validation_data = Validation)
 
+img = keras.preprocessing.image.load_img(
+    "Training_Data/sample-18255214-320-69.png", target_size=image_size
+)
+
+img_array = keras.preprocessing.image.img_to_array(img)
+img_array = tf.expand_dims(img_array, 0)  # Create batch axis
+
+predictions = model.predict(img_array)
+score = predictions[0]
+
+print(
+    "This image is %.2f your coffee."
+    % (100 * (score))
+)
+
+
+
 def main() :
     print("Nothing broke before here, this is exciting")
-
-
 
 
 if __name__ == '__main__':
