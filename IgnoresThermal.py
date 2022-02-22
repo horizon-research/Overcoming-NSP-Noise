@@ -5,27 +5,33 @@ from tensorflow import keras
 
 images = [] # DataSet of Images
 
+image_size = (180, 180)
+batch_size = 32
+
+DataSet = tf.keras.preprocessing.image_dataset_from_directory(
+    "Training_Data",
+    validation_split=0.2,
+    subset="training",
+    seed=1337,
+    image_size=image_size,
+    batch_size=batch_size,
+)
+
+Validation = tf.keras.preprocessing.image_dataset_from_directory(
+    "Training_Data",
+    validation_split=0.2,
+    subset="validation",
+    seed=1337,
+    image_size=image_size,
+    batch_size=batch_size,
+)
+
 def main() :
-    images = [] #Create DataSet
-    for path in pathlib.Path("Training_Data/Refresh").iterdir():
-        if path.is_file():
-            current_file = open(path, "r")
-            images.append(current_file)
-            current_file.close()
+    print("Success")
 
-    for path in pathlib.Path("Training_Data/BOSE").iterdir():
-        if path.is_file():
-            current_file = open(path, "r")
-            images.append(current_file)
-            current_file.close()
 
-    for path in pathlib.Path("Training_Data/WhiteCup").iterdir():
-        if path.is_file():
-            current_file = open(path, "r")
-            images.append(current_file)
-            current_file.close()
 
-    print("There are",len(images),"images in the dataset")
+
 
 if __name__ == '__main__':
     main()
