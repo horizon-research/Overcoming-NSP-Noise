@@ -109,7 +109,22 @@ from tensorflow.keras import layers
 ```
 As well as ```pydot``` and ```graphviz```
 
-
+#### When Running 
+```ruby
+...
+2/2 [==============================] - 5s 2s/step - loss: 0.0096 - accuracy: 1.0000 - val_loss: 0.8539 - val_accuracy: 0.4667
+Epoch 46/50
+2/2 [==============================] - 5s 2s/step - loss: 0.0044 - accuracy: 1.0000 - val_loss: 0.8647 - val_accuracy: 0.4667
+Epoch 47/50
+2/2 [==============================] - 5s 3s/step - loss: 0.0036 - accuracy: 1.0000 - val_loss: 0.8761 - val_accuracy: 0.4667
+Epoch 48/50
+2/2 [==============================] - 5s 3s/step - loss: 0.0024 - accuracy: 1.0000 - val_loss: 0.8887 - val_accuracy: 0.4667
+Epoch 49/50
+2/2 [==============================] - 6s 3s/step - loss: 0.0085 - accuracy: 1.0000 - val_loss: 0.9023 - val_accuracy: 0.4667
+Epoch 50/50
+2/2 [==============================] - 5s 3s/step - loss: 0.0023 - accuracy: 1.0000 - val_loss: 0.9174 - val_accuracy: 0.4667
+This image is 77.95 your coffee.
+```
 
 ### Works Cited :
 > Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
