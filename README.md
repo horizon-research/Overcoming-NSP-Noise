@@ -13,7 +13,7 @@ This script is called ```HeatTrigger.py```, it is essentially a camera trigger t
 
 #### Depends on
 
-```ruby
+```python
 import PySpin
 import sys
 import time
@@ -26,7 +26,7 @@ Main additions to FLIR SDK example ```Trigger.py``` are
 
 for the device temperature: ```GetCameraTemperature(cam)```
 
-```ruby
+```python
 def GetCameraTemperature(cam):
     x = 0
     if cam.DeviceTemperature.GetAccessMode() == PySpin.RO:
@@ -36,7 +36,7 @@ def GetCameraTemperature(cam):
 ```
 as well as:  ```Go(cam,GoalTemperature)```
 
-```ruby
+```python
 def Go(cam, GoalTemperature):
     # Get Temperature of Camera
 
@@ -59,7 +59,7 @@ def Go(cam, GoalTemperature):
 
 The heat testing is done using a loop in the ``` main()``` method. 
 
-```ruby
+```python
 def main():
     ...
     # List of Cameras
@@ -77,7 +77,7 @@ Images are saved as  ```sample-serialNumber-capNum-temp.png```
 
 The numbering relies on the ```CamConfig.json``` which stores the number of captures after each capture. 
 In the terminal it looks like the following 
-```ruby
+```
 ...
 $ Acquiring images...
 $ Image saved at sample-18255214-12-39.png
@@ -102,7 +102,7 @@ These are contained withing the ```Training_Data``` folder
 
 #### Depends on
 
-```ruby
+```python
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -110,7 +110,7 @@ from tensorflow.keras import layers
 As well as ```pydot``` and ```graphviz```
 
 #### When Running 
-```ruby
+```
 ...
 2/2 [==============================] - 5s 2s/step - loss: 0.0096 - accuracy: 1.0000 - val_loss: 0.8539 - val_accuracy: 0.4667
 Epoch 46/50
