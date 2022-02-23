@@ -13,19 +13,19 @@ This begs the question: what is the plan this semester?
 This is my tentative plan for the semester that takes into account the online portion of the semester.
 
 ## Materials 
-[x] A heat gun to be used for inducing dark current noise
+- [ ] A heat gun to be used for inducing dark current noise
 
-[x] An image sensor of some kind to be heated up (you mentioned something about a FLIR sensor, does this come with a lens?)
+- [ ] An image sensor of some kind to be heated up (you mentioned something about a FLIR sensor, does this come with a lens?)
 
-[x] Imaging software to connect and capture images (to interface with 2)
+- [ ] Imaging software to connect and capture images (to interface with 2)
 
-[x] A Neural Network (how should these be implemented? Tensorflow? PyTorch?)
+- [ ] A Neural Network (how should these be implemented? Tensorflow? PyTorch?)
 
-[] Around 1000 Images for object detection
+- [ ] Around 1000 Images for object detection
 
-[x] A set of coffee cups to image
+- [ ] A set of coffee cups to image
 
-[x] Camera Specific Capture Code using Spinnaker SDK 
+- [ ] Camera Specific Capture Code using Spinnaker SDK 
 
 
 
