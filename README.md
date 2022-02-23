@@ -7,7 +7,7 @@ Christopher Bruinsma and Yuhao Zhu at Horizon Research, Univerisity of Rochester
 
 ## Capture
 Images will be captured using a FLIR BlackFly 3 camera which has thermal-noise induced using a heat-gun. 
-The safety of heating the camera will be safely heated using Python code which relies on the Spinnaker SDK from FLIR. I read somewhere that it can be heated to 100°C, I found out today *February 22, 2022* that is indeed correct. 
+The safety of heating the camera will be safely heated using Python code which relies on the Spinnaker SDK from FLIR. I read somewhere that it can be heated to 100°C, I found out today *February 22, 2022*, that is indeed correct. 
 
 This script is called ```HeatTrigger.py```, it is essentially a camera trigger that triggers based on heat. 
 
