@@ -113,7 +113,7 @@ As well as ```pydot``` and ```graphviz```
 
 #### When Running 
 
-![Model](model.png)
+![Model](Test.jpeg)
 
 ```
 ...
