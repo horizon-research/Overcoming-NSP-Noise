@@ -123,7 +123,7 @@ Epoch 49/50
 2/2 [==============================] - 6s 3s/step - loss: 0.0085 - accuracy: 1.0000 - val_loss: 0.9023 - val_accuracy: 0.4667
 Epoch 50/50
 2/2 [==============================] - 5s 3s/step - loss: 0.0023 - accuracy: 1.0000 - val_loss: 0.9174 - val_accuracy: 0.4667
-This image is 77.95 your coffee.
+This image is 22.06 your coffee.
 ...
 ```
 
