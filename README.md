@@ -132,6 +132,8 @@ Epoch 100/100
 This image is 2.87 your coffee.
 ...
 ```
+*To be fair* this might not have been my coffee, and how would the computer know? It doesn't have my name on it. 
+
 
 ### Works Cited :
 > Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
