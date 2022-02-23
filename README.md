@@ -133,6 +133,25 @@ This image is 13.87 percent your coffee.
 
 A more research-based answer would be that this is a classic case of overfitting, when performing 200 epochs the percentage is even lower than this for the same image at ```0.00%```
 
+
+```
+...
+Epoch 47/50
+2/2 [==============================] - 29s 14s/step - loss: 0.2010 - accuracy: 0.9483 - val_loss: 0.7452 - val_accuracy: 0.4286
+Epoch 48/50
+2/2 [==============================] - 28s 14s/step - loss: 0.1468 - accuracy: 0.9483 - val_loss: 0.7051 - val_accuracy: 0.3571
+Epoch 49/50
+2/2 [==============================] - 28s 14s/step - loss: 0.1958 - accuracy: 0.9655 - val_loss: 0.6946 - val_accuracy: 0.5714
+Epoch 50/50
+2/2 [==============================] - 30s 15s/step - loss: 0.2842 - accuracy: 0.8448 - val_loss: 0.6976 - val_accuracy: 0.5714
+This image is 45.06 percent your coffee.
+...
+```
+
+After some tweaking to the ```def NModel(input_shape,num_classes)```, and use of the same image, and 50 epochs a your-coffee percentage was achieved at *45.06*%
+The improvement is likely due to changing the activation from ```relu``` to ```softplus``` and giving the Neural Net larger fields to convolve over. 
+
+
 ### Works Cited :
 > Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
     Imaging. Kodukula Et Al.
