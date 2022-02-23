@@ -131,7 +131,7 @@ This image is 13.87 percent your coffee.
 ```
 *To be fair* this has only been run 50 times. *Perhaps* more epochs are needed or simply a bigger sample space. 
 
-A more research-based answer would be that this is a classic case of overfitting, when performing 200 epochs the percentage is even lower than this for the same image at ```0.00```
+A more research-based answer would be that this is a classic case of overfitting, when performing 200 epochs the percentage is even lower than this for the same image at ```0.00%```
 
 ### Works Cited :
 > Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
