@@ -113,23 +113,19 @@ As well as ```pydot``` and ```graphviz```
 
 #### When Running 
 
-![Model](Test.jpeg)
+![Model]()
 
 ```
 ...
-Epoch 95/100
-2/2 [==============================] - 5s 3s/step - loss: 0.0070 - accuracy: 1.0000 - val_loss: 1.4274 - val_accuracy: 0.5714
-Epoch 96/100
-2/2 [==============================] - 6s 3s/step - loss: 1.8663e-04 - accuracy: 1.0000 - val_loss: 1.4480 - val_accuracy: 0.5714
-Epoch 97/100
-2/2 [==============================] - 6s 3s/step - loss: 1.3714e-04 - accuracy: 1.0000 - val_loss: 1.4687 - val_accuracy: 0.5714
-Epoch 98/100
-2/2 [==============================] - 6s 3s/step - loss: 3.5367e-04 - accuracy: 1.0000 - val_loss: 1.4908 - val_accuracy: 0.5714
-Epoch 99/100
-2/2 [==============================] - 6s 3s/step - loss: 2.2095e-04 - accuracy: 1.0000 - val_loss: 1.5137 - val_accuracy: 0.5714
-Epoch 100/100
-2/2 [==============================] - 6s 3s/step - loss: 3.2761e-04 - accuracy: 1.0000 - val_loss: 1.5379 - val_accuracy: 0.5714
-This image is 2.87 your coffee.
+Epoch 47/50
+2/2 [==============================] - 5s 2s/step - loss: 0.0859 - accuracy: 0.9649 - val_loss: 0.9109 - val_accuracy: 0.5714
+Epoch 48/50
+2/2 [==============================] - 5s 2s/step - loss: 0.0834 - accuracy: 0.9474 - val_loss: 0.9245 - val_accuracy: 0.5714
+Epoch 49/50
+2/2 [==============================] - 5s 2s/step - loss: 0.0816 - accuracy: 0.9649 - val_loss: 0.9345 - val_accuracy: 0.5714
+Epoch 50/50
+2/2 [==============================] - 5s 2s/step - loss: 0.0305 - accuracy: 1.0000 - val_loss: 0.9464 - val_accuracy: 0.5714
+This image is 13.87 percent your coffee.
 ...
 ```
 *To be fair* this might not have been my coffee, and how would the computer know? It doesn't have my name on it. 
