@@ -117,18 +117,19 @@ As well as ```pydot``` and ```graphviz```
 
 ```
 ...
-2/2 [==============================] - 5s 2s/step - loss: 0.0096 - accuracy: 1.0000 - val_loss: 0.8539 - val_accuracy: 0.4667
-Epoch 46/50
-2/2 [==============================] - 5s 2s/step - loss: 0.0044 - accuracy: 1.0000 - val_loss: 0.8647 - val_accuracy: 0.4667
-Epoch 47/50
-2/2 [==============================] - 5s 3s/step - loss: 0.0036 - accuracy: 1.0000 - val_loss: 0.8761 - val_accuracy: 0.4667
-Epoch 48/50
-2/2 [==============================] - 5s 3s/step - loss: 0.0024 - accuracy: 1.0000 - val_loss: 0.8887 - val_accuracy: 0.4667
-Epoch 49/50
-2/2 [==============================] - 6s 3s/step - loss: 0.0085 - accuracy: 1.0000 - val_loss: 0.9023 - val_accuracy: 0.4667
-Epoch 50/50
-2/2 [==============================] - 5s 3s/step - loss: 0.0023 - accuracy: 1.0000 - val_loss: 0.9174 - val_accuracy: 0.4667
-This image is 22.06 your coffee.
+Epoch 95/100
+2/2 [==============================] - 5s 3s/step - loss: 0.0070 - accuracy: 1.0000 - val_loss: 1.4274 - val_accuracy: 0.5714
+Epoch 96/100
+2/2 [==============================] - 6s 3s/step - loss: 1.8663e-04 - accuracy: 1.0000 - val_loss: 1.4480 - val_accuracy: 0.5714
+Epoch 97/100
+2/2 [==============================] - 6s 3s/step - loss: 1.3714e-04 - accuracy: 1.0000 - val_loss: 1.4687 - val_accuracy: 0.5714
+Epoch 98/100
+2/2 [==============================] - 6s 3s/step - loss: 3.5367e-04 - accuracy: 1.0000 - val_loss: 1.4908 - val_accuracy: 0.5714
+Epoch 99/100
+2/2 [==============================] - 6s 3s/step - loss: 2.2095e-04 - accuracy: 1.0000 - val_loss: 1.5137 - val_accuracy: 0.5714
+Epoch 100/100
+2/2 [==============================] - 6s 3s/step - loss: 3.2761e-04 - accuracy: 1.0000 - val_loss: 1.5379 - val_accuracy: 0.5714
+This image is 2.87 your coffee.
 ...
 ```
 
