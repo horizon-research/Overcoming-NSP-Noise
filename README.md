@@ -22,9 +22,9 @@ import time
 #### Runs as 
 ```$ Python3 HeatTrigger.py```
 
-Main additions to FLIR SDK example ```Trigger.py``` are
+Main additions to FLIR SDK example ```Trigger.py``` are :
 
-for the device temperature: ```GetCameraTemperature(cam)```
+For the device temperature: ```GetCameraTemperature(cam)``` :
 
 ```python
 def GetCameraTemperature(cam):
