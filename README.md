@@ -116,21 +116,7 @@ As well as ```pydot``` and ```graphviz```
 Here is the test image, it is 100% my coffee 
 ![Model](TEST2.png)
 
-```
-...
-Epoch 47/50
-2/2 [==============================] - 5s 2s/step - loss: 0.0859 - accuracy: 0.9649 - val_loss: 0.9109 - val_accuracy: 0.5714
-Epoch 48/50
-2/2 [==============================] - 5s 2s/step - loss: 0.0834 - accuracy: 0.9474 - val_loss: 0.9245 - val_accuracy: 0.5714
-Epoch 49/50
-2/2 [==============================] - 5s 2s/step - loss: 0.0816 - accuracy: 0.9649 - val_loss: 0.9345 - val_accuracy: 0.5714
-Epoch 50/50
-2/2 [==============================] - 5s 2s/step - loss: 0.0305 - accuracy: 1.0000 - val_loss: 0.9464 - val_accuracy: 0.5714
-This image is 13.87 percent your coffee.
-...
-```
-
-Further testing with the first style of model was plagued by overfitting, the script was modified and a better result was achieved in nearly twice the run time. 
+Testing with the first style of model was plagued by overfitting, the script was modified and a better result was achieved in nearly twice the run time. 
 Here is the final output below. 
 
 ```
