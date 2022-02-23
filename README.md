@@ -113,7 +113,8 @@ As well as ```pydot``` and ```graphviz```
 
 #### When Running 
 
-![Model]()
+Here is the test image, it is 100% my coffee 
+![Model](TEST2.png)
 
 ```
 ...
@@ -128,8 +129,7 @@ Epoch 50/50
 This image is 13.87 percent your coffee.
 ...
 ```
-*To be fair* this might not have been my coffee, and how would the computer know? It doesn't have my name on it. 
-
+*To be fair* this has only been run 50 times. *Perhaps* more epochs are needed or simply a bigger sample space. 
 
 ### Works Cited :
 > Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
