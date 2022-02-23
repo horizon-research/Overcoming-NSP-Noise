@@ -50,24 +50,26 @@ def NModel(input_shape,num_classes):
     inputs = keras.Input(shape = input_shape)
     x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
-    x = layers.Conv2D(32,3, strides = 2, padding= "same")(x)
+    # x = layers.Conv2D(1024,3, strides = 2, padding= "same")(x) my computer cannot.
+    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
 
-    x = layers.Conv2D(64,3,padding="Same")(x)
+    x = layers.Conv2D(1024,3,padding="Same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
 
     previous_block_activation = x
 
    
-    for size in [128,256,512,728]:
-       x = layers.Activation("relu")(x)
+    for size in [1,2,4,16,64,128,256,512,1024,2048,4096]:
+       #Changed to ELU
+       x = layers.Activation("softplus")(x)
        x = layers.SeparableConv2D(size,3,padding = "same")(x)
        x = layers.BatchNormalization()(x)
 
-
-       x = layers.Activation("relu")(x)
+       #Remains RELU
+       x = layers.Activation("softplus")(x)
        x = layers.SeparableConv2D(size,3,padding = "same")(x)
        x = layers.BatchNormalization()(x)
 
@@ -77,20 +79,21 @@ def NModel(input_shape,num_classes):
        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
        previous_block_activation
        )
+
        x = layers.add([x, residual])  
        previous_block_activation = x
 
     # TODO : Look up for comprehension
     x = layers.SeparableConv2D(1024, 3, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
+    x = layers.Activation("softplus")(x)
 
     x = layers.GlobalAveragePooling2D()(x)
     if num_classes == 2:
         activation = "sigmoid"
         units = 1
     else:
-        activation = "softmax"
+        activation = "sigmoid"
         units = num_classes
 
     x = layers.Dropout(0.5)(x)
@@ -99,9 +102,8 @@ def NModel(input_shape,num_classes):
 model = NModel(input_shape=image_size + (3,), num_classes=2)
 keras.utils.plot_model(model, show_shapes=True)   
    
-epochs = 100
-callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"),
-]
+epochs = 50 #over-fitting?
+callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"),]
 
 model.compile(
     optimizer = keras.optimizers.Adam(1e-3),
@@ -112,7 +114,8 @@ model.compile(
 model.fit(DataSet,epochs = epochs, callbacks = callbacks, validation_data = Validation)
 
 img = keras.preprocessing.image.load_img(
-    "Training_Data/sample-18255214-320-69.png", target_size=image_size
+    "Training_Data/TEST2.png", target_size=image_size
+    #Test image is of a coffee cup with my name on it from fall of 2020.
 )
 
 img_array = keras.preprocessing.image.img_to_array(img)
@@ -121,12 +124,7 @@ img_array = tf.expand_dims(img_array, 0)  # Create batch axis
 predictions = model.predict(img_array)
 score = predictions[0]
 
-print(
-    "This image is %.2f your coffee."
-    % (100 * (score))
-)
-
-
+print("This image is %.2f percent your coffee." % (100 * (score)))
 
 def main() :
     print("Nothing broke before here, this is exciting")
