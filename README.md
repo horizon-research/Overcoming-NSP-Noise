@@ -112,6 +112,9 @@ from tensorflow.keras import layers
 As well as ```pydot``` and ```graphviz```
 
 #### When Running 
+
+![Model](model.png)
+
 ```
 ...
 2/2 [==============================] - 5s 2s/step - loss: 0.0096 - accuracy: 1.0000 - val_loss: 0.8539 - val_accuracy: 0.4667
