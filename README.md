@@ -144,7 +144,6 @@ to
 ```python
 x = layers.Conv2D(1024, 3, strides = 2, padding= "same")(x) 
 ```
-this may take hours. 
 
 ### Works Cited :
 > Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
