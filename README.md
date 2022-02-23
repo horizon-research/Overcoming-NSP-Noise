@@ -6,10 +6,9 @@ This project is being carried out as an independent study which has started in t
 Christopher Bruinsma and Yuhao Zhu at Horizon Research, *Univerisity of Rochester*
 
 ## Capture
-Images will be captured using a FLIR BlackFly 3 camera which has thermal-noise induced using a heat-gun. 
-The safety of heating the camera will be safely heated using Python code which relies on the Spinnaker SDK from FLIR. I read somewhere that it can be heated to
-```100°C```
-, I found out today *February 22, 2022*, that is indeed correct. 
+Images will be captured using a **FLIR BlackFly 3** camera which has thermal-noise induced using a heat gun. 
+The safety of heating the camera ensured using Python code which relies on the [Spinnaker SDK](https://www.flir.com/products/spinnaker-sdk/). The camera is able to be heated up to 100°C.
+
 
 This script is called ```HeatTrigger.py```, it is essentially a camera trigger that triggers based on heat. 
 
@@ -24,7 +23,7 @@ import time
 #### Runs as 
 ```$ Python3 HeatTrigger.py```
 
-Main additions to FLIR SDK example ```Trigger.py``` are :
+Main additions to FLIR SDK example: ```Trigger.py``` are :
 
 For the device temperature: ```GetCameraTemperature(cam)``` :
 
@@ -116,9 +115,6 @@ As well as ```pydot``` and ```graphviz```
 Here is the test image, it is 100% my coffee 
 ![Model](TEST2.png)
 
-Testing with the first style of model was plagued by overfitting, the script was modified and a better result was achieved in nearly twice the run time. 
-Here is the final output below. 
-
 ```
 ...
 Epoch 47/50
@@ -144,6 +140,7 @@ to
 ```python
 x = layers.Conv2D(1024, 3, strides = 2, padding= "same")(x) 
 ```
+
 
 ### Works Cited :
 > Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
