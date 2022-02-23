@@ -129,10 +129,9 @@ Epoch 50/50
 This image is 13.87 percent your coffee.
 ...
 ```
-*To be fair* this has only been run 50 times. *Perhaps* more epochs are needed or simply a bigger sample space. 
 
-A more research-based answer would be that this is a classic case of overfitting, when performing 200 epochs the percentage is even lower than this for the same image at ```0.00%```
-
+Further testing with the first style of model was plagued by overfitting, the script was modified and a better result was achieved in nearly twice the run time. 
+Here is the final output below. 
 
 ```
 ...
@@ -148,9 +147,18 @@ This image is 45.06 percent your coffee.
 ...
 ```
 
-After some tweaking to the ```def NModel(input_shape,num_classes)```, and use of the same image, and 50 epochs a your-coffee percentage was achieved at *45.06*%
-The improvement is likely due to changing the activation from ```relu``` to ```softplus``` and giving the Neural Net larger fields to convolve over. 
+After some tweaking to the ```def NModel(input_shape,num_classes)```, use of the same test image, as well as 50 epochs, a *chris-coffee* percentage was achieved at *45.06*%
+The improvement is likely due to changing the activation from ```relu``` to ```softplus``` and giving the Neural Net larger fields to convolve over and more sizes to model over.
 
+The next update is to change : 
+```python
+x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+```
+to
+```python
+x = layers.Conv2D(1024, 3, strides = 2, padding= "same")(x) 
+```
+this may take hours. 
 
 ### Works Cited :
 > Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
