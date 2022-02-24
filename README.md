@@ -62,7 +62,7 @@ The heat testing is done using a loop in the ``` main()``` method.
 
 ```python
 def main():
-    ...
+    •••
     # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
@@ -72,21 +72,21 @@ def main():
             time.sleep(2)
     
     print("Capture Complete, please cool the camera.")
-    ... 
+    ••• 
 ```
 Images are saved as  ```sample-serialNumber-capNum-temp.png```
 
 The numbering relies on the ```CamConfig.json``` which stores the number of captures after each capture. 
 In the terminal it looks like the following 
 ```
-...
+•••
 $ Acquiring images...
 $ Image saved at sample-18255214-12-39.png
 
 $ Image saved at sample-18255214-13-39.png
 
 $ Trigger mode disabled...
-...
+•••
 ```
 
 
@@ -110,13 +110,16 @@ from tensorflow.keras import layers
 ```
 As well as ```pydot``` and ```graphviz```
 
+
+The data used is from the ```training_images``` folder which contains 200+ images taken by the **Blackfly** camera.
+
 #### When Running 
 
 Here is the test image, it is 100% my coffee 
 ![Model](TEST2.png)
 
 ```
-...
+•••
 Epoch 47/50
 2/2 [==============================] - 29s 14s/step - loss: 0.2010 - accuracy: 0.9483 - val_loss: 0.7452 - val_accuracy: 0.4286
 Epoch 48/50
@@ -126,20 +129,10 @@ Epoch 49/50
 Epoch 50/50
 2/2 [==============================] - 30s 15s/step - loss: 0.2842 - accuracy: 0.8448 - val_loss: 0.6976 - val_accuracy: 0.5714
 This image is 45.06 percent your coffee.
-...
+•••
 ```
 
-After some tweaking to the ```def NModel(input_shape,num_classes)```, use of the same test image, as well as 50 epochs, a *chris-coffee* percentage was achieved at *45.06*%
-The improvement is likely due to changing the activation from ```relu``` to ```softplus``` and giving the Neural Net larger fields to convolve over and more sizes to model over.
 
-The next update is to change : 
-```python
-x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-```
-to
-```python
-x = layers.Conv2D(1024, 3, strides = 2, padding= "same")(x) 
-```
 
 
 ### Works Cited :
