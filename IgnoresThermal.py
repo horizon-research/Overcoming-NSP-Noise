@@ -5,9 +5,8 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-images = [] # DataSet of Images
 
-image_size = (180, 180)
+image_size = (450, 450)
 batch_size = 32
 
 DataSet = tf.keras.preprocessing.image_dataset_from_directory(
@@ -21,7 +20,7 @@ DataSet = tf.keras.preprocessing.image_dataset_from_directory(
 
 Validation = tf.keras.preprocessing.image_dataset_from_directory(
     "Training_Data",
-    validation_split=0.2,
+    validation_split=0.1,
     subset="validation",
     seed=1337,
     image_size=image_size,
@@ -31,23 +30,27 @@ Validation = tf.keras.preprocessing.image_dataset_from_directory(
 # This is a method useful for our use-case where I doubt I can
 # capture a data set of 10,000.
 data_augmentation = keras.Sequential(
-    [ layers.RandomFlip("horizontal"),
-      layers.RandomRotation(0.1)
-    ]
+    [layers.RandomFlip("horizontal"),
+     layers.RandomRotation(0.1),
+     layers.RandomFlip("vertical"),
+     ]
 )
+
 
 # For CPU training
 augmented_train_ds = DataSet.map(
-  lambda x, y: (data_augmentation(x, training=True), y)
+    lambda x, y: (data_augmentation(x, training=True), y)
 )
+
 
 # Prevents I/O issues
 train_ds = DataSet.prefetch(buffer_size=32)
 val_ds = Validation.prefetch(buffer_size=32)
 
+
 # Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
-def NModel(input_shape,num_classes):
-    inputs = keras.Input(shape = input_shape)
+def NModel(input_shape, num_classes):
+    inputs = keras.Input(shape=input_shape)
     x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
     # x = layers.Conv2D(1024,3, strides = 2, padding= "same")(x) my computer cannot.
@@ -55,38 +58,37 @@ def NModel(input_shape,num_classes):
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
 
-    x = layers.Conv2D(1024,3,padding="Same")(x)
+    x = layers.Conv2D(128, 3, padding="Same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
 
     previous_block_activation = x
 
-   
-    for size in [1,2,4,16,64,128,256,512,1024,2048,4096]:
-       #Changed to ELU
-       x = layers.Activation("softplus")(x)
-       x = layers.SeparableConv2D(size,3,padding = "same")(x)
-       x = layers.BatchNormalization()(x)
+    for size in [128, 256, 512, 1024]:
+        # Changed to ELU
+        x = layers.Activation("relu")(x)
+        x = layers.SeparableConv2D(size, 3, padding="same")(x)
+        x = layers.BatchNormalization()(x)
 
-       #Remains RELU
-       x = layers.Activation("softplus")(x)
-       x = layers.SeparableConv2D(size,3,padding = "same")(x)
-       x = layers.BatchNormalization()(x)
+        # Remains RELU
+        x = layers.Activation("relu")(x)
+        x = layers.SeparableConv2D(size, 3, padding="same")(x)
+        x = layers.BatchNormalization()(x)
 
-       x = layers.MaxPooling2D(3,strides = 2, padding ="same")(x)  # Key for noisy images, use more than once?
+        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)  # Key for noisy images, use more than once?
 
-       #Residual? TODO : Look up for comprehension
-       residual = layers.Conv2D(size, 1, strides=2, padding="same")(
-       previous_block_activation
-       )
+        # Residual? TODO : Look up for comprehension
+        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
+            previous_block_activation
+        )
 
-       x = layers.add([x, residual])  
-       previous_block_activation = x
+        x = layers.add([x, residual])
+        previous_block_activation = x
 
     # TODO : Look up for comprehension
-    x = layers.SeparableConv2D(1024, 3, padding="same")(x)
+    x = layers.SeparableConv2D(128, 3, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Activation("softplus")(x)
+    x = layers.Activation("relu")(x)
 
     x = layers.GlobalAveragePooling2D()(x)
     if num_classes == 2:
@@ -99,23 +101,25 @@ def NModel(input_shape,num_classes):
     x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(units, activation=activation)(x)
     return keras.Model(inputs, outputs)
+
+
 model = NModel(input_shape=image_size + (3,), num_classes=2)
-keras.utils.plot_model(model, show_shapes=True)   
-   
-epochs = 50 #over-fitting?
-callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"),]
+keras.utils.plot_model(model, show_shapes=True)
+
+epochs = 2  # over-fitting?
+callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"), ]
 
 model.compile(
-    optimizer = keras.optimizers.Adam(1e-3),
-    loss = "binary_crossentropy",
-    metrics = ["accuracy"],
+    optimizer=keras.optimizers.SGD(1e-3),
+    loss="binary_crossentropy",
+    metrics=["accuracy"],
 )
 
-model.fit(DataSet,epochs = epochs, callbacks = callbacks, validation_data = Validation)
+model.fit(DataSet, epochs=epochs, callbacks=callbacks, validation_data=Validation)
 
 img = keras.preprocessing.image.load_img(
-    "Training_Data/TEST2.png", target_size=image_size
-    #Test image is of a coffee cup with my name on it from fall of 2020.
+    "Training_Data/sample-18255214-1061-79.png", target_size=image_size
+    # Test image is of a coffee cup with my name on it from fall of 2020.
 )
 
 img_array = keras.preprocessing.image.img_to_array(img)
@@ -126,7 +130,8 @@ score = predictions[0]
 
 print("This image is %.2f percent your coffee." % (100 * (score)))
 
-def main() :
+
+def main():
     print("Nothing broke before here, this is exciting")
 
 
