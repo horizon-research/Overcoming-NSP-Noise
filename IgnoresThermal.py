@@ -1,12 +1,14 @@
 # This will be the Neural Network Script
 # Cites : https://keras.io/examples/vision/image_classification_from_scratch/
+# Cites : https://www.tensorflow.org/tutorials/images/cnn
 # Depends on : pydot and Graphviz
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
 
-image_size = (450, 450)
+
+image_size = (100, 100) #More power needed, but more accuracy gained.
 batch_size = 32
 
 DataSet = tf.keras.preprocessing.image_dataset_from_directory(
@@ -37,7 +39,7 @@ data_augmentation = keras.Sequential(
 )
 
 
-# For CPU training
+# # For CPU training
 augmented_train_ds = DataSet.map(
     lambda x, y: (data_augmentation(x, training=True), y)
 )
@@ -53,37 +55,57 @@ def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
-    # x = layers.Conv2D(1024,3, strides = 2, padding= "same")(x) my computer cannot.
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-
-    x = layers.Conv2D(128, 3, padding="Same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
+    x = layers.SeparableConv2D(128, 3, padding="same")(x)
 
     previous_block_activation = x
 
     for size in [128, 256, 512, 1024]:
-        # Changed to ELU
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        # Remains RELU
         x = layers.Activation("relu")(x)
         x = layers.SeparableConv2D(size, 3, padding="same")(x)
         x = layers.BatchNormalization()(x)
 
         x = layers.MaxPooling2D(3, strides=2, padding="same")(x)  # Key for noisy images, use more than once?
 
-        # Residual? TODO : Look up for comprehension
         residual = layers.Conv2D(size, 1, strides=2, padding="same")(
             previous_block_activation
         )
-
         x = layers.add([x, residual])
         previous_block_activation = x
+
+        x = layers.Activation("tanh")(x)
+        x = layers.SeparableConv2D(size, 3, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+
+        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)  # Key for noisy images, use more than once?
+
+        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.add([x, residual])
+
+        previous_block_activation = x
+
+        x = layers.Activation("tanh")(x)
+        x = layers.SeparableConv2D(size, 3, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+
+        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)  # Key for noisy images, use more than once?
+
+        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.add([x, residual])
+        previous_block_activation = x
+
+        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)  # Key for noisy images, use more than once?
+
+        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.add([x, residual])
+        previous_block_activation = x
+
+
 
     # TODO : Look up for comprehension
     x = layers.SeparableConv2D(128, 3, padding="same")(x)
@@ -104,41 +126,40 @@ def NModel(input_shape, num_classes):
 
 
 model = NModel(input_shape=image_size + (3,), num_classes=2)
-keras.utils.plot_model(model, show_shapes=True)
 
-epochs = 2  # over-fitting?
-callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"), ]
+def Compile() :
+    keras.utils.plot_model(model, show_shapes=True)
+    epochs = 10 # over-fitting?
+    callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"), ]
+    model.compile(
+        optimizer=keras.optimizers.SGD(1e-3),
+        loss="binary_crossentropy",
+        metrics=["accuracy"],
+    )
+    model.fit(DataSet, epochs=epochs, callbacks=callbacks, validation_data=Validation)
 
-model.compile(
-    optimizer=keras.optimizers.SGD(1e-3),
-    loss="binary_crossentropy",
-    metrics=["accuracy"],
-)
-
-model.fit(DataSet, epochs=epochs, callbacks=callbacks, validation_data=Validation)
-
-img = keras.preprocessing.image.load_img(
-    "Training_Data/sample-18255214-1061-79.png", target_size=image_size
-    # Test image is of a coffee cup with my name on it from fall of 2020.
-)
-
-img_array = keras.preprocessing.image.img_to_array(img)
-img_array = tf.expand_dims(img_array, 0)  # Create batch axis
-
-predictions = model.predict(img_array)
-score = predictions[0]
-
-print("This image is %.2f percent your coffee." % (100 * (score)))
+def Test(image):
+    img = keras.preprocessing.image.load_img(
+        image, target_size=image_size
+        # Test image is of a coffee cup with my name on it from fall of 2020.
+    )
+    img_array = keras.preprocessing.image.img_to_array(img)
+    img_array = tf.expand_dims(img_array, 0)  # Create batch axis
+    predictions = model.predict(img_array)
+    score = predictions[0]
+    print("This image is %.2f percent your coffee." % (100 * (score)))
 
 
 def main():
-    print("Nothing broke before here, this is exciting")
-
+    x = input("Please Enter 1 for compile 2 for test and 3 for both\n")
+    if(x == "1"):
+        Compile()
+    elif(x == "2"):
+        print("Image of my coffee")
+        Test("Training_Data/sample-18255214-481-28.png")
+    elif(x == "3"):
+        Compile()
+        Test("Training_Data/Test.png")
 
 if __name__ == '__main__':
     main()
-
-
-
-
-

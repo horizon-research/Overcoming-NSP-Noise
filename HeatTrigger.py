@@ -18,7 +18,6 @@ class TriggerType:
     SOFTWARE = 1
     HARDWARE = 2
 
-
 CHOSEN_TRIGGER = TriggerType.SOFTWARE
 
 
@@ -45,7 +44,6 @@ def configure_trigger(cam):
     print(
         'If several frames are needed per trigger, a more reliable alternative for such case, is to use the '
         'multi-frame mode.\n\n')
-
     if CHOSEN_TRIGGER == TriggerType.SOFTWARE:
         print('Software trigger chosen ...')
     elif CHOSEN_TRIGGER == TriggerType.HARDWARE:
@@ -173,10 +171,9 @@ def grab_next_image_by_trigger(nodemap):
 
     return result
 
-
 # From Spinnaker SDK : Examples : (copyright) FLIR
 def acquire_images(cam, nodemap, nodemap_tldevice):
-    cam.PixelFormat.SetValue(PySpin.PixelFormat_BGR8) #I was wrong about the RAW images
+
     """
     This function acquires and saves 2 images from a device.
     Please see Acquisition example for more in-depth comments on acquiring images.
@@ -229,13 +226,6 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
         cam.BeginAcquisition()
 
         print('Acquiring images...')
-
-        #  Retrieve device serial number for filename
-        #
-        #  *** NOTES ***
-        #  The device serial number is retrieved in order to keep cameras from
-        #  overwriting one another. Grabbing image IDs could also accomplish
-        #  this.
         device_serial_number = ''
         node_device_serial_number = PySpin.CStringPtr(nodemap_tldevice.GetNode('DeviceSerialNumber'))
         if PySpin.IsAvailable(node_device_serial_number) and PySpin.IsReadable(node_device_serial_number):
@@ -256,7 +246,6 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
                     print('Image incomplete with image status %d ...' % image_result.GetImageStatus())
 
                 else:
-                    image_converted = image_result.Convert(PySpin.PixelFormat_BGRa8)
 
                     # Create a unique filename
                     if device_serial_number:
@@ -270,7 +259,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
                     #  The standard practice of the examples is to use device
                     #  serial numbers to keep images of one device from
                     #  overwriting those of another.
-                    image_converted.Save(filename)
+                    image_result.Save(filename)
                     print('Image saved at %s\n' % filename)
 
                     #  Release image
@@ -364,6 +353,9 @@ def Capture(cam):
         if configure_trigger(cam) is False:
             return False
 
+        # if configure_custom_image_settings(nodemap) is False:
+        #     return False
+
         # # Configure the exposure
         # result &= configure_exposure(cam)
 
@@ -385,8 +377,8 @@ def Capture(cam):
 
     return result
 
-
-# Grabs the temperature of the camera, returns it as a floating point number
+# My Additions to this script:
+# Grabs the temperature of the camera, returns it as a float
 def GetCameraTemperature(cam):
     x = 0
     if cam.DeviceTemperature.GetAccessMode() == PySpin.RO:
@@ -440,7 +432,7 @@ def main():
     # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
-        for t in range(70, 85, 1):
+        for t in range(86, 70, -1):
             # Initiates Capture
             Go(cam, t)
             time.sleep(2)
@@ -450,7 +442,7 @@ def main():
 
 
     print("Capture Complete, please cool the camera.")
-    print("Please do not touch the camera, it is most likely 50+°C.")
+    print("Please do not touch the camera, it is most likely 50°C+.")
     del cam
 
     # Clear camera list before releasing system, this makes a mess if not cleared
