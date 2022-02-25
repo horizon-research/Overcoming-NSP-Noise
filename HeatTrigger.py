@@ -11,7 +11,7 @@ import sys
 import time
 
 # Take two images per click.
-NUM_IMAGES = 2  # number of images to grab
+NUM_IMAGES = 1  # number of images to grab
 
 # What type of trigger?
 class TriggerType:
@@ -176,8 +176,9 @@ def grab_next_image_by_trigger(nodemap):
 
 # From Spinnaker SDK : Examples : (copyright) FLIR
 def acquire_images(cam, nodemap, nodemap_tldevice):
+    cam.PixelFormat.SetValue(PySpin.PixelFormat_BGR8) #I was wrong about the RAW images
     """
-    This function acquires and saves 10 images from a device.
+    This function acquires and saves 2 images from a device.
     Please see Acquisition example for more in-depth comments on acquiring images.
 
     :param cam: Camera to acquire images from.
@@ -193,7 +194,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
     config = open("CamConfig.json", "r")
     image_num_config = int(config.read())
     config.close()
-    print(image_num_config)
+
 
     config = open("CamConfig.json", "w")
     config.write(str(image_num_config + NUM_IMAGES))
@@ -244,7 +245,6 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
         # Retrieve, convert, and save images
         for i in range(NUM_IMAGES):
             try:
-
                 #  Retrieve the next image from the trigger
                 result &= grab_next_image_by_trigger(nodemap)
 
@@ -256,27 +256,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
                     print('Image incomplete with image status %d ...' % image_result.GetImageStatus())
 
                 else:
-                    #  Print image information; height and width recorded in pixels
-                    #
-                    #  *** NOTES ***
-                    #  Images have quite a bit of available metadata including
-                    #  things such as CRC, image status, and offset values, to
-                    #  name a few.
-                    # width = image_result.GetWidth()
-                    # height = image_result.GetHeight()
-                    # print('Grabbed Image %d, width = %d, height = %d' % (i, width, height))
-
-                    #  Convert image to mono 8
-                    #
-                    #  *** NOTES ***
-                    #  Images can be converted between pixel formats by using
-                    #  the appropriate enumeration value. Unlike the original
-                    #  image, the converted one does not need to be released as
-                    #  it does not affect the camera buffer.
-                    #
-                    #  When converting images, color processing algorithm is an
-                    #  optional parameter.
-                    # image_converted = image_result.Convert(PySpin.PixelFormat_Raw8, PySpin.HQ_LINEAR)
+                    image_converted = image_result.Convert(PySpin.PixelFormat_BGRa8)
 
                     # Create a unique filename
                     if device_serial_number:
@@ -290,7 +270,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
                     #  The standard practice of the examples is to use device
                     #  serial numbers to keep images of one device from
                     #  overwriting those of another.
-                    image_result.Save(filename)
+                    image_converted.Save(filename)
                     print('Image saved at %s\n' % filename)
 
                     #  Release image
@@ -429,7 +409,7 @@ def Go(cam, GoalTemperature):
         print("Camera is currently", Temp,"°C")
         time.sleep(5)  # Protects the camera.
 
-    # Capture 10 images
+    #Capture 1 image
     if Temp > GoalTemperature:
         print("Capturing, please continue heating")
         Capture(cam)  # Cites : FLIR TELEDYNE
@@ -460,12 +440,17 @@ def main():
     # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
-        for t in range(30, 40, 2):
+        for t in range(70, 85, 1):
             # Initiates Capture
             Go(cam, t)
+            time.sleep(2)
+            # cam.DeInit()
+
+
 
 
     print("Capture Complete, please cool the camera.")
+    print("Please do not touch the camera, it is most likely 50+°C.")
     del cam
 
     # Clear camera list before releasing system, this makes a mess if not cleared
