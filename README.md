@@ -111,7 +111,10 @@ from tensorflow.keras import layers
 As well as ```pydot``` and ```graphviz```
 
 
-The data used is from the ```training_images``` folder which contains 200+ images taken by the **Blackfly** camera.
+The data used is from the ```training_images``` folder which contains 250+ images taken by the **Blackfly** camera of a coffee cup with my name on it all taken at various temperatures ranging from 60-97°C. The former is a part of the ```YourCoffee``` data set. These images are all in the **RAW** format. The latter set of images are images that are ```NotMyCoffee``` these images are regular full color images taken with a variety of cameras and are in various image file types.
+
+
+
 
 #### When Running 
 
@@ -120,17 +123,21 @@ Here is the test image, it is 100% my coffee
 
 ```
 •••
-Epoch 47/50
-2/2 [==============================] - 29s 14s/step - loss: 0.2010 - accuracy: 0.9483 - val_loss: 0.7452 - val_accuracy: 0.4286
-Epoch 48/50
-2/2 [==============================] - 28s 14s/step - loss: 0.1468 - accuracy: 0.9483 - val_loss: 0.7051 - val_accuracy: 0.3571
-Epoch 49/50
-2/2 [==============================] - 28s 14s/step - loss: 0.1958 - accuracy: 0.9655 - val_loss: 0.6946 - val_accuracy: 0.5714
-Epoch 50/50
-2/2 [==============================] - 30s 15s/step - loss: 0.2842 - accuracy: 0.8448 - val_loss: 0.6976 - val_accuracy: 0.5714
-This image is 45.06 percent your coffee.
+Epoch 6/10
+16/16 [==============================] - 71s 4s/step - loss: 0.0180 - accuracy: 0.9959 - val_loss: 0.5401 - val_accuracy: 0.7438
+Epoch 7/10
+16/16 [==============================] - 61s 3s/step - loss: 0.0087 - accuracy: 1.0000 - val_loss: 0.5463 - val_accuracy: 0.7438
+Epoch 8/10
+16/16 [==============================] - 61s 3s/step - loss: 0.0040 - accuracy: 1.0000 - val_loss: 0.5506 - val_accuracy: 0.7438
+Epoch 9/10
+16/16 [==============================] - 62s 4s/step - loss: 0.0103 - accuracy: 0.9979 - val_loss: 0.5294 - val_accuracy: 0.7438
+Epoch 10/10
+16/16 [==============================] - 62s 4s/step - loss: 0.0048 - accuracy: 0.9979 - val_loss: 0.5275 - val_accuracy: 0.7438
+This image is 100.00 percent your coffee and this image is 0.00 percent NotYourCoffee.
+This image is 100.00 percent your coffee and this image is 0.00 percent NotYourCoffee.
 •••
 ```
+Currently the ```val_accuracy``` and ```accuracy``` are suspiciously high with ```val_accuracy``` unchanging despite varying amounts of epochs. More training and images are likely needed. Additionally, the first image is indeed my coffee, that being said the second image is definitely not my coffee and is infact a SouthWest Boeing 737 700. *Obviously work is needed*. 
 
 
 
