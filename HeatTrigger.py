@@ -1,6 +1,4 @@
 # coding=utf-8
-
-# coding=utf-8
 # =============================================================================
 # Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 #
