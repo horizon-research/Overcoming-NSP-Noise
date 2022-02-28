@@ -152,5 +152,5 @@ Currently the ```val_accuracy``` and ```accuracy``` are suspiciously high with `
 
 > FLIR Integrated Imaging Solutions, Inc. (n.d.). PySpinDoc. 
 
-> Team, K. (n.d.). Keras documentation: Image Classification From Scratch. Keras. Retrieved February 22, 2022, from 
+> François Chollet, Team, K. (n.d.). Keras documentation: Image Classification From Scratch. Keras. Retrieved February 22, 2022, from 
    https://keras.io/examples/vision/image_classification_from_scratch/ 
