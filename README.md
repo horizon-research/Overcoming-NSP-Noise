@@ -5,6 +5,8 @@ This project is being carried out as an independent study which has started in t
 #### Collaborators
 Christopher Bruinsma and Yuhao Zhu at Horizon Research, *Univerisity of Rochester*
 
+
+
 ## Capture
 Images will be captured using a **FLIR BlackFly 3** camera which has thermal-noise induced using a heat gun. 
 The safety of heating the camera ensured using Python code which relies on the [Spinnaker SDK](https://www.flir.com/products/spinnaker-sdk/). The camera is able to be heated up to 100°C.
@@ -23,6 +25,8 @@ import time
 #### Runs as 
 ```$ Python3 HeatTrigger.py```
 
+<details><summary>Code Additions</summary>
+<p>
 Main additions to FLIR SDK example: ```Trigger.py``` are :
 
 For the device temperature: ```GetCameraTemperature(cam)``` :
@@ -74,6 +78,9 @@ def main():
     print("Capture Complete, please cool the camera.")
     ••• 
 ```
+</p>
+</details>
+
 Images are saved as  ```sample-serialNumber-capNum-temp.png```
 
 The numbering relies on the ```CamConfig.json``` which stores the number of captures after each capture. 
@@ -117,6 +124,10 @@ The data used is from the ```training_images``` folder which contains 250+ image
 
 
 #### When Running 
+
+<details><summary>Terminal View</summary>
+<p>
+    
 ```
 (venv) chris@dhcp-10-5-48-92 CSC_Independent % Python3 ignoresthermal.py
 Found 465 files belonging to 2 classes.
@@ -165,6 +176,9 @@ Images of iced coffee
 This image is 50.01 percent hot coffee and this image is 49.99 percent iced coffee.
 This image is 50.03 percent hot coffee and this image is 49.97 percent iced coffee.
 ```
+</p>
+</details>
+
 #### Analysis
 
 The first image is *hot coffee*, and the second image is *iced coffee*. At present, the levels of ```accuracy``` and ```val_accuracy``` are high. There are also at present two classes of image, those that are iced coffees and those that are hot coffees both taken with high levels of induced thermal noise. 
