@@ -125,7 +125,7 @@ The data used is from the ```training_images``` folder which contains 250+ image
 
 #### When Running 
 
-<details><summary>Terminal View</summary>
+<details><summary>Training Terminal Output</summary>
 <p>
     
 ```
@@ -165,6 +165,9 @@ This image is 50.04 percent hot coffee and this image is 49.96 percent iced coff
 This image is 50.04 percent hot coffee and this image is 49.96 percent iced coffee.
 •••
 ```
+</p>
+</details>
+
 #### Example Tests | **Perhaps it just isn't quite sure which is which**
 ```
 Please Enter 1 for compile 2 for test and 3 for both
@@ -176,8 +179,7 @@ Images of iced coffee
 This image is 50.01 percent hot coffee and this image is 49.99 percent iced coffee.
 This image is 50.03 percent hot coffee and this image is 49.97 percent iced coffee.
 ```
-</p>
-</details>
+
 
 #### Analysis
 
