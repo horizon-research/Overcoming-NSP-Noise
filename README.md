@@ -106,7 +106,7 @@ Due to the nature of image processing of noisy images, max-pooling will likely b
 
 #### Intent 
 Indentify cups of coffee that have my name on them. This will be done using a variety of coffee cups the on-campus Starbucks here at the Univeristy. 
-These are contained withing the ```Training_Data``` folder
+These are contained within the ```Training_Data``` folder
 
 #### Depends on
 
