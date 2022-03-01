@@ -137,14 +137,10 @@ Please Enter 1 for compile 2 for test and 3 for both
 •••
 Epoch 1/50
 75/75 [==============================] - 69s 882ms/step - loss: 0.5198 - accuracy: 0.7903 - val_loss: 0.4419 - val_accuracy: 0.8387
-
 •••
-
 Epoch 36/50
 75/75 [==============================] - 71s 942ms/step - loss: 0.0949 - accuracy: 0.9704 - val_loss: 1.6228 - val_accuracy: 0.6237
-
 •••
-
 Epoch 45/50
 75/75 [==============================] - 78s 1s/step - loss: 0.0243 - accuracy: 0.9919 - val_loss: 0.0244 - val_accuracy: 1.0000
 Epoch 46/50
