@@ -154,6 +154,19 @@ This image is 50.04 percent hot coffee and this image is 49.96 percent iced coff
 This image is 50.04 percent hot coffee and this image is 49.96 percent iced coffee.
 •••
 ```
+#### Example Tests
+```
+Please Enter 1 for compile 2 for test and 3 for both
+2
+Image of hot coffee
+This image is 50.01 percent hot coffee and this image is 49.99 percent iced coffee.
+Images of iced coffee
+This image is 50.01 percent hot coffee and this image is 49.99 percent iced coffee.
+This image is 49.94 percent hot coffee and this image is 50.06 percent iced coffee.
+```
+
+
+
 The first image is *hot coffee*, and the second image is *iced coffee*. At present, the levels of ```accuracy``` and ```val_accuracy``` are high. There are also at present two classes of image, those that are iced coffees and those that are hot coffees both taken with high levels of induced thermal noise. 
 
 Clearly the classification was *wrong* but at currently there are ```346``` images of hot coffee and ```70``` of iced coffee. Each using ```72``` and ```14``` images for validation following a *80-20* training-to-validation rule. 
