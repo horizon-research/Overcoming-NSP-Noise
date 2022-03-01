@@ -117,10 +117,6 @@ The data used is from the ```training_images``` folder which contains 250+ image
 
 
 #### When Running 
-
-Here is the test image, it is 100% my coffee 
-![Model](TEST2.png)
-
 ```
 (venv) chris@dhcp-10-5-48-92 CSC_Independent % Python3 ignoresthermal.py
 Found 465 files belonging to 2 classes.
@@ -166,7 +162,7 @@ The difficulty the model has in predicting where a coffee is iced or hot is like
 
 
 
-### Works Cited :
+### **Works Cited** :
 > Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
     Imaging. Kodukula Et Al.
 
