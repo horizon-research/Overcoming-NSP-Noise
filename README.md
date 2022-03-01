@@ -128,7 +128,7 @@ To enable them in other operations, rebuild TensorFlow with the appropriate comp
 Found 465 files belonging to 2 classes.
 Using 93 files for validation.
 Please Enter 1 for compile 2 for test and 3 for both
-1
+3
 
 •••
 Epoch 1/50
