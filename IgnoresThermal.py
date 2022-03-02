@@ -104,7 +104,9 @@ def Compile():
     epochs = 1  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.SGD(1e-3),
+        jit_compile=True,
+        verbose=1,
+        optimizer=keras.optimizers.RMSprop(learning_rate=0.0001),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -118,14 +120,13 @@ def Test(image):
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     img = keras.preprocessing.image.load_img(
         image, target_size=image_size
-        # Test image is of a coffee cup with my name on it from fall of 2020.
     )
     img_array = keras.preprocessing.image.img_to_array(img)
     img_array = tf.expand_dims(img_array, 0)  # Create batch axis
     predictions = model.predict(img_array)
     score = predictions[0]
     print("This image is %.2f percent hot coffee and this image is %.2f percent iced coffee." % (
-        100 * score, (100 * (1 - score))))
+        100 * (1 - score), 100 * score))
 
 
 def main():
