@@ -10,7 +10,7 @@ from tensorflow.keras import layers
 import matplotlib.pyplot as plt
 
 # Reduced batch size to lower the CPU load and to accelerate the processing
-image_size = (300,300)
+image_size = (180, 180)
 batch_size = 5
 
 # Creates the DataSet for training from the hot and iced coffee images
@@ -51,18 +51,25 @@ def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
     x = data_augmentation(inputs)
+    x = layers.Rescaling(1.0 / 255)(x)
 
     # Entry block
-    x = layers.Rescaling(1.0 / 255)(x)
-    x = layers.Conv2D(2048, 1, strides=2, padding="same")(x)
+    x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
+    x = layers.Dense(1, activation="softmax")(x)
+    x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dense(1, activation="softmax")(x)
+    x = layers.Conv2D(4, 1, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dense(1, activation="softmax")(x)
+    x = layers.Conv2D(16, 1, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dense(1, activation="softmax")(x)
     x = layers.Dropout(0.8)(x)
 
-
-
-
     x = layers.GlobalAveragePooling2D()(x)
+    x = layers.Dense(1,activation = "softmax")(x)
     if num_classes == 2:
         activation = "sigmoid"
         units = 1
@@ -101,7 +108,7 @@ def Test(image):
     predictions = model.predict(img_array)
     score = predictions[0]
     print("This image is %.2f percent hot coffee and this image is %.2f percent iced coffee." % (
-        100 * (1 - score), 100 * score))
+        100 * score, 100 * (1 - score)))
 
 
 def main():
@@ -118,7 +125,7 @@ def main():
         Test("HOT2.jpeg")
         print("Images of iced coffee")
         Test("ICED.jpeg")
-        Test("A.jpg")
+        Test("ICED3.jpg")
 
     elif x == "3":
         print("You have selected to compile and test")
@@ -128,7 +135,7 @@ def main():
         Test("HOT2.jpeg")
         print("Images of iced coffee")
         Test("ICED.jpeg")
-        Test("ICED2.jpeg")
+        Test("ICED3.jpg")
 
 
 if __name__ == '__main__':
