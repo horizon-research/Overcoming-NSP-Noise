@@ -57,19 +57,25 @@ def NModel(input_shape, num_classes):
     x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
+    x = layers.Dropout(0.1)(x)
+
     x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
+    x = layers.Dropout(0.2)(x)
+
     x = layers.Conv2D(4, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
+    x = layers.Dropout(0.3)(x)
+
     x = layers.Conv2D(16, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
-    x = layers.Dropout(0.8)(x)
+    x = layers.Dropout(0.4)(x)
 
     x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dense(1,activation = "softmax")(x)
+    x = layers.Dense(1, activation="softmax")(x)
     if num_classes == 2:
         activation = "sigmoid"
         units = 1
@@ -121,7 +127,7 @@ def main():
     elif x == "2":
         print("You have selected test")
         print("Images of hot coffee")
-        Test("HOT.JPG")
+        Test("HOT.JPG") # This image is incredibly interesting because it has cold features but is hot.
         Test("HOT2.jpeg")
         print("Images of iced coffee")
         Test("ICED.jpeg")
