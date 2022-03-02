@@ -51,28 +51,37 @@ def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
     x = data_augmentation(inputs)
+    x = layers.add([x, x])  # Add back residual
     x = layers.Rescaling(1.0 / 255)(x)
 
     # Entry block
     x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
+    x = layers.add([x, x])  # Add back residual
     x = layers.Dropout(0.1)(x)
 
     x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
+    x = layers.add([x, x])  # Add back residual
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
+    x = layers.add([x, x])  # Add back residual
     x = layers.Dropout(0.2)(x)
 
     x = layers.Conv2D(4, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
+    x = layers.add([x, x])  # Add back residual
     x = layers.Dropout(0.3)(x)
 
     x = layers.Conv2D(16, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
+    x = layers.add([x, x])  # Add back residual
     x = layers.Dropout(0.4)(x)
+
+    # Project residual
+    x = layers.add([x, x])  # Add back residual
 
     x = layers.GlobalAveragePooling2D()(x)
     x = layers.Dense(1, activation="softmax")(x)
