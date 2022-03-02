@@ -3,13 +3,14 @@
 # Cites : https://www.tensorflow.org/tutorials/images/cnn
 # Depends on : pydot and Graphviz
 import tensorflow as tf
+from tensorflow.keras.applications.resnet50 import ResNet50
 from matplotlib import pyplot as plt
 from tensorflow import keras
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
 
 # Reduced batch size to lower the CPU load and to accelerate the processing
-image_size = (1200, 1200)
+image_size = (300,300)
 batch_size = 5
 
 # Creates the DataSet for training from the hot and iced coffee images
@@ -53,47 +54,23 @@ def NModel(input_shape, num_classes):
 
     # Entry block
     x = layers.Rescaling(1.0 / 255)(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.Conv2D(2048, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Activation("softmax")(x)
+    x = layers.Activation("relu")(x)
+    x = layers.Dropout(0.8)(x)
 
-    x = layers.Conv2D(1024, 3, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("softmax")(x)
 
-    previous_block_activation = x  # Set aside residual
 
-    for size in [128, 256, 512, 728]:
-        x = layers.Activation("elu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.Activation("softmax")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
-
-        # Project residual
-        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
-            previous_block_activation
-        )
-        x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x  # Set aside next residual
-
-    x = layers.SeparableConv2D(1024, 3, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("elu")(x)
 
     x = layers.GlobalAveragePooling2D()(x)
     if num_classes == 2:
-        activation = "softmax"
+        activation = "sigmoid"
         units = 1
     else:
         activation = "softmax"
         units = num_classes
 
-    x = layers.Dropout(0.5)(x)
+    x = layers.Dropout(0.1)(x)
     outputs = layers.Dense(units, activation=activation)(x)
     return keras.Model(inputs, outputs)
 
@@ -101,12 +78,10 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 1  # over-fitting?
+    epochs = 10  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"), ]
     model.compile(
-        jit_compile=True,
-        verbose=1,
-        optimizer=keras.optimizers.RMSprop(learning_rate=0.0001),
+        optimizer=keras.optimizers.SGD(learning_rate=1e-3),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
