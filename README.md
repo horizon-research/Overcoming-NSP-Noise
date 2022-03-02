@@ -169,16 +169,24 @@ This image is 50.04 percent hot coffee and this image is 49.96 percent iced coff
 </p>
 </details>
 
-#### Example Tests | **Perhaps it just isn't quite sure which is which**
+#### Example Tests | **An Outlier but an Example**
 ```
-Please Enter 1 for compile 2 for test and 3 for both
+Please Enter 1 for compile 2 for test and 3 for both or exit
 2
+You have selected test
 Images of hot coffee
-This image is 50.01 percent hot coffee and this image is 49.99 percent iced coffee.
-This image is 50.01 percent hot coffee and this image is 49.99 percent iced coffee.
+This image is 69.55 percent hot coffee and this image is 30.45 percent iced coffee.
+This image is hot coffee
+
+This image is 76.69 percent hot coffee and this image is 23.31 percent iced coffee.
+This image is hot coffee
+
 Images of iced coffee
-This image is 50.01 percent hot coffee and this image is 49.99 percent iced coffee.
-This image is 50.03 percent hot coffee and this image is 49.97 percent iced coffee.
+This image is 40.32 percent hot coffee and this image is 59.68 percent iced coffee.
+This image is cold coffee
+
+This image is 23.73 percent hot coffee and this image is 76.27 percent iced coffee.
+This image is cold coffee
 ```
 
 
