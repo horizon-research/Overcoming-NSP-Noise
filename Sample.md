@@ -44,3 +44,32 @@ This image is cold coffee
 ```
 **100% Accuracy**
 
+
+## Example | **Three**
+
+```
+(venv) chris@dhcp-10-5-26-115 CSC_Independent % Python3 ignoresthermal.py
+Found 464 files belonging to 2 classes.
+Using 372 files for training.
+2022-03-01 22:54:31.462946: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Found 464 files belonging to 2 classes.
+Using 92 files for validation.
+Please Enter 1 for compile 2 for test and 3 for both or exit
+2
+You have selected test
+Images of hot coffee
+This image is 45.87 percent hot coffee and this image is 54.13 percent iced coffee.
+This image is cold coffee
+
+This image is 59.27 percent hot coffee and this image is 40.73 percent iced coffee.
+This image is hot coffee
+
+Images of iced coffee
+This image is 62.37 percent hot coffee and this image is 37.63 percent iced coffee.
+This image is hot coffee
+
+This image is 64.00 percent hot coffee and this image is 36.00 percent iced coffee.
+This image is hot coffee
+```
+**25% Accuracy**
