@@ -27,7 +27,8 @@ import time
 
 <details><summary>Code Additions</summary>
 <p>
-Main additions to FLIR SDK example: ```Trigger.py``` are :
+
+    Main additions to FLIR SDK example: ```Trigger.py``` are :
 
 For the device temperature: ```GetCameraTemperature(cam)``` :
 
