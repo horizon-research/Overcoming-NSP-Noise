@@ -51,28 +51,37 @@ def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
     x = data_augmentation(inputs)
+    x = layers.add([x, x])  # Add back residual
     x = layers.Rescaling(1.0 / 255)(x)
 
     # Entry block
     x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
+    x = layers.add([x, x])  # Add back residual
     x = layers.Dropout(0.1)(x)
 
     x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
+    x = layers.add([x, x])  # Add back residual
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
+    x = layers.add([x, x])  # Add back residual
     x = layers.Dropout(0.2)(x)
 
     x = layers.Conv2D(4, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
+    x = layers.add([x, x])  # Add back residual
     x = layers.Dropout(0.3)(x)
 
     x = layers.Conv2D(16, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
+    x = layers.add([x, x])  # Add back residual
     x = layers.Dropout(0.4)(x)
+
+    # Project residual
+    x = layers.add([x, x])  # Add back residual
 
     x = layers.GlobalAveragePooling2D()(x)
     x = layers.Dense(1, activation="softmax")(x)
@@ -91,10 +100,10 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 10  # over-fitting?
+    epochs = 100  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.SGD(learning_rate=1e-3),
+        optimizer=keras.optimizers.Adam(1e-2),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -113,12 +122,19 @@ def Test(image):
     img_array = tf.expand_dims(img_array, 0)  # Create batch axis
     predictions = model.predict(img_array)
     score = predictions[0]
+
     print("This image is %.2f percent hot coffee and this image is %.2f percent iced coffee." % (
         100 * score, 100 * (1 - score)))
+    if 100 * score > (100 * (1 - score)):
+        print("This image is hot coffee\n")
+    elif 100 * score < (100 * (1 - score)):
+        print("This image is cold coffee\n")
+    else:
+        print("This image is niether hot nor cold coffee")
 
 
 def main():
-    x = input("Please Enter 1 for compile 2 for test and 3 for both\n")
+    x = input("Please Enter 1 for compile 2 for test and 3 for both or exit\n")
 
     if x == "1":
         print("You have selected compile")
@@ -127,7 +143,7 @@ def main():
     elif x == "2":
         print("You have selected test")
         print("Images of hot coffee")
-        Test("HOT.JPG") # This image is incredibly interesting because it has cold features but is hot.
+        Test("HOT.JPG")  # This image is incredibly interesting because it has cold features but is hot.
         Test("HOT2.jpeg")
         print("Images of iced coffee")
         Test("ICED.jpeg")
