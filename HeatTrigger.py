@@ -179,6 +179,7 @@ def grab_next_image_by_trigger(nodemap):
                 return False
 
             node_softwaretrigger_cmd.Execute()
+            time.sleep(2)
 
         elif CHOSEN_TRIGGER == TriggerType.HARDWARE:
             print('Use the hardware to trigger image acquisition.')
@@ -214,7 +215,6 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
     Accuracy = open("Accuracy.json", "w")
     load["NumPhotos"] = int(load["NumPhotos"]) + NUM_IMAGES
     json.dump(load, Accuracy)
-
 
     print('*** IMAGE ACQUISITION ***\n')
     try:
@@ -370,8 +370,6 @@ def Capture(cam):
         if configure_trigger(cam) is False:
             return False
 
-
-
         # Acquire images
         result &= acquire_images(cam, nodemap, nodemap_tldevice)
 
@@ -393,6 +391,7 @@ def GetCameraTemperature(cam):
     if cam.DeviceTemperature.GetAccessMode() == PySpin.RO:
         x = cam.DeviceTemperature.ToString()
     x = float(x)
+
     return x
 
 
@@ -405,7 +404,6 @@ def Go(cam, GoalTemperature):
 
     # Heating
     while Temp < GoalTemperature:
-        cam.Init()
         Temp = GetCameraTemperature(cam)
         print("Camera is currently", Temp, "°C")
         time.sleep(5)  # Protects the camera.
@@ -440,14 +438,14 @@ def main():
     # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
-        for t in range(0, 40, 30):
+        for t in range(70, 95, 1):
             # Initiates Capture
+            cam.Init()
             Go(cam, t)
             time.sleep(2)
 
     print("Capture Complete, please cool the camera.")
     print("Please do not touch the camera, it is most likely 50°C+.")
-    del cam
 
     # Clear camera list before releasing system, this makes a mess if not cleared
     cam_list.Clear()

@@ -3,7 +3,7 @@
 # Cites : https://www.tensorflow.org/tutorials/images/cnn
 # Depends on : pydot and Graphviz
 import tensorflow as tf
-from tensorflow.keras.applications.resnet50 import ResNet50
+import json
 from matplotlib import pyplot as plt
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -56,6 +56,8 @@ def NModel(input_shape, num_classes):
 
     # Entry block
     x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
+    x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
+    x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
     x = layers.add([x, x])  # Add back residual
@@ -100,7 +102,7 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 100  # over-fitting?
+    epochs = 10  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"), ]
     model.compile(
         optimizer=keras.optimizers.Adam(1e-2),
@@ -127,14 +129,24 @@ def Test(image):
         100 * score, 100 * (1 - score)))
     if 100 * score > (100 * (1 - score)):
         print("This image is hot coffee\n")
+        return True
     elif 100 * score < (100 * (1 - score)):
         print("This image is cold coffee\n")
+        return False
     else:
         print("This image is niether hot nor cold coffee")
 
 
 def main():
     x = input("Please Enter 1 for compile 2 for test and 3 for both or exit\n")
+    Accuracy = open("Accuracy.json", "r")
+    load = json.load(Accuracy)
+    Acc = load['Accuracy'] * load['Trials']
+    Nt = load['Trials'] + 4
+    Accuracy.close()
+
+    A = 0
+
 
     if x == "1":
         print("You have selected compile")
@@ -143,11 +155,19 @@ def main():
     elif x == "2":
         print("You have selected test")
         print("Images of hot coffee")
-        Test("HOT.JPG")  # This image is incredibly interesting because it has cold features but is hot.
-        Test("HOT2.jpeg")
+        T1 = Test("HOT.JPG")  # This image is incredibly interesting because it has cold features but is hot.
+        if T1:
+            A += 1
+        T2 = Test("HOT2.jpeg")
+        if T2:
+            A += 1
         print("Images of iced coffee")
-        Test("ICED.jpeg")
-        Test("ICED3.jpg")
+        T3 = Test("ICED.jpeg")
+        if not T3:
+            A += 1
+        T4 = Test("ICED5x.jpg")
+        if not T4:
+            A += 1
 
     elif x == "3":
         print("You have selected to compile and test")
@@ -158,6 +178,13 @@ def main():
         print("Images of iced coffee")
         Test("ICED.jpeg")
         Test("ICED3.jpg")
+
+    Acc = (A + Acc) / Nt
+    Accuracy = open("Accuracy.json", "w")
+    load["Accuracy"] = Acc
+    load["Trials"] = load["Trials"] + A
+    json.dump(load, Accuracy)
+    Accuracy.close()
 
 
 if __name__ == '__main__':
