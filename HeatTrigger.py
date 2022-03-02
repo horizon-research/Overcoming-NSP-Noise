@@ -20,6 +20,7 @@
 #
 # Essentially this script is a temperature trigger for the camera that continues running until all captures are taken
 # =============================================================================
+import json
 
 import PySpin
 import sys
@@ -28,10 +29,12 @@ import time
 # Take two images per click.
 NUM_IMAGES = 1  # number of images to grab
 
+
 # What type of trigger?
 class TriggerType:
     SOFTWARE = 1
     HARDWARE = 2
+
 
 CHOSEN_TRIGGER = TriggerType.SOFTWARE
 
@@ -186,9 +189,9 @@ def grab_next_image_by_trigger(nodemap):
 
     return result
 
+
 # From Spinnaker SDK : Examples : (copyright) FLIR
 def acquire_images(cam, nodemap, nodemap_tldevice):
-
     """
     This function acquires and saves 2 images from a device.
     Please see Acquisition example for more in-depth comments on acquiring images.
@@ -203,14 +206,16 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
     :rtype: bool
     """
     # Configurs the text file for image numbering
-    config = open("CamConfig.json", "r")
-    image_num_config = int(config.read())
-    config.close()
+    Accuracy = open("Accuracy.json", "r")
+    load = json.load(Accuracy)
+    image_num_config = int(load["NumPhotos"])
+    Accuracy.close()
+
+    Accuracy = open("Accuracy.json", "w")
+    load["NumPhotos"] = int(load["NumPhotos"]) + NUM_IMAGES
+    json.dump(load, Accuracy)
 
 
-    config = open("CamConfig.json", "w")
-    config.write(str(image_num_config + NUM_IMAGES))
-    config.close()
     print('*** IMAGE ACQUISITION ***\n')
     try:
         result = True
@@ -358,9 +363,6 @@ def Capture(cam):
 
         # result &= print_device_info(nodemap_tldevice)
 
-        # Initialize camera
-        # cam.Init()
-
         # Retrieve GenICam nodemap
         nodemap = cam.GetNodeMap()
 
@@ -368,11 +370,7 @@ def Capture(cam):
         if configure_trigger(cam) is False:
             return False
 
-        # if configure_custom_image_settings(nodemap) is False:
-        #     return False
 
-        # # Configure the exposure
-        # result &= configure_exposure(cam)
 
         # Acquire images
         result &= acquire_images(cam, nodemap, nodemap_tldevice)
@@ -380,17 +378,13 @@ def Capture(cam):
         # Reset trigger
         result &= reset_trigger(nodemap)
 
-        # # Reset Exposure
-        # result &= reset_exposure(cam)
-
-        # Deinitialize camera
-        # cam.DeInit()
 
     except PySpin.SpinnakerException as ex:
         print('Error: %s' % ex)
         result = False
 
     return result
+
 
 # My Additions to this script:
 # Grabs the temperature of the camera, returns it as a float
@@ -413,10 +407,10 @@ def Go(cam, GoalTemperature):
     while Temp < GoalTemperature:
         cam.Init()
         Temp = GetCameraTemperature(cam)
-        print("Camera is currently", Temp,"°C")
+        print("Camera is currently", Temp, "°C")
         time.sleep(5)  # Protects the camera.
 
-    #Capture 1 image
+    # Capture 1 image
     if Temp > GoalTemperature:
         print("Capturing, please continue heating")
         Capture(cam)  # Cites : FLIR TELEDYNE
@@ -430,7 +424,6 @@ def main():
     cam_list = system.GetCameras()
 
     num_cameras = cam_list.GetSize()
-
 
     # From Spinnaker SDK Examples
     if num_cameras == 0:
@@ -447,14 +440,10 @@ def main():
     # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
-        for t in range(86, 70, -1):
+        for t in range(0, 40, 30):
             # Initiates Capture
             Go(cam, t)
             time.sleep(2)
-            # cam.DeInit()
-
-
-
 
     print("Capture Complete, please cool the camera.")
     print("Please do not touch the camera, it is most likely 50°C+.")
