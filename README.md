@@ -194,7 +194,7 @@ This image is cold coffee
 
 The first image is *hot coffee*, and the second image is *iced coffee*. At present, the levels of ```accuracy``` and ```val_accuracy``` are high. There are also at present two classes of image, those that are iced coffees and those that are hot coffees both taken with high levels of induced thermal noise. 
 
-Clearly the classification was *wrong* but at currently there are ```346``` images of hot coffee and ```70``` of iced coffee. Each using ```72``` and ```14``` images for validation following a *80-20* training-to-validation rule. 
+Clearly the classification was *wrong* but at currently there are ```495``` images of hot coffee and ```110``` of iced coffee. Each using ```72``` and ```14``` images for validation following a *80-20* training-to-validation rule. 
 
 The difficulty the model has in predicting where a coffee is iced or hot is likely because there are too few images at present to truly train the network on. More to come. 
 
