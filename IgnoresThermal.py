@@ -2,15 +2,15 @@
 # Cites : https://keras.io/examples/vision/image_classification_from_scratch/
 # Cites : https://www.tensorflow.org/tutorials/images/cnn
 # Depends on : pydot and Graphviz
+import time
+
 import tensorflow as tf
 import json
-from matplotlib import pyplot as plt
 from tensorflow import keras
 from tensorflow.keras import layers
-import matplotlib.pyplot as plt
 
 # Reduced batch size to lower the CPU load and to accelerate the processing
-image_size = (180, 180)
+image_size = (200, 200)
 batch_size = 5
 
 # Creates the DataSet for training from the hot and iced coffee images
@@ -46,7 +46,7 @@ train_ds = DataSet.prefetch(buffer_size=32)
 val_ds = Validation.prefetch(buffer_size=32)
 
 
-# Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
+# Cites as Model : https://keras.io/examples/vision/image_classification_from_scratch/
 def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
@@ -55,8 +55,6 @@ def NModel(input_shape, num_classes):
     x = layers.Rescaling(1.0 / 255)(x)
 
     # Entry block
-    x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
-    x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
     x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
@@ -102,10 +100,10 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 10  # over-fitting?
+    epochs = 50  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.Adam(1e-2),
+        optimizer=keras.optimizers.SGD(0.00001),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -127,64 +125,64 @@ def Test(image):
 
     print("This image is %.2f percent hot coffee and this image is %.2f percent iced coffee." % (
         100 * score, 100 * (1 - score)))
-    if 100 * score > (100 * (1 - score)):
+
+    if 100 * score > (100 * (1 - score)) and 100 * score > 0.55:
         print("This image is hot coffee\n")
-        return True
-    elif 100 * score < (100 * (1 - score)):
+        return True  # Hot coffee is true
+    elif 100 * score < (100 * (1 - score)) and (100 * (1 - score)) > 0.55:
         print("This image is cold coffee\n")
-        return False
+        return False  # Cold coffee is false
     else:
         print("This image is niether hot nor cold coffee")
+        return False
 
 
-def main():
-    x = input("Please Enter 1 for compile 2 for test and 3 for both or exit\n")
+def Statistics(img1, img2, img3, img4):
     Accuracy = open("Accuracy.json", "r")
     load = json.load(Accuracy)
     Acc = load['Accuracy'] * load['Trials']
+    print("Current accuracy is %f: " % load['Accuracy'])
     Nt = load['Trials'] + 4
     Accuracy.close()
-
     A = 0
+    print("You have selected test")
+    print("Images of hot coffee")
+    T1 = Test(img1)  # This image is incredibly interesting because it has cold features but is hot.
+    if T1:
+        A += 1
+    T2 = Test(img2)
+    if T2:
+        A += 1
+    print("Images of iced coffee")
+    T3 = Test(img3)
+    if not T3:
+        A += 1
+    T4 = Test(img4)
+    if not T4:
+        A += 1
+    Acc = (A + Acc) / Nt
+    Accuracy = open("Accuracy.json", "w")
+    load["Accuracy"] = Acc
+    load["Trials"] = load["Trials"] + A
+    print("Current final accuracy is %f: " % Acc)
+    json.dump(load, Accuracy)
+    Accuracy.close()
 
+
+def main():
+    x = input("Please Enter 1 for compile 2 for test and 3 for both or and key to close\n")
 
     if x == "1":
         print("You have selected compile")
         Compile()
 
     elif x == "2":
-        print("You have selected test")
-        print("Images of hot coffee")
-        T1 = Test("HOT.JPG")  # This image is incredibly interesting because it has cold features but is hot.
-        if T1:
-            A += 1
-        T2 = Test("HOT2.jpeg")
-        if T2:
-            A += 1
-        print("Images of iced coffee")
-        T3 = Test("ICED.jpeg")
-        if not T3:
-            A += 1
-        T4 = Test("ICED5x.jpg")
-        if not T4:
-            A += 1
+        Statistics('HOT2.jpeg', 'HOT3.jpg', 'ICED3.jpg', "ICED4.jpg")
 
     elif x == "3":
         print("You have selected to compile and test")
         Compile()
-        print("Images of hot coffee")
-        Test("HOT.JPG")
-        Test("HOT2.jpeg")
-        print("Images of iced coffee")
-        Test("ICED.jpeg")
-        Test("ICED3.jpg")
-
-    Acc = (A + Acc) / Nt
-    Accuracy = open("Accuracy.json", "w")
-    load["Accuracy"] = Acc
-    load["Trials"] = load["Trials"] + A
-    json.dump(load, Accuracy)
-    Accuracy.close()
+        Statistics('HOT2.jpeg', 'HOT3.jpg', 'ICED3.jpg', "ICED4.jpg")
 
 
 if __name__ == '__main__':
