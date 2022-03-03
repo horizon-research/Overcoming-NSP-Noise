@@ -104,5 +104,31 @@ This image is cold coffee
 
 Current final accuracy is 0.499959: 
 ```
+```
+2022-03-03 00:23:43.533698: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Found 599 files belonging to 2 classes.
+Using 119 files for validation.
+Please Enter 1 for compile 2 for test and 3 for both or and key to close
+2
+Current accuracy is 0.492024: 
+You have selected test
+Images of hot coffee
+This image is 77.73 percent hot coffee and this image is 22.27 percent iced coffee.
+This image is hot coffee
+
+This image is 67.81 percent hot coffee and this image is 32.19 percent iced coffee.
+This image is hot coffee
+
+Images of iced coffee
+This image is 39.26 percent hot coffee and this image is 60.74 percent iced coffee.
+This image is cold coffee
+
+This image is 48.65 percent hot coffee and this image is 51.35 percent iced coffee.
+This image is cold coffee
+
+Current final accuracy is 0.508023 
+```
+
 **100% Accuracy!***
 
