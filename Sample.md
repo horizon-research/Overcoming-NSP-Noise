@@ -73,3 +73,36 @@ This image is 64.00 percent hot coffee and this image is 36.00 percent iced coff
 This image is hot coffee
 ```
 **25% Accuracy**
+
+```
+96/96 [==============================] - 5s 47ms/step - loss: 0.6589 - accuracy: 0.6062 - val_loss: 0.6495 - val_accuracy: 0.6471
+Epoch 496/500
+96/96 [==============================] - 5s 46ms/step - loss: 0.6544 - accuracy: 0.6167 - val_loss: 0.6495 - val_accuracy: 0.6471
+Epoch 497/500
+96/96 [==============================] - 5s 46ms/step - loss: 0.6571 - accuracy: 0.6104 - val_loss: 0.6495 - val_accuracy: 0.6471
+Epoch 498/500
+96/96 [==============================] - 5s 45ms/step - loss: 0.6573 - accuracy: 0.6125 - val_loss: 0.6495 - val_accuracy: 0.6471
+Epoch 499/500
+96/96 [==============================] - 5s 45ms/step - loss: 0.6467 - accuracy: 0.6375 - val_loss: 0.6495 - val_accuracy: 0.6471
+Epoch 500/500
+96/96 [==============================] - 5s 45ms/step - loss: 0.6581 - accuracy: 0.6125 - val_loss: 0.6495 - val_accuracy: 0.6471
+Current accuracy is 0.483008: 
+You have selected test
+Images of hot coffee
+This image is 70.17 percent hot coffee and this image is 29.83 percent iced coffee.
+This image is hot coffee
+
+This image is 75.74 percent hot coffee and this image is 24.26 percent iced coffee.
+This image is hot coffee
+
+Images of iced coffee
+This image is 49.10 percent hot coffee and this image is 50.90 percent iced coffee.
+This image is cold coffee
+
+This image is 15.17 percent hot coffee and this image is 84.83 percent iced coffee.
+This image is cold coffee
+
+Current final accuracy is 0.499959: 
+```
+**100% Accuracy!***
+
