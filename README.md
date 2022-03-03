@@ -97,7 +97,8 @@ $ Trigger mode disabled...
 
 
 ## Machine Learning
-Due to the nature of image processing of noisy images, max-pooling will likely be used alongside some kind of edge dectection algorthim. This aspect very much remains in the research stage, but as of right now the goal is to train a Convolution Neural Network to indentify cups of coffee that have my name on them. 
+Due to the nature of image processing of noisy images, max-pooling will likely be used alongside some kind of edge dectection algorthim. This aspect very much remains in the research stage, but as of right now the goal is to train a Convolution Neural Network to indentify cups of coffee that are either hot or iced. 
+This implementation relies on [TensorFlow.Keras](https://keras.io).
 
 This machine-learning model relies heavily on ```2DConvolutions``` and ```Batch Normalizations```. However, at present it is currently not very effective, the goal now is to add more ```maxPooling``` to the model. 
 
