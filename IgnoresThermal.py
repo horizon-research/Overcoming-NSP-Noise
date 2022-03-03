@@ -65,23 +65,33 @@ def NModel(input_shape, num_classes):
     x = layers.add([x, x])  # Add back residual
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
-    x = layers.add([x, x])  # Add back residual
     x = layers.Dropout(0.2)(x)
 
     x = layers.Conv2D(4, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
-    x = layers.add([x, x])  # Add back residual
     x = layers.Dropout(0.3)(x)
 
     x = layers.Conv2D(16, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
-    x = layers.add([x, x])  # Add back residual
     x = layers.Dropout(0.4)(x)
 
-    # Project residual
-    x = layers.add([x, x])  # Add back residual
+    previous_block_activation = x  # Set aside residual
+
+    for size in [1, 2, 4, 16]:
+        x = layers.Activation("relu")(x)
+        x = layers.SeparableConv2D(size, 3, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+
+        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
+        # Project residual
+        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x  # Set aside next residual
+
 
     x = layers.GlobalAveragePooling2D()(x)
     x = layers.Dense(1, activation="softmax")(x)
@@ -100,7 +110,7 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 50  # over-fitting?
+    epochs = 500  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"), ]
     model.compile(
         optimizer=keras.optimizers.SGD(0.00001),
@@ -170,19 +180,33 @@ def Statistics(img1, img2, img3, img4):
 
 
 def main():
-    x = input("Please Enter 1 for compile 2 for test and 3 for both or and key to close\n")
+    print("\nWelcome to Hot or Iced Coffee")
+    x = input("\
+    \n - Please enter \'1\' for compile, \'2\' for test, or \'3\' for both.\
+    \n\n - You may also press \'c\' for the current accuracy\n")
 
     if x == "1":
         print("You have selected compile")
         Compile()
 
     elif x == "2":
-        Statistics('HOT2.jpeg', 'HOT3.jpg', 'ICED3.jpg', "ICED4.jpg")
+        Statistics('BUCKTEST.jpg', 'HOT3.jpg', 'images.jpeg', "ICED5x.jpg")
 
     elif x == "3":
         print("You have selected to compile and test")
         Compile()
-        Statistics('HOT2.jpeg', 'HOT3.jpg', 'ICED3.jpg', "ICED4.jpg")
+        Statistics('BUCKTEST.jpg', 'HOT3.jpg', 'images.jpeg', "ICED5x.jpg")
+    
+    elif x == "c": #  Current Accuracy
+        Accuracy = open("Accuracy.json", "r")
+        load = json.load(Accuracy)
+        Accuracy.close()
+        Acc = load['Accuracy'] * 100
+        Acc = round(Acc,3)
+        out = ("The current accuracy {Acc} %").format(Acc = Acc)
+        print(out)
+        
+        
 
 
 if __name__ == '__main__':
