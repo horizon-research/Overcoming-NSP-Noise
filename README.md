@@ -180,13 +180,17 @@ This image is 50.03 percent hot coffee and this image is 49.97 percent iced coff
 ```
 
 
-#### Analysis
+### Analysis
 
+#### Noisy Images
 The first image is *hot coffee*, and the second image is *iced coffee*. At present, the levels of ```accuracy``` and ```val_accuracy``` are high. There are also at present two classes of image, those that are iced coffees and those that are hot coffees both taken with high levels of induced thermal noise. 
 
 Clearly the classification was *incorrect* but at currently there are ```391``` images of hot coffee and ```212``` of iced coffee. Each using ```72``` and ```36``` images for validation following a *80-20* training-to-validation rule. 
 
 The difficulty the model has in predicting where a coffee is iced or hot is likely because there are too few images at present to truly train the network on. More to come. 
+
+#### Denoised Images
+These images are created by taking the RAW-encoded.png files and then denoising them using ```Adobe Lightroom```
 
 
 
