@@ -155,6 +155,3 @@ This image is cold coffee
 
 Current final accuracy is 0.550496: 
 ```
-
-**100% Accuracy!***
-
