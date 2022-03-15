@@ -24,7 +24,7 @@ import time
 #### Runs as 
 ```$ Python3 HeatTrigger.py```
 
-<!-- <details><summary>Code Additions</summary> <p> -->
+<details><summary>Code Additions</summary> <p>
 
 Main additions to FLIR SDK example: ```Trigger.py``` are :
 
@@ -77,8 +77,8 @@ def main():
     print("Capture Complete, please cool the camera.")
     ••• 
 ```
-<!-- </p>
-</details> -->
+</p>
+</details>
 
 Images are saved as  ```sample-serialNumber-capNum-temp.png```. These are RAW image files encoded as .png files. 
 
