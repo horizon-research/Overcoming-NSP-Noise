@@ -24,7 +24,7 @@ import time
 #### Runs as 
 ```$ Python3 HeatTrigger.py```
 
-<details><summary>Code Additions</summary> <p>
+<!-- <details><summary>Code Additions</summary> <p> -->
 
 Main additions to FLIR SDK example: ```Trigger.py``` are :
 
@@ -77,8 +77,8 @@ def main():
     print("Capture Complete, please cool the camera.")
     ••• 
 ```
-</p>
-</details>
+<!-- </p>
+</details> -->
 
 Images are saved as  ```sample-serialNumber-capNum-temp.png```. These are RAW image files encoded as .png files. 
 
@@ -116,16 +116,87 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 ```
-As well as ```pydot``` and ```graphviz```
+***As well as*** ```pydot``` ***and*** ```graphviz```.
 
 
-The data used is from the ```training_images``` folder which contains 250+ images taken by the **Blackfly** camera of cofee cupts of iced or hot varieties taken at various temperatures ranging from 60-97°C. These images are divided into two classes ```Hot``` and ```Iced``` and futher into ```training``` and ```validation``` within their respective folders. 
+The data used is from the ```training_images``` folder which contains 599+ images taken by the **Blackfly** camera of cofee cupts of iced or hot varieties taken at various temperatures ranging from 60-97°C. These images are divided into two classes ```Hot``` and ```Iced``` and futher into ```training``` and ```validation``` within their respective folders. 
+
+#### The Code 
+
+I have done the following to create a neural network that uses data augmentation to virtually increase the sample size, as well as varying sized 
+convolution kernels, batch normalization, making more dense the layers of the network and finally dropping layers out at each iteration to help train the network of more key characteristics. 
+
+```python 
+def NModel(input_shape, num_classes):
+    inputs = keras.Input(shape=input_shape)
+    # Image augmentation block
+    x = data_augmentation(inputs)
+    x = layers.add([x, x])  # Add back residual
+    x = layers.Rescaling(1.0 / 255)(x)
+
+    # Entry block
+    x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dense(1, activation="softmax")(x)
+    x = layers.add([x, x])  # Add back residual
+    x = layers.Dropout(0.1)(x)
+
+    x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
+    x = layers.add([x, x])  # Add back residual
+    x = layers.BatchNormalization()(x)
+    x = layers.Dense(1, activation="softmax")(x)
+    x = layers.Dropout(0.2)(x)
+
+    x = layers.Conv2D(4, 1, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dense(1, activation="softmax")(x)
+    x = layers.Dropout(0.3)(x)
+
+    x = layers.Conv2D(16, 1, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Dense(1, activation="softmax")(x)
+    x = layers.Dropout(0.4)(x)
+
+    previous_block_activation = x  # Set aside residual
+
+    for size in [1, 2, 4, 16]:
+        x = layers.Activation("relu")(x)
+        x = layers.SeparableConv2D(size, 3, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+
+        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
+        # Project residual
+        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x  # Set aside next residual
+
+
+    x = layers.GlobalAveragePooling2D()(x)
+    x = layers.Dense(1, activation="softmax")(x)
+    if num_classes == 2:
+        activation = "sigmoid"
+        units = 1
+    else:
+        activation = "softmax"
+        units = num_classes
+
+    x = layers.Dropout(0.1)(x)
+    outputs = layers.Dense(units, activation=activation)(x)
+    return keras.Model(inputs, outputs)
+```
+
+
+
+
+
 
 
 #### When Running 
 
-<details><summary>Training Terminal Output</summary>
-<p>
+<!-- <details><summary>Training Terminal Output</summary>
+<p> -->
     
 ```
 (venv) chris@dhcp-10-5-48-92 CSC_Independent % Python3 ignoresthermal.py
@@ -164,8 +235,8 @@ This image is 50.04 percent hot coffee and this image is 49.96 percent iced coff
 This image is 50.04 percent hot coffee and this image is 49.96 percent iced coffee.
 •••
 ```
-</p>
-</details>
+<!-- </p>
+</details> -->
 
 #### Example Tests | **Perhaps it just isn't quite sure which is which**
 ```
