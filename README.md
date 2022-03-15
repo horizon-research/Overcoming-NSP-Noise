@@ -238,16 +238,31 @@ This image is 50.04 percent hot coffee and this image is 49.96 percent iced coff
 <!-- </p>
 </details> -->
 
-#### Example Tests | **Perhaps it just isn't quite sure which is which**
+#### Example Test
 ```
-Please Enter 1 for compile 2 for test and 3 for both
+2022-03-03 00:26:01.678284: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Found 599 files belonging to 2 classes.
+Using 119 files for validation.
+Please Enter 1 for compile 2 for test and 3 for both or and key to close
 2
+Current accuracy is 0.537177: 
+You have selected test
 Images of hot coffee
-This image is 50.01 percent hot coffee and this image is 49.99 percent iced coffee.
-This image is 50.01 percent hot coffee and this image is 49.99 percent iced coffee.
+This image is 83.03 percent hot coffee and this image is 16.97 percent iced coffee.
+This image is hot coffee
+
+This image is 59.49 percent hot coffee and this image is 40.51 percent iced coffee.
+This image is hot coffee
+
 Images of iced coffee
-This image is 50.01 percent hot coffee and this image is 49.99 percent iced coffee.
-This image is 50.03 percent hot coffee and this image is 49.97 percent iced coffee.
+This image is 16.03 percent hot coffee and this image is 83.97 percent iced coffee.
+This image is cold coffee
+
+This image is 41.25 percent hot coffee and this image is 58.75 percent iced coffee.
+This image is cold coffee
+
+Current final accuracy is 0.550496: 
 ```
 
 
