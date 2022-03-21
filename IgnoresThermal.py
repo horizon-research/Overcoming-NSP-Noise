@@ -2,7 +2,6 @@
 # Cites : https://keras.io/examples/vision/image_classification_from_scratch/
 # Cites : https://www.tensorflow.org/tutorials/images/cnn
 # Depends on : pydot and Graphviz
-import time
 
 import tensorflow as tf
 import json
@@ -10,8 +9,8 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 # Reduced batch size to lower the CPU load and to accelerate the processing
-image_size = (300, 300)
-batch_size = 128
+image_size = (500, 500)
+batch_size = 5
 
 # Creates the DataSet for training from the hot and iced coffee images
 DataSet = tf.keras.preprocessing.image_dataset_from_directory(
@@ -46,21 +45,19 @@ val_ds = Validation.prefetch(buffer_size=32)
 
 
 # Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
+# Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
 def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
     x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
-
     # Entry block
     x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
     x = layers.Dropout(0.1)(x)
 
-    x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
-    x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
-    x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
+    x = layers.Conv2D(2, 1,strides=(3, 3),bias_initializer="zeros", padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Dense(1, activation="softmax")(x)
     x = layers.Dropout(0.2)(x)
@@ -90,7 +87,6 @@ def NModel(input_shape, num_classes):
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x  # Set aside next residual
 
-
     x = layers.GlobalAveragePooling2D()(x)
     x = layers.Dense(1, activation="softmax")(x)
     if num_classes == 2:
@@ -104,13 +100,18 @@ def NModel(input_shape, num_classes):
     outputs = layers.Dense(units, activation=activation)(x)
     return keras.Model(inputs, outputs)
 
+
+
+
+
+
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 10  # over-fitting?
+    epochs = 50  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("IgnoresThermal_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.Adam(0.00001),
+        optimizer=keras.optimizers.SGD(0.00001),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )

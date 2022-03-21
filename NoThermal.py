@@ -2,7 +2,6 @@
 # Cites : https://keras.io/examples/vision/image_classification_from_scratch/
 # Cites : https://www.tensorflow.org/tutorials/images/cnn
 # Depends on : pydot and Graphviz
-import time
 
 import tensorflow as tf
 import json
@@ -10,8 +9,8 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 # Reduced batch size to lower the CPU load and to accelerate the processing
-image_size = (300, 300)
-batch_size = 128
+image_size = (200, 200)
+batch_size = 5
 
 # Creates the DataSet for training from the hot and iced coffee images
 DataSet = tf.keras.preprocessing.image_dataset_from_directory(
@@ -41,45 +40,28 @@ data_augmentation = keras.Sequential(
 )
 
 # Prevents I/O issues
-train_ds = DataSet.prefetch(buffer_size=32)
-val_ds = Validation.prefetch(buffer_size=32)
+train_ds = DataSet.prefetch(buffer_size=5)
+val_ds = Validation.prefetch(buffer_size=5)
 
 
 # Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
+# Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
 def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
     x = data_augmentation(inputs)
-    x = layers.add([x, x])  # Add back residual
     x = layers.Rescaling(1.0 / 255)(x)
+    x = layers.LeakyReLU()(x)
 
     # Entry block
     x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
+    x = layers.Dense(128, kernel_initializer = 'uniform',activation="softmax")(x)
     x = layers.Dropout(0.1)(x)
-
-
-    x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
-    x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
-    x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
-    x = layers.Dropout(0.2)(x)
-
-    x = layers.Conv2D(4, 1, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
-    x = layers.Dropout(0.3)(x)
-
-    x = layers.Conv2D(16, 1, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
-    x = layers.Dropout(0.4)(x)
 
     previous_block_activation = x  # Set aside residual
 
-    for size in [1, 2, 4]:
+    for size in [1, 2, 4, 16, 256]:
         x = layers.Activation("relu")(x)
         x = layers.SeparableConv2D(size, 3, padding="same")(x)
         x = layers.BatchNormalization()(x)
@@ -92,9 +74,9 @@ def NModel(input_shape, num_classes):
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x  # Set aside next residual
 
-
+    
     x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dense(1, activation="softmax")(x)
+    x = layers.Dense(64, activation="softmax")(x)
     if num_classes == 2:
         activation = "sigmoid"
         units = 1
@@ -105,6 +87,7 @@ def NModel(input_shape, num_classes):
     x = layers.Dropout(0.1)(x)
     outputs = layers.Dense(units, activation=activation)(x)
     return keras.Model(inputs, outputs)
+    
 
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
@@ -112,7 +95,7 @@ def Compile():
     epochs = 10  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.Adam(0.00001),
+        optimizer=keras.optimizers.SGD(0.1),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
