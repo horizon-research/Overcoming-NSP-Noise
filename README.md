@@ -203,51 +203,7 @@ def NModel(input_shape, num_classes):
 
 
 #### When Running 
-
-<!-- <details><summary>Training Terminal Output</summary>
-<p> -->
-    
-```
-(venv) chris@dhcp-10-5-48-92 CSC_Independent % Python3 ignoresthermal.py
-Found 465 files belonging to 2 classes.
-Using 372 files for training.
-2022-02-28 22:10:32.812495: I tensorflow/core/platform/cpu_feature_guard.cc:151] 
-This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) 
-to use the following CPU instructions in performance-critical operations:  AVX2 FMA
-To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-Found 465 files belonging to 2 classes.
-Using 93 files for validation.
-Please Enter 1 for compile 2 for test and 3 for both
-3
-
-•••
-Epoch 1/50
-75/75 [==============================] - 69s 882ms/step - loss: 0.5198 - accuracy: 0.7903 - val_loss: 0.4419 - val_accuracy: 0.8387
-•••
-Epoch 36/50
-75/75 [==============================] - 71s 942ms/step - loss: 0.0949 - accuracy: 0.9704 - val_loss: 1.6228 - val_accuracy: 0.6237
-•••
-Epoch 45/50
-75/75 [==============================] - 78s 1s/step - loss: 0.0243 - accuracy: 0.9919 - val_loss: 0.0244 - val_accuracy: 1.0000
-Epoch 46/50
-75/75 [==============================] - 76s 1s/step - loss: 0.1277 - accuracy: 0.9597 - val_loss: 0.0411 - val_accuracy: 0.9785
-Epoch 47/50
-75/75 [==============================] - 75s 1s/step - loss: 0.0803 - accuracy: 0.9812 - val_loss: 0.1400 - val_accuracy: 0.9355
-Epoch 48/50
-75/75 [==============================] - 72s 961ms/step - loss: 0.0573 - accuracy: 0.9839 - val_loss: 0.0492 - val_accuracy: 0.9785
-Epoch 49/50
-75/75 [==============================] - 72s 957ms/step - loss: 0.1275 - accuracy: 0.9462 - val_loss: 0.1103 - val_accuracy: 0.9785
-Epoch 50/50
-75/75 [==============================] - 74s 983ms/step - loss: 0.0695 - accuracy: 0.9812 - val_loss: 0.0585 - val_accuracy: 0.9892
-
-This image is 50.04 percent hot coffee and this image is 49.96 percent iced coffee.
-This image is 50.04 percent hot coffee and this image is 49.96 percent iced coffee.
-•••
-```
-<!-- </p>
-</details> -->
-
-#### Example Test
+##### Example Test
 ```
 2022-03-03 00:26:01.678284: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
 To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
