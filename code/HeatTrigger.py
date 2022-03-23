@@ -1,3 +1,5 @@
+# THIS SCRIPT IS REMAINS FUNCTIONAL, BUT WAS NOT USED FOR SOME OF THE IMAGE CAPTURE BECAUSE OF SPINNAKER SDK ISSUES IT HAS NOT BEEN UPDATED
+#
 # coding=utf-8
 # =============================================================================
 # Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
