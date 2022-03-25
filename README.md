@@ -11,27 +11,10 @@ Christopher Bruinsma and Yuhao Zhu at Horizon Research, *Univerisity of Rocheste
 Images will be captured using a [Flir BlackFly USB3](https://www.flir.com/products/blackfly-s-usb3/) camera which has thermal-noise induced using a heat gun from [Wagner](https://www.wagnerspraytech.com/products/heat-guns/ht400-heat-gun/). 
 The safety of heating the camera ensured using Python code which relies on the [Spinnaker SDK](https://www.flir.com/products/spinnaker-sdk/) to moniter the camera temperature which is limited by the camera to less than 100°C. Having now pushed the camera to 100°C it is evident that the camera has a safety shutoff at this temperature.  
 
-### This image was taken at 67°C
-![Here is an example of a noisy image](sample-18255214-326-67.png)
+**NOTE**
 
-### This is that same image denoised 
-![Here is an example of a clean image](CleanTrainingData-162.jpg)
-
-
-
-
-This script is called ```HeatTrigger.py```, it is essentially a camera trigger that captures at a specified temperature. 
-
-#### Depends on
-
-```python
-import PySpin
-import sys
-import time
-```
-
-#### Runs as 
-```$ Python3 HeatTrigger.py```
+Prior to March 21, 2022 images were captures by the script ```HeatTrigger.py``` enclosed below,  a poorly timed operating system update forced a move to the application : 
+```SpinView_QT``` which is a part of the Spinnaker SDK and provides a UI for image capture. 
 
 <details><summary>Code Additions</summary> <p>
 
@@ -89,6 +72,19 @@ def main():
 </p>
 </details>
 
+#### Depends on
+
+```python
+import PySpin
+import sys
+import time
+```
+
+#### Runs as 
+```$ Python3 HeatTrigger.py```
+
+
+
 Images are saved as  ```sample-serialNumber-capNum-temp.png```. These are RAW image files encoded as .png files. 
 
 The numbering relies on the ```CamConfig.json``` which stores the number of captures after each capture. 
@@ -103,6 +99,17 @@ $ Image saved at sample-18255214-13-39.png
 $ Trigger mode disabled...
 •••
 ```
+
+
+### This image was taken at 67°C
+![Here is an example of a noisy image](sample-18255214-326-67.png)
+
+### This is that same image denoised 
+![Here is an example of a clean image](CleanTrainingData-162.jpg)
+
+ 
+
+
 
 
 ## Machine Learning
