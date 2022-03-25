@@ -2,7 +2,6 @@
 # Cites : https://keras.io/examples/vision/image_classification_from_scratch/
 # Cites : https://www.tensorflow.org/tutorials/images/cnn
 # Depends on : pydot and Graphviz
-import time
 
 import tensorflow as tf
 import json
@@ -41,49 +40,40 @@ data_augmentation = keras.Sequential(
 )
 
 # Prevents I/O issues
-train_ds = DataSet.prefetch(buffer_size=32)
-val_ds = Validation.prefetch(buffer_size=32)
+train_ds = DataSet.prefetch(buffer_size=5)
+val_ds = Validation.prefetch(buffer_size=5)
 
 
 # Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
+# Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
 def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
     x = data_augmentation(inputs)
-    x = layers.add([x, x])  # Add back residual
-    x = layers.Rescaling(1.0 / 255)(x)
 
     # Entry block
-    x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
+    x = layers.Rescaling(1.0 / 255)(x)
+    x = layers.Conv2D(32, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
-    x = layers.add([x, x])  # Add back residual
-    x = layers.Dropout(0.1)(x)
+    x = layers.Activation("relu")(x)
 
-    x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
-    x = layers.add([x, x])  # Add back residual
+    x = layers.Conv2D(64, 3, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
-    x = layers.Dropout(0.2)(x)
-
-    x = layers.Conv2D(4, 1, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
-    x = layers.Dropout(0.3)(x)
-
-    x = layers.Conv2D(16, 1, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
-    x = layers.Dropout(0.4)(x)
+    x = layers.Activation("relu")(x)
 
     previous_block_activation = x  # Set aside residual
 
-    for size in [1, 2, 4]:
+    for size in [128, 256, 512, 728]:
+        x = layers.Activation("relu")(x)
+        x = layers.SeparableConv2D(size, 3, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+
         x = layers.Activation("relu")(x)
         x = layers.SeparableConv2D(size, 3, padding="same")(x)
         x = layers.BatchNormalization()(x)
 
         x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
+
         # Project residual
         residual = layers.Conv2D(size, 1, strides=2, padding="same")(
             previous_block_activation
@@ -91,9 +81,11 @@ def NModel(input_shape, num_classes):
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x  # Set aside next residual
 
+    x = layers.SeparableConv2D(1024, 3, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
 
     x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dense(1, activation="softmax")(x)
     if num_classes == 2:
         activation = "sigmoid"
         units = 1
@@ -101,17 +93,17 @@ def NModel(input_shape, num_classes):
         activation = "softmax"
         units = num_classes
 
-    x = layers.Dropout(0.1)(x)
+    x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(units, activation=activation)(x)
-    return keras.Model(inputs, outputs)
+    return keras.Model(inputs, outputs)   
 
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
     epochs = 100  # over-fitting?
-    callbacks = [keras.callbacks.ModelCheckpoint("save_at_{epoch}.h5"), ]
+    callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.SGD(0.001),
+        optimizer=keras.optimizers.SGD(0.1),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -119,7 +111,6 @@ def Compile():
     model.fit(DataSet, shuffle=True,
               epochs=epochs, callbacks=callbacks, validation_data=Validation
               )
-
 
 def Test(image):
     model = NModel(input_shape=image_size + (3,), num_classes=2)
@@ -193,7 +184,7 @@ def main():
     elif x == "3":
         print("You have selected to compile and test")
         Compile()
-        Statistics('BUCKTEST.jpg', 'HOT3.jpg', 'images.jpeg', "ICED5x.jpg")
+        Statistics('HOT2.jpeg', 'HOT3.jpg', 'ICED4.jpg', "ICED5x.jpg")
     
     elif x == "c": #  Current Accuracy
         Accuracy = open("CleanAccuracy.json", "r")
