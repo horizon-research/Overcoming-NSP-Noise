@@ -6,6 +6,7 @@ Cites : Yuhao Zhu CSC 292 / 572 Lecture
 
 
 import sys
+import os
 import numpy as np #Helps with Array Operations
 from PIL import Image #Helps with combining the images
 import cv2
@@ -17,15 +18,25 @@ def SNR(Image):
     Array = np.asanyarray(img)
     ArrayMean = np.mean(Array)
     ArrayStdev = np.std(Array)
-    return 1 / np.log(ArrayMean/ArrayStdev)
-
-print("SNR for an image taken at 90°C by FLIR BFS: ",SNR('Demolished.jpg'),"\n")
-print("SNR for an image taken at 90°C by FLIR BFS: ",SNR('sample-18255214-1801-90.png'),"\n")
-print("SNR for an image taken at 90°C by an Olympus OMD EM1-II at nominal conditions: ",SNR('ICED4.jpg'),"\n")
+    return np.log(ArrayMean/ArrayStdev)
 
 
+def SUM(path):
+    SUM = 0
+    COUNT = 0
+    for img in os.listdir(path):
+        f = os.path.join(path,img)
+        if os.path.isfile(f):
+          if(f.__contains__(".png")):
+              SUM+=SNR(f)
+              COUNT+=1
+    return SUM / COUNT
 
+path = 'Training_Data/Hot/training/'
+print("The SNR for the Hot Training Images",SUM(path),"\n")
 
+path = 'Training_Data/Cold/training/'
+print("The SNR for the Cold Training Images",SUM(path),"\n")
 
-
-
+print("The SNR for a test image, taken on an Olympus OMD EM1-II", SNR("BUCKTEST.jpg"),"\n")
+print("The SNR for an image taken at 90°C by FLIR BFS: ",SNR('sample-18255214-1801-90.png'),"\n")
