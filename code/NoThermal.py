@@ -54,10 +54,9 @@ def NModel(input_shape, num_classes):
 
     # Entry block
     """
-    This is a combination between ResNet and XCeption
+    This is a combination between the ResNet and XCeption models. 
     """
-
-    # x = layers.Rescaling(1.0 / 255)(x)
+    x = layers.Rescaling(1.0 / 255)(x)
     x = layers.Activation("relu")(x)
     x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
@@ -76,7 +75,6 @@ def NModel(input_shape, num_classes):
     x = layers.Activation("relu")(x)
     x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    
     x = layers.Activation("relu")(x)
     x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
@@ -93,7 +91,7 @@ def NModel(input_shape, num_classes):
     x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x) 
     x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-
+    x = layers.BatchNormalization()(x) 
     x = layers.Activation("relu")(x)
     x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
@@ -110,24 +108,37 @@ def NModel(input_shape, num_classes):
     x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x) 
     x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-
+    x = layers.BatchNormalization()(x) 
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x) 
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x) 
+    x = layers.BatchNormalization()(x) 
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)     
     previous_block_activation = x  # Set aside residual
-
     for size in [128, 256, 512, 728]:
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
-
         # Project residual
-        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
-            previous_block_activation
-        )
+        residual = layers.Conv2D(size, 1, strides=2, padding="same")(previous_block_activation)
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x  # Set aside next residual
    
