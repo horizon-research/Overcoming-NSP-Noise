@@ -58,7 +58,7 @@ def NModel(input_shape, num_classes):
 
     # Entry block
     """
-    This is a combination between ResNet and XCeption NN Models
+    This is a combination between ResNet and XCeption
     """
 
     # x = layers.Rescaling(1.0 / 255)(x)
@@ -81,26 +81,6 @@ def NModel(input_shape, num_classes):
     x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     
-    previous_block_activation = x  # Set aside next residual
-
-    for size in [128, 256, 512, 728]:
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
-
-        # Project residual
-        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
-            previous_block_activation
-        )
-        x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x  # Set aside next residual
-    
     x = layers.Activation("relu")(x)
     x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
@@ -117,43 +97,23 @@ def NModel(input_shape, num_classes):
     x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x) 
     x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    
-    previous_block_activation = x  # Set aside residual
-
-    for size in [128, 256, 512, 728]:
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
-
-        # Project residual
-        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
-            previous_block_activation
-        )
-        x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x  # Set aside next residual
 
     x = layers.Activation("relu")(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x) 
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
 
     previous_block_activation = x  # Set aside residual
 
@@ -191,7 +151,7 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 10  # over-fitting?
+    epochs = 100  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("IgnoresThermal_{epoch}.h5"), ]
     model.compile(
         optimizer=keras.optimizers.Adam(0.01),
