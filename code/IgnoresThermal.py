@@ -57,146 +57,62 @@ def NModel(input_shape, num_classes):
     This is a combination between the ResNet and XCeption models. 
     """
     x = layers.Rescaling(1.0 / 255)(x)
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    previous_block_activation = x 
-    residual = layers.Conv2D(64, 3, strides=2, padding="same")(
-        previous_block_activation
-    )
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.add([x, residual])  # Add back residual
-    previous_block_activation = x 
-    residual = layers.Conv2D(64, 3, strides=2, padding="same")(
-        previous_block_activation
-    )
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.add([x, residual])  # Add back residual
-    previous_block_activation = x  
-    residual = layers.Conv2D(64, 3, strides=2, padding="same")(
-        previous_block_activation
-    ) 
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.add([x, residual])  # Add back residual
-    previous_block_activation = x   
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x) 
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x) 
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x) 
-
-    x = layers.Activation("sigmoid")(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x) 
-
-    x = layers.Activation("sigmoid")(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x) 
-
-    x = layers.Activation("sigmoid")(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x) 
-    x = layers.BatchNormalization()(x) 
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-
-    x = layers.Activation("sigmoid")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)  
-
-    x = layers.Dropout(0.2)(x)
+    for i in range(0,3):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(64, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x 
+    for i in range(0,4):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.Dropout(0.3)(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(128, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.Dropout(0.3)(x) 
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x    
+    for i in range(0,6):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(256, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x         
+    for i in range(0,3):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(512, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x             
+  
+    x = layers.Dropout(0.3)(x)
     x = layers.GlobalAveragePooling2D()(x)
 
     if num_classes == 2:
