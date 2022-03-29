@@ -35,8 +35,9 @@ Validation = tf.keras.preprocessing.image_dataset_from_directory(
 # capture a data set of 10,000, but 464 will do for now.
 # This does not modify the pixels but merely stretches them and
 data_augmentation = keras.Sequential(
-    [layers.RandomFlip("horizontal"), layers.RandomRotation(0.1),
-     layers.RandomFlip("vertical")]
+    [layers.RandomFlip("horizontal"), layers.RandomRotation(0.1), layers.RandomRotation(0.6),
+     layers.RandomFlip("vertical") , layers.RandomZoom(0.3), layers.RandomContrast(0.7),
+     layers.RandomContrast(0.1)]
 )
 
 # Prevents I/O issues
@@ -52,14 +53,63 @@ def NModel(input_shape, num_classes):
     x = data_augmentation(inputs)
 
     # Entry block
-    x = layers.Rescaling(1.0 / 255)(x)
-    x = layers.Conv2D(32, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
+    """
+    This is a combination between ResNet and XCeption
+    """
 
-    x = layers.Conv2D(64, 3, padding="same")(x)
+    # x = layers.Rescaling(1.0 / 255)(x)
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
+    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x) 
+    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+
+    x = layers.Activation("relu")(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+    x = layers.BatchNormalization()(x) 
+    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
 
     previous_block_activation = x  # Set aside residual
 
@@ -80,12 +130,9 @@ def NModel(input_shape, num_classes):
         )
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x  # Set aside next residual
-
-    x = layers.SeparableConv2D(1024, 3, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-
+   
     x = layers.GlobalAveragePooling2D()(x)
+
     if num_classes == 2:
         activation = "sigmoid"
         units = 1
@@ -95,15 +142,15 @@ def NModel(input_shape, num_classes):
 
     x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(units, activation=activation)(x)
-    return keras.Model(inputs, outputs)   
+    return keras.Model(inputs, outputs)
 
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 100  # over-fitting?
+    epochs = 200  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.SGD(0.1),
+        optimizer=keras.optimizers.Adam(0.01),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -133,7 +180,7 @@ def Test(image):
         return False  # Cold coffee is false
     else:
         print("This image is niether hot nor cold coffee")
-        return False
+        return -1
 
 
 def Statistics(img1, img2, img3, img4):

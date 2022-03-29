@@ -32,9 +32,6 @@ Validation = tf.keras.preprocessing.image_dataset_from_directory(
 )
 
 
-
-
-
 # This is a method useful for our use-case where I doubt I can
 # capture a data set of 10,000, but 464 will do for now.
 # This does not modify the pixels but merely stretches them and
@@ -151,7 +148,7 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 100  # over-fitting?
+    epochs = 200  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("IgnoresThermal_{epoch}.h5"), ]
     model.compile(
         optimizer=keras.optimizers.Adam(0.01),
@@ -185,7 +182,7 @@ def Test(image):
         return False  # Cold coffee is false
     else:
         print("This image is niether hot nor cold coffee")
-        return False
+        return -1
 
 
 def Statistics(img1, img2, img3, img4):
