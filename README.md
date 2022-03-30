@@ -108,10 +108,6 @@ $ Trigger mode disabled...
 ![Here is an example of a clean image](CleanTrainingData-162.jpg)
 
  
-
-
-
-
 ## Machine Learning
 Due to the nature of image processing of noisy images, max-pooling will likely be used alongside some kind of edge dectection algorthim. This aspect very much remains in the research stage, but as of right now the goal is to train a Convolution Neural Network to indentify cups of coffee that are either hot or iced. 
 This implementation relies on [TensorFlow.Keras](https://keras.io).
@@ -123,7 +119,7 @@ This machine-learning model relies heavily on ```2DConvolutions``` and ```Batch 
 
 #### Intent 
 Indentify cups of coffee as either iced or hot. This will be done using a variety of coffee cups from the on-campus Starbucks here at the Univeristy that contain hot or iced coffee. 
-These are contained within the ```Training_Data``` folder. 
+These are contained within the ```Training_Data``` and ```CleanTestImages``` folders. 
 
 #### Depends on
 
@@ -137,7 +133,7 @@ from tensorflow.keras import layers
 
 The data used is from the ```training_images``` folder which contains 599+ images taken by the **Blackfly** camera of cofee cupts of iced or hot varieties taken at various temperatures ranging from 60-97°C. These images are divided into two classes ```Hot``` and ```Iced``` and futher into ```training``` and ```validation``` within their respective folders. 
 
-#### The Code 
+#### The Code
 
 I have done the following to create a neural network that uses data augmentation to virtually increase the sample size, as well as varying sized 
 convolution kernels, batch normalization, making more dense the layers of the network and finally dropping layers out at each iteration to help train the network of more key characteristics. 
