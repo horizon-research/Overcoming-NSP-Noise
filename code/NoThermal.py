@@ -1,12 +1,14 @@
-# This will be the Neural Network Script
-# Cites : https://keras.io/examples/vision/image_classification_from_scratch/
-# Cites : https://www.tensorflow.org/tutorials/images/cnn
-# Depends on : pydot and Graphviz
+
+"""
+This will be the Neural Network Script
+Depends on : pydot and Graphviz
+"""
 
 import tensorflow as tf
 import json
 from tensorflow import keras
 from tensorflow.keras import layers
+import IgnoresThermal as IG
 
 # Reduced batch size to lower the CPU load and to accelerate the processing
 image_size = (200, 200)
@@ -236,12 +238,12 @@ def main():
         Compile()
 
     elif x == "2":
-        Statistics('HotCupUnderKeurig.jpeg', 'ACup.JPG', 'TesterCold.jpeg', "ICED5x.jpg")
+        Statistics('HotCupUnderKeurig.jpeg', 'Madcap.jpeg', 'TesterCold.jpeg', "ICED4.jpg")
 
     elif x == "3":
         print("You have selected to compile and test")
         Compile()
-        Statistics('HotCupUnderKeurig.jpeg', 'ACup.JPG', 'TesterCold.jpeg', "ICED5x.jpg")
+        Statistics('HotCupUnderKeurig.jpeg', 'Madcap.jpeg', 'TesterCold.jpeg', "ICED4.jpg")
     
     elif x == "c": #  Current Accuracy
         Accuracy = open("CleanAccuracy.json", "r")

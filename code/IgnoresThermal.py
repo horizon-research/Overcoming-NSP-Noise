@@ -1,7 +1,8 @@
-# This will be the Neural Network Script
-# Cites : https://keras.io/examples/vision/image_classification_from_scratch/
-# Cites : https://www.tensorflow.org/tutorials/images/cnn
-# Depends on : pydot and Graphviz
+
+"""
+This will be the Neural Network Script
+Depends on : pydot and Graphviz
+"""
 
 import tensorflow as tf
 import json
@@ -117,6 +118,15 @@ def FiveTwelve(x):
         previous_block_activation = x    
     return x                
 
+def All(x):
+    x = FiveTwelve(TwoFiftySix(
+        OneTwentyEight(
+            SixtyFour(x
+                )
+            )
+        )
+    )
+    return x
 
 # Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
 # Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
@@ -129,21 +139,9 @@ def NModel(input_shape, num_classes):
     """
     x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
-    x = FiveTwelve(
-        TwoFiftySix(
-            OneTwentyEight
-            (SixtyFour(x)
-            )
-        )
-    )
+    x = All(x)
     x = layers.Dropout(0.1)(x)
-    x = FiveTwelve(
-        TwoFiftySix(
-            OneTwentyEight
-            (SixtyFour(x)
-            )
-        )
-    )
+    x = All(x)
     x = layers.Dropout(0.1)(x)
     x = layers.GlobalAveragePooling2D()(x)
 
@@ -158,6 +156,16 @@ def NModel(input_shape, num_classes):
     outputs = layers.Dense(units, activation=activation)(x)
     return keras.Model(inputs, outputs)
 
+    if num_classes == 2:
+        activation = "sigmoid"
+        units = 1
+    else:
+        activation = "softmax"
+        units = num_classes
+
+    x = layers.Dropout(0.5)(x)
+    outputs = layers.Dense(units, activation=activation)(x)
+    return keras.Model(inputs, outputs)
 
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
@@ -241,12 +249,12 @@ def main():
         Compile()
 
     elif x == "2":
-        Statistics('HotCupUnderKeurig.jpeg', 'ACup.JPG', 'TesterCold.jpeg', "ICED5x.jpg")
+        Statistics('HotCupUnderKeurig.jpeg', 'Madcap.jpeg', 'TesterCold.jpeg', "ICED4.jpg")
 
     elif x == "3":
         print("You have selected to compile and test")
         Compile()
-        Statistics('HotCupUnderKeurig.jpeg', 'ACup.JPG', 'TesterCold.jpeg', "ICED5x.jpg")
+        Statistics('HotCupUnderKeurig.jpeg', 'Madcap.jpeg', 'TesterCold.jpeg', "ICED4.jpg")
     
     elif x == "c": #  Current Accuracy
         Accuracy = open("Accuracy.json", "r")
