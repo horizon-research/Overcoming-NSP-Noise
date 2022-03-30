@@ -118,8 +118,16 @@ def FiveTwelve(x):
         previous_block_activation = x    
     return x                
 
-# Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
-# Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
+def All(x):
+    x = FiveTwelve(TwoFiftySix(
+        OneTwentyEight(
+            SixtyFour(x
+                )
+            )
+        )
+    )
+    return x
+
 def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
@@ -129,21 +137,9 @@ def NModel(input_shape, num_classes):
     """
     x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
-    x = FiveTwelve(
-        TwoFiftySix(
-            OneTwentyEight
-            (SixtyFour(x)
-            )
-        )
-    )
+    x = All(x)
     x = layers.Dropout(0.1)(x)
-    x = FiveTwelve(
-        TwoFiftySix(
-            OneTwentyEight
-            (SixtyFour(x)
-            )
-        )
-    )
+    x = All(x)
     x = layers.Dropout(0.1)(x)
     x = layers.GlobalAveragePooling2D()(x)
 
@@ -161,7 +157,7 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 100  # over-fitting?
+    epochs = 50  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
         optimizer=keras.optimizers.Adam(0.0001),
