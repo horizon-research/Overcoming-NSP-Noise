@@ -45,103 +45,108 @@ train_ds = DataSet.prefetch(buffer_size=5)
 val_ds = Validation.prefetch(buffer_size=5)
 
 
+
+""" Citations: 
+Cites: this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
+Cites: https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035
+"""
+def SixtyFour(x):
+    for i in range(0,3):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(64, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x 
+        x = layers.Dropout(0.3)(x)
+
+    return x     
+
+def OneTwentyEight(x):
+    for i in range(0,4):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.Dropout(0.3)(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(128, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.Dropout(0.3)(x) 
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x 
+    return x            
+
+def TwoFiftySix(x):
+    for i in range(0,6):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(256, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x        
+    return x         
+
+def FiveTwelve(x):
+    for i in range(0,3):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(512, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x    
+    return x                
+
+
+
 # Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
 # Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
 def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
-    x = data_augmentation(inputs)
-
     # Entry block
     """
-    This is a combination between the ResNet and XCeption models. 
+    This is a modified ResNet Model
     """
+    x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x) 
-    x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x) 
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x) 
-    x = layers.Conv2D(256, 3, strides=2, padding="same")(x) 
-    x = layers.BatchNormalization()(x) 
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Activation("relu")(x)
-    x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)     
-    previous_block_activation = x  # Set aside residual
-    for size in [128, 256, 512, 728]:
-        # Project residual
-        residual = layers.Conv2D(size, 1, strides=2, padding="same")(previous_block_activation)
-        x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x  # Set aside next residual
-   
+    x = FiveTwelve(
+        TwoFiftySix(
+            OneTwentyEight
+            (SixtyFour(x)
+            )
+        )
+    )
+    x = layers.Dropout(0.1)(x)
+    x = FiveTwelve(
+        TwoFiftySix(
+            OneTwentyEight
+            (SixtyFour(x)
+            )
+        )
+    )
+    x = layers.Dropout(0.1)(x)
     x = layers.GlobalAveragePooling2D()(x)
 
     if num_classes == 2:
@@ -158,10 +163,10 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 200  # over-fitting?
+    epochs = 100  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.Adam(0.01),
+        optimizer=keras.optimizers.Adam(0.0001),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )

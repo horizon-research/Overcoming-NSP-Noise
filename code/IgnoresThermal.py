@@ -10,11 +10,11 @@ from tensorflow.keras import layers
 
 # Reduced batch size to lower the CPU load and to accelerate the processing
 image_size = (200, 200)
-batch_size = 5
+batch_size = 5 
 
 # Creates the DataSet for training from the hot and iced coffee images
 DataSet = tf.keras.preprocessing.image_dataset_from_directory(
-    "CleanTestImages",
+    "Training_Data",
     validation_split=0.2,
     subset="training",
     seed=1337,
@@ -23,13 +23,14 @@ DataSet = tf.keras.preprocessing.image_dataset_from_directory(
 )
 # Creates the DataSet for training from the iced and hot coffee images
 Validation = tf.keras.preprocessing.image_dataset_from_directory(
-    "CleanTestImages",
+    "Training_Data",
     validation_split=0.2,
     subset="validation",
     seed=1337,
     image_size=image_size,
     batch_size=batch_size,
 )
+
 
 # This is a method useful for our use-case where I doubt I can
 # capture a data set of 10,000, but 464 will do for now.
@@ -41,22 +42,11 @@ data_augmentation = keras.Sequential(
 )
 
 # Prevents I/O issues
-train_ds = DataSet.prefetch(buffer_size=5)
-val_ds = Validation.prefetch(buffer_size=5)
+train_ds = DataSet.prefetch(buffer_size=32)
+val_ds = Validation.prefetch(buffer_size=32)
 
 
-# Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
-# Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
-def NModel(input_shape, num_classes):
-    inputs = keras.Input(shape=input_shape)
-    # Image augmentation block
-    x = data_augmentation(inputs)
-
-    # Entry block
-    """
-    This is a combination between the ResNet and XCeption models. 
-    """
-    x = layers.Rescaling(1.0 / 255)(x)
+def SixtyFour(x):
     for i in range(0,3):
         x = layers.Activation("sigmoid")(x)
         x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
@@ -70,6 +60,11 @@ def NModel(input_shape, num_classes):
         x = layers.BatchNormalization()(x)
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x 
+        x = layers.Dropout(0.3)(x)
+
+    return x     
+
+def OneTwentyEight(x):
     for i in range(0,4):
         x = layers.Activation("sigmoid")(x)
         x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
@@ -84,7 +79,10 @@ def NModel(input_shape, num_classes):
         x = layers.BatchNormalization()(x)
         x = layers.Dropout(0.3)(x) 
         x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x    
+        previous_block_activation = x 
+    return x            
+
+def TwoFiftySix(x):
     for i in range(0,6):
         x = layers.Activation("sigmoid")(x)
         x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
@@ -97,7 +95,10 @@ def NModel(input_shape, num_classes):
         x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
         x = layers.BatchNormalization()(x)
         x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x         
+        previous_block_activation = x        
+    return x         
+
+def FiveTwelve(x):
     for i in range(0,3):
         x = layers.Activation("sigmoid")(x)
         x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
@@ -110,9 +111,38 @@ def NModel(input_shape, num_classes):
         x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
         x = layers.BatchNormalization()(x)
         x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x             
-  
-    x = layers.Dropout(0.3)(x)
+        previous_block_activation = x    
+    return x                
+
+
+
+# Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
+# Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
+def NModel(input_shape, num_classes):
+    inputs = keras.Input(shape=input_shape)
+    # Image augmentation block
+    # Entry block
+    """
+    This is a modified ResNet Model
+    """
+    x = data_augmentation(inputs)
+    x = layers.Rescaling(1.0 / 255)(x)
+    x = FiveTwelve(
+        TwoFiftySix(
+            OneTwentyEight
+            (SixtyFour(x)
+            )
+        )
+    )
+    x = layers.Dropout(0.1)(x)
+    x = FiveTwelve(
+        TwoFiftySix(
+            OneTwentyEight
+            (SixtyFour(x)
+            )
+        )
+    )
+    x = layers.Dropout(0.1)(x)
     x = layers.GlobalAveragePooling2D()(x)
 
     if num_classes == 2:
@@ -126,11 +156,12 @@ def NModel(input_shape, num_classes):
     outputs = layers.Dense(units, activation=activation)(x)
     return keras.Model(inputs, outputs)
 
+
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 1  # over-fitting?
-    callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
+    epochs = 50  # over-fitting?
+    callbacks = [keras.callbacks.ModelCheckpoint("IgnoresThermal_{epoch}.h5"), ]
     model.compile(
         optimizer=keras.optimizers.Adam(0.01),
         loss="binary_crossentropy",
@@ -140,6 +171,7 @@ def Compile():
     model.fit(DataSet, shuffle=True,
               epochs=epochs, callbacks=callbacks, validation_data=Validation
               )
+
 
 def Test(image):
     model = NModel(input_shape=image_size + (3,), num_classes=2)
@@ -166,7 +198,7 @@ def Test(image):
 
 
 def Statistics(img1, img2, img3, img4):
-    Accuracy = open("CleanAccuracy.json", "r")
+    Accuracy = open("Accuracy.json", "r")
     load = json.load(Accuracy)
     Acc = load['Accuracy'] * load['Trials']
     print("Current accuracy is %f: " % load['Accuracy'])
@@ -189,7 +221,7 @@ def Statistics(img1, img2, img3, img4):
     if not T4:
         A += 1
     Acc = (A + Acc) / Nt
-    Accuracy = open("CleanAccuracy.json", "w")
+    Accuracy = open("Accuracy.json", "w")
     load["Accuracy"] = Acc
     load["Trials"] = load["Trials"] + A
     print("Current final accuracy is %f: " % Acc)
@@ -216,16 +248,13 @@ def main():
         Statistics('HOT2.jpeg', 'HOT3.jpg', 'ICED4.jpg', "ICED5x.jpg")
     
     elif x == "c": #  Current Accuracy
-        Accuracy = open("CleanAccuracy.json", "r")
+        Accuracy = open("Accuracy.json", "r")
         load = json.load(Accuracy)
         Accuracy.close()
         Acc = load['Accuracy'] * 100
         Acc = round(Acc,3)
         out = ("The current accuracy {Acc} %").format(Acc = Acc)
         print(out)
-        
-        
-
 
 if __name__ == '__main__':
     main()
