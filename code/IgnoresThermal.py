@@ -115,7 +115,6 @@ def FiveTwelve(x):
     return x                
 
 
-
 # Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
 # Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
 def NModel(input_shape, num_classes):
@@ -160,10 +159,10 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 50  # over-fitting?
+    epochs = 1  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("IgnoresThermal_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.Adam(0.01),
+        optimizer=keras.optimizers.SGD(0.01),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -240,12 +239,12 @@ def main():
         Compile()
 
     elif x == "2":
-        Statistics('HOT2.jpeg', 'HOT3.jpg', 'ICED4.jpg', "ICED5x.jpg")
+        Statistics('HotCupUnderKeurig.jpeg', 'ACup.JPG', 'TesterCold.jpeg', "ICED5x.jpg")
 
     elif x == "3":
         print("You have selected to compile and test")
         Compile()
-        Statistics('HOT2.jpeg', 'HOT3.jpg', 'ICED4.jpg', "ICED5x.jpg")
+        Statistics('HotCupUnderKeurig.jpeg', 'ACup.JPG', 'TesterCold.jpeg', "ICED5x.jpg")
     
     elif x == "c": #  Current Accuracy
         Accuracy = open("Accuracy.json", "r")

@@ -166,7 +166,7 @@ def Compile():
     epochs = 100  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.Adam(0.0001),
+        optimizer=keras.optimizers.SGD(0.01),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -242,12 +242,12 @@ def main():
         Compile()
 
     elif x == "2":
-        Statistics('HOT2.jpeg', 'HOT3.jpg', 'ICED4.jpg', "ICED5x.jpg")
+        Statistics('HotCupUnderKeurig.jpeg', 'ACup.JPG', 'TesterCold.jpeg', "ICED5x.jpg")
 
     elif x == "3":
         print("You have selected to compile and test")
         Compile()
-        Statistics('HOT2.jpeg', 'HOT3.jpg', 'ICED4.jpg', "ICED5x.jpg")
+        Statistics('HotCupUnderKeurig.jpeg', 'ACup.JPG', 'TesterCold.jpeg', "ICED5x.jpg")
     
     elif x == "c": #  Current Accuracy
         Accuracy = open("CleanAccuracy.json", "r")
