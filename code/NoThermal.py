@@ -8,7 +8,6 @@ import tensorflow as tf
 import json
 from tensorflow import keras
 from tensorflow.keras import layers
-import IgnoresThermal as IG
 
 # Reduced batch size to lower the CPU load and to accelerate the processing
 image_size = (200, 200)
@@ -255,7 +254,10 @@ def main():
         print(out)
         
         
-
-
 if __name__ == '__main__':
     main()
+
+
+"""
+More Accurate 
+"""
