@@ -143,54 +143,102 @@ I have done the following to create a neural network that uses data augmentation
 convolution kernels, batch normalization, making more dense the layers of the network and finally dropping layers out at each iteration to help train the network of more key characteristics. 
 
 ```python 
+""" Citations: 
+Cites: this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
+Cites: https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035
+"""
+def SixtyFour(x):
+    for i in range(0,3):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(64, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x 
+        x = layers.Dropout(0.3)(x)
+
+    return x     
+
+def OneTwentyEight(x):
+    for i in range(0,4):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.Dropout(0.3)(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(128, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.Dropout(0.3)(x) 
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x 
+    return x            
+
+def TwoFiftySix(x):
+    for i in range(0,6):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(256, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x        
+    return x         
+
+def FiveTwelve(x):
+    for i in range(0,3):
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        previous_block_activation = x 
+        residual = layers.Conv2D(512, 3, strides=2, padding="same")(
+            previous_block_activation
+        )
+        x = layers.Activation("sigmoid")(x)
+        x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
+        x = layers.BatchNormalization()(x)
+        x = layers.add([x, residual])  # Add back residual
+        previous_block_activation = x    
+    return x                
+
+def All(x):
+    x = FiveTwelve(TwoFiftySix(
+        OneTwentyEight(
+            SixtyFour(x
+                )
+            )
+        )
+    )
+    return x
 def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
-    x = data_augmentation(inputs)
-    x = layers.add([x, x])  # Add back residual
-    x = layers.Rescaling(1.0 / 255)(x)
-
     # Entry block
-    x = layers.Conv2D(1, 1, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
-    x = layers.add([x, x])  # Add back residual
+    """
+    This is a modified ResNet Model
+    """
+    x = data_augmentation(inputs)
+    x = layers.Rescaling(1.0 / 255)(x)
+    x = All(x)
     x = layers.Dropout(0.1)(x)
-
-    x = layers.Conv2D(2, 1, strides=2, padding="same")(x)
-    x = layers.add([x, x])  # Add back residual
-    x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
-    x = layers.Dropout(0.2)(x)
-
-    x = layers.Conv2D(4, 1, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
-    x = layers.Dropout(0.3)(x)
-
-    x = layers.Conv2D(16, 1, strides=2, padding="same")(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.Dense(1, activation="softmax")(x)
-    x = layers.Dropout(0.4)(x)
-
-    previous_block_activation = x  # Set aside residual
-
-    for size in [1, 2, 4, 16]:
-        x = layers.Activation("relu")(x)
-        x = layers.SeparableConv2D(size, 3, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-
-        x = layers.MaxPooling2D(3, strides=2, padding="same")(x)
-        # Project residual
-        residual = layers.Conv2D(size, 1, strides=2, padding="same")(
-            previous_block_activation
-        )
-        x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x  # Set aside next residual
-
-
+    x = All(x)
+    x = layers.Dropout(0.1)(x)
     x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dense(1, activation="softmax")(x)
+
     if num_classes == 2:
         activation = "sigmoid"
         units = 1
@@ -198,7 +246,18 @@ def NModel(input_shape, num_classes):
         activation = "softmax"
         units = num_classes
 
-    x = layers.Dropout(0.1)(x)
+    x = layers.Dropout(0.5)(x)
+    outputs = layers.Dense(units, activation=activation)(x)
+    return keras.Model(inputs, outputs)
+
+    if num_classes == 2:
+        activation = "sigmoid"
+        units = 1
+    else:
+        activation = "softmax"
+        units = num_classes
+
+    x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(units, activation=activation)(x)
     return keras.Model(inputs, outputs)
 ```
