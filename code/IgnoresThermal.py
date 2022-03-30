@@ -119,14 +119,7 @@ def FiveTwelve(x):
     return x                
 
 def All(x):
-    x = FiveTwelve(TwoFiftySix(
-        OneTwentyEight(
-            SixtyFour(x
-                )
-            )
-        )
-    )
-    return x
+    return FiveTwelve(TwoFiftySix(OneTwentyEight(SixtyFour(x))))
 
 # Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
 # Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
@@ -155,22 +148,12 @@ def NModel(input_shape, num_classes):
     x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(units, activation=activation)(x)
     return keras.Model(inputs, outputs)
-
-    if num_classes == 2:
-        activation = "sigmoid"
-        units = 1
-    else:
-        activation = "softmax"
-        units = num_classes
-
-    x = layers.Dropout(0.5)(x)
-    outputs = layers.Dense(units, activation=activation)(x)
-    return keras.Model(inputs, outputs)
+   
 
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 500  # over-fitting?
+    epochs = 50  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
         optimizer=keras.optimizers.Adam(0.0001),

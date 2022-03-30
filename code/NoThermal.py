@@ -51,6 +51,10 @@ val_ds = Validation.prefetch(buffer_size=5)
 Cites: this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
 Cites: https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035
 """
+
+"""
+Sixty Four Block
+"""
 def SixtyFour(x):
     for i in range(0,3):
         x = layers.Activation("sigmoid")(x)
@@ -68,7 +72,9 @@ def SixtyFour(x):
         x = layers.Dropout(0.3)(x)
 
     return x     
-
+"""
+One Twenty Eight Block
+"""
 def OneTwentyEight(x):
     for i in range(0,4):
         x = layers.Activation("sigmoid")(x)
@@ -86,7 +92,9 @@ def OneTwentyEight(x):
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x 
     return x            
-
+"""
+Two Fifty Six Block
+"""
 def TwoFiftySix(x):
     for i in range(0,6):
         x = layers.Activation("sigmoid")(x)
@@ -102,7 +110,9 @@ def TwoFiftySix(x):
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x        
     return x         
-
+"""
+Five Twelve Block
+"""
 def FiveTwelve(x):
     for i in range(0,3):
         x = layers.Activation("sigmoid")(x)
@@ -118,17 +128,14 @@ def FiveTwelve(x):
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x    
     return x                
-
+"""
+Putting the blocks together
+"""
 def All(x):
-    x = FiveTwelve(TwoFiftySix(
-        OneTwentyEight(
-            SixtyFour(x
-                )
-            )
-        )
-    )
-    return x
-
+    return FiveTwelve(TwoFiftySix(OneTwentyEight(SixtyFour(x))))
+"""
+Assembling the model
+"""
 def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
@@ -140,6 +147,8 @@ def NModel(input_shape, num_classes):
     x = layers.Rescaling(1.0 / 255)(x)
     x = All(x)
     x = layers.Dropout(0.1)(x)
+    x = data_augmentation(inputs)
+    x = layers.Rescaling(1.0 / 255)(x)
     x = All(x)
     x = layers.Dropout(0.1)(x)
     x = layers.GlobalAveragePooling2D()(x)
@@ -154,11 +163,13 @@ def NModel(input_shape, num_classes):
     x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(units, activation=activation)(x)
     return keras.Model(inputs, outputs)
-
+"""
+Compile the Model
+"""
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 50  # over-fitting?
+    epochs = 50  
     callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
         optimizer=keras.optimizers.Adam(0.0001),
@@ -167,9 +178,11 @@ def Compile():
     )
 
     model.fit(DataSet, shuffle=True,
-              epochs=epochs, callbacks=callbacks, validation_data=Validation
+              epochs=epochs, callbacks=None, validation_data=Validation
               )
-
+"""
+Print the result of the test
+"""
 def Print(score):
     print("This image is %.2f percent hot coffee and this image is %.2f percent iced coffee." % (
         100 * score, 100 * (1 - score)))
@@ -182,7 +195,9 @@ def Print(score):
     else:
         print("This image is niether hot nor cold coffee")
         return -1
-    
+"""
+Model.Predict('Image.filename') 
+"""    
 def Test(image):
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     img = keras.preprocessing.image.load_img(
@@ -193,7 +208,9 @@ def Test(image):
     predictions = model.predict(img_array)
     score = predictions[0]
     return Print(score)
-
+"""
+Json File Setter
+"""
 def Statistics(img1, img2, img3, img4):
     Accuracy = open("CleanAccuracy.json", "r")
     load = json.load(Accuracy)
