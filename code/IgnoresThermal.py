@@ -45,7 +45,10 @@ data_augmentation = keras.Sequential(
 train_ds = DataSet.prefetch(buffer_size=32)
 val_ds = Validation.prefetch(buffer_size=32)
 
-
+""" Citations: 
+Cites: this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
+Cites: https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035
+"""
 def SixtyFour(x):
     for i in range(0,3):
         x = layers.Activation("sigmoid")(x)
@@ -159,10 +162,10 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 1  # over-fitting?
-    callbacks = [keras.callbacks.ModelCheckpoint("IgnoresThermal_{epoch}.h5"), ]
+    epochs = 100  # over-fitting?
+    callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.SGD(0.01),
+        optimizer=keras.optimizers.Adam(0.0001),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -171,20 +174,9 @@ def Compile():
               epochs=epochs, callbacks=callbacks, validation_data=Validation
               )
 
-
-def Test(image):
-    model = NModel(input_shape=image_size + (3,), num_classes=2)
-    img = keras.preprocessing.image.load_img(
-        image, target_size=image_size
-    )
-    img_array = keras.preprocessing.image.img_to_array(img)
-    img_array = tf.expand_dims(img_array, 0)  # Create batch axis
-    predictions = model.predict(img_array)
-    score = predictions[0]
-
+def Print(score):
     print("This image is %.2f percent hot coffee and this image is %.2f percent iced coffee." % (
         100 * score, 100 * (1 - score)))
-
     if 100 * score > (100 * (1 - score)) and 100 * score > 0.55:
         print("This image is hot coffee\n")
         return True  # Hot coffee is true
@@ -194,7 +186,17 @@ def Test(image):
     else:
         print("This image is niether hot nor cold coffee")
         return -1
-
+    
+def Test(image):
+    model = NModel(input_shape=image_size + (3,), num_classes=2)
+    img = keras.preprocessing.image.load_img(
+        image, target_size=image_size
+    )
+    img_array = keras.preprocessing.image.img_to_array(img)
+    img_array = tf.expand_dims(img_array, 0)  # Create batch axis
+    predictions = model.predict(img_array)
+    score = predictions[0]
+    return Print(score)
 
 def Statistics(img1, img2, img3, img4):
     Accuracy = open("Accuracy.json", "r")

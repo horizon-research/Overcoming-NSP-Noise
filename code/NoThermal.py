@@ -118,8 +118,6 @@ def FiveTwelve(x):
         previous_block_activation = x    
     return x                
 
-
-
 # Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
 # Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
 def NModel(input_shape, num_classes):
@@ -166,7 +164,7 @@ def Compile():
     epochs = 100  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
-        optimizer=keras.optimizers.SGD(0.01),
+        optimizer=keras.optimizers.Adam(0.0001),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -175,19 +173,9 @@ def Compile():
               epochs=epochs, callbacks=callbacks, validation_data=Validation
               )
 
-def Test(image):
-    model = NModel(input_shape=image_size + (3,), num_classes=2)
-    img = keras.preprocessing.image.load_img(
-        image, target_size=image_size
-    )
-    img_array = keras.preprocessing.image.img_to_array(img)
-    img_array = tf.expand_dims(img_array, 0)  # Create batch axis
-    predictions = model.predict(img_array)
-    score = predictions[0]
-
+def Print(score):
     print("This image is %.2f percent hot coffee and this image is %.2f percent iced coffee." % (
         100 * score, 100 * (1 - score)))
-
     if 100 * score > (100 * (1 - score)) and 100 * score > 0.55:
         print("This image is hot coffee\n")
         return True  # Hot coffee is true
@@ -197,7 +185,17 @@ def Test(image):
     else:
         print("This image is niether hot nor cold coffee")
         return -1
-
+    
+def Test(image):
+    model = NModel(input_shape=image_size + (3,), num_classes=2)
+    img = keras.preprocessing.image.load_img(
+        image, target_size=image_size
+    )
+    img_array = keras.preprocessing.image.img_to_array(img)
+    img_array = tf.expand_dims(img_array, 0)  # Create batch axis
+    predictions = model.predict(img_array)
+    score = predictions[0]
+    return Print(score)
 
 def Statistics(img1, img2, img3, img4):
     Accuracy = open("CleanAccuracy.json", "r")
