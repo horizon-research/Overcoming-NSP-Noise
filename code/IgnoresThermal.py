@@ -1,4 +1,3 @@
-
 """
 This will be the Neural Network Script
 Depends on : pydot and Graphviz
@@ -50,18 +49,19 @@ val_ds = Validation.prefetch(buffer_size=32)
 Cites: this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
 Cites: https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035
 """
+def Block(x,size):
+      x = layers.Activation("sigmoid")(x)
+      x = layers.Conv2D(size, 3, strides=2, padding="same")(x)
+      return layers.BatchNormalization()(x)
+
 def SixtyFour(x):
     for i in range(0,3):
-        x = layers.Activation("relu")(x)
-        x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,64)
         previous_block_activation = x 
         residual = layers.Conv2D(64, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("relu")(x)
-        x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,64)
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x 
         x = layers.Dropout(0.3)(x)
@@ -70,52 +70,41 @@ def SixtyFour(x):
 
 def OneTwentyEight(x):
     for i in range(0,4):
-        x = layers.Activation("relu")(x)
-        x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-        x = layers.Dropout(0.3)(x)
+        x = Block(x,128)
         previous_block_activation = x 
         residual = layers.Conv2D(128, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("relu")(x)
-        x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-        x = layers.Dropout(0.3)(x) 
+        x = Block(x,128)
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x 
+        x = layers.Dropout(0.3)(x)
     return x            
 
 def TwoFiftySix(x):
     for i in range(0,6):
-        x = layers.Activation("relu")(x)
-        x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,256)
         previous_block_activation = x 
-        residual = layers.Conv2D(256, 3, strides=2, padding="same")(
+        residual = layers.Conv2D(128, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("relu")(x)
-        x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,256)
         x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x        
+        previous_block_activation = x 
+        x = layers.Dropout(0.3)(x)        
     return x         
 
 def FiveTwelve(x):
     for i in range(0,3):
-        x = layers.Activation("relu")(x)
-        x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,512)
         previous_block_activation = x 
-        residual = layers.Conv2D(512, 3, strides=2, padding="same")(
+        residual = layers.Conv2D(128, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("relu")(x)
-        x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,512)
         x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x    
+        previous_block_activation = x 
+        x = layers.Dropout(0.3)(x)
     return x                
 
 All = lambda x: FiveTwelve(TwoFiftySix(OneTwentyEight(SixtyFour(x))))
@@ -129,6 +118,7 @@ def NModel(input_shape, num_classes):
     """
     x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
+    x = layers.Conv2D(64, 7, strides=2, padding="same")(x)
     x = All(x)
     x = layers.Rescaling(1.0 / 2)(x)
     x = All(x)
