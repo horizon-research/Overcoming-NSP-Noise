@@ -8,10 +8,11 @@ import tensorflow as tf
 import json
 from tensorflow import keras
 from tensorflow.keras import layers
+import matplotlib.pyplot as plt
 
 # Reduced batch size to lower the CPU load and to accelerate the processing
 image_size = (200, 200)
-batch_size = 5
+batch_size = 32
 
 # Creates the DataSet for training from the hot and iced coffee images
 DataSet = tf.keras.preprocessing.image_dataset_from_directory(
@@ -32,6 +33,9 @@ Validation = tf.keras.preprocessing.image_dataset_from_directory(
     batch_size=batch_size,
 )
 
+
+
+
 # This is a method useful for our use-case where I doubt I can
 # capture a data set of 10,000, but 464 will do for now.
 # This does not modify the pixels but merely stretches them and
@@ -42,8 +46,8 @@ data_augmentation = keras.Sequential(
 )
 
 # Prevents I/O issues
-train_ds = DataSet.prefetch(buffer_size=5)
-val_ds = Validation.prefetch(buffer_size=5)
+train_ds = DataSet.prefetch(buffer_size=32)
+val_ds = Validation.prefetch(buffer_size=32)
 
 
 
@@ -51,7 +55,6 @@ val_ds = Validation.prefetch(buffer_size=5)
 Cites: this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
 Cites: https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035
 """
-
 """
 Sixty Four Block
 """
@@ -133,6 +136,10 @@ Putting the blocks together
 """
 def All(x):
     return FiveTwelve(TwoFiftySix(OneTwentyEight(SixtyFour(x))))
+
+def llA(x):
+    return SixtyFour(OneTwentyEight(TwoFiftySix(FiveTwelve(x))))
+
 """
 Assembling the model
 """
@@ -146,11 +153,8 @@ def NModel(input_shape, num_classes):
     x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
     x = All(x)
-    x = layers.Dropout(0.1)(x)
-    x = data_augmentation(inputs)
-    x = layers.Rescaling(1.0 / 255)(x)
+    x = layers.Rescaling(1.0 / 2)(x)
     x = All(x)
-    x = layers.Dropout(0.1)(x)
     x = layers.GlobalAveragePooling2D()(x)
 
     if num_classes == 2:
@@ -169,7 +173,7 @@ Compile the Model
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 50  
+    epochs = 10  
     callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
         optimizer=keras.optimizers.Adam(0.0001),
@@ -208,13 +212,15 @@ def Test(image):
     predictions = model.predict(img_array)
     score = predictions[0]
     return Print(score)
+
+
 """
 Json File Setter
 """
 def Statistics(img1, img2, img3, img4):
     Accuracy = open("CleanAccuracy.json", "r")
     load = json.load(Accuracy)
-    Acc = load['Accuracy'] * load['Trials']
+    Acc = load['Accuracy']
     print("Current accuracy is %f: " % load['Accuracy'])
     Nt = load['Trials'] + 4
     Accuracy.close()
@@ -234,12 +240,15 @@ def Statistics(img1, img2, img3, img4):
     T4 = Test(img4)
     if not T4:
         A += 1
-    Acc = (A + Acc) / Nt
+
+    Acc = Acc * (Nt - 4) 
+    Acc +=  A 
+    Acc = Acc / Nt
     Accuracy = open("CleanAccuracy.json", "w")
-    load["Accuracy"] = Acc
-    load["Trials"] = load["Trials"] + A
-    print("Current final accuracy is %f: " % Acc)
+    load["Accuracy"] = Acc 
+    load["Trials"] = load["Trials"] + 4
     json.dump(load, Accuracy)
+    print("Current final accuracy is %f: " % Acc)
     Accuracy.close()
 
 
@@ -254,12 +263,12 @@ def main():
         Compile()
 
     elif x == "2":
-        Statistics('HotCupUnderKeurig.jpeg', 'Madcap.jpeg', 'TesterCold.jpeg', "ICED4.jpg")
+        Statistics('HotCupUnderKeurig.jpeg', 'images-1.jpeg', 'TesterCold.jpeg', "GoogleTest.jpg")
 
     elif x == "3":
         print("You have selected to compile and test")
         Compile()
-        Statistics('HotCupUnderKeurig.jpeg', 'Madcap.jpeg', 'TesterCold.jpeg', "ICED4.jpg")
+        Statistics('HotCupUnderKeurig.jpeg', 'images-1.jpeg', 'TesterCold.jpeg', "GoogleTest.jpg")
     
     elif x == "c": #  Current Accuracy
         Accuracy = open("CleanAccuracy.json", "r")

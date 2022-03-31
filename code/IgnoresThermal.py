@@ -8,10 +8,11 @@ import tensorflow as tf
 import json
 from tensorflow import keras
 from tensorflow.keras import layers
+import matplotlib.pyplot as plt
 
 # Reduced batch size to lower the CPU load and to accelerate the processing
 image_size = (200, 200)
-batch_size = 5 
+batch_size = 32
 
 # Creates the DataSet for training from the hot and iced coffee images
 DataSet = tf.keras.preprocessing.image_dataset_from_directory(
@@ -133,9 +134,8 @@ def NModel(input_shape, num_classes):
     x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
     x = All(x)
-    x = layers.Dropout(0.1)(x)
+    x = layers.Rescaling(1.0 / 2)(x)
     x = All(x)
-    x = layers.Dropout(0.1)(x)
     x = layers.GlobalAveragePooling2D()(x)
 
     if num_classes == 2:
@@ -153,7 +153,7 @@ def NModel(input_shape, num_classes):
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
-    epochs = 50  # over-fitting?
+    epochs = 10  # over-fitting?
     callbacks = [keras.callbacks.ModelCheckpoint("NoThermal_at_{epoch}.h5"), ]
     model.compile(
         optimizer=keras.optimizers.Adam(0.0001),
@@ -192,7 +192,7 @@ def Test(image):
 def Statistics(img1, img2, img3, img4):
     Accuracy = open("Accuracy.json", "r")
     load = json.load(Accuracy)
-    Acc = load['Accuracy'] * load['Trials']
+    Acc = load['Accuracy'] 
     print("Current accuracy is %f: " % load['Accuracy'])
     Nt = load['Trials'] + 4
     Accuracy.close()
@@ -212,12 +212,15 @@ def Statistics(img1, img2, img3, img4):
     T4 = Test(img4)
     if not T4:
         A += 1
-    Acc = (A + Acc) / Nt
+   
+    Acc = Acc * (Nt - 4) 
+    Acc +=  A 
+    Acc = Acc / Nt
     Accuracy = open("Accuracy.json", "w")
-    load["Accuracy"] = Acc
-    load["Trials"] = load["Trials"] + A
-    print("Current final accuracy is %f: " % Acc)
+    load["Accuracy"] = Acc 
+    load["Trials"] = load["Trials"] + 4
     json.dump(load, Accuracy)
+    print("Current final accuracy is %f: " %  Acc)
     Accuracy.close()
 
 
@@ -232,12 +235,13 @@ def main():
         Compile()
 
     elif x == "2":
-        Statistics('HotCupUnderKeurig.jpeg', 'Madcap.jpeg', 'TesterCold.jpeg', "ICED4.jpg")
-
+        Statistics('HotCupUnderKeurig.jpeg', 'images-1.jpeg', 'TesterCold.jpeg', "GoogleTest.jpg")
+    
+       
     elif x == "3":
         print("You have selected to compile and test")
         Compile()
-        Statistics('HotCupUnderKeurig.jpeg', 'Madcap.jpeg', 'TesterCold.jpeg', "ICED4.jpg")
+        Statistics('HotCupUnderKeurig.jpeg', 'images-1.jpeg', 'TesterCold.jpeg', "GoogleTest.jpg")
     
     elif x == "c": #  Current Accuracy
         Accuracy = open("Accuracy.json", "r")
