@@ -33,7 +33,6 @@ Validation = tf.keras.preprocessing.image_dataset_from_directory(
     batch_size=batch_size,
 )
 
-
 # This is a method useful for our use-case where I doubt I can
 # capture a data set of 10,000, but 464 will do for now.
 # This does not modify the pixels but merely stretches them and
@@ -53,14 +52,14 @@ Cites: https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-528
 """
 def SixtyFour(x):
     for i in range(0,3):
-        x = layers.Activation("sigmoid")(x)
+        x = layers.Activation("relu")(x)
         x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
         x = layers.BatchNormalization()(x)
         previous_block_activation = x 
         residual = layers.Conv2D(64, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("sigmoid")(x)
+        x = layers.Activation("relu")(x)
         x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
         x = layers.BatchNormalization()(x)
         x = layers.add([x, residual])  # Add back residual
@@ -71,7 +70,7 @@ def SixtyFour(x):
 
 def OneTwentyEight(x):
     for i in range(0,4):
-        x = layers.Activation("sigmoid")(x)
+        x = layers.Activation("relu")(x)
         x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
         x = layers.BatchNormalization()(x)
         x = layers.Dropout(0.3)(x)
@@ -79,7 +78,7 @@ def OneTwentyEight(x):
         residual = layers.Conv2D(128, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("sigmoid")(x)
+        x = layers.Activation("relu")(x)
         x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
         x = layers.BatchNormalization()(x)
         x = layers.Dropout(0.3)(x) 
@@ -89,14 +88,14 @@ def OneTwentyEight(x):
 
 def TwoFiftySix(x):
     for i in range(0,6):
-        x = layers.Activation("sigmoid")(x)
+        x = layers.Activation("relu")(x)
         x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
         x = layers.BatchNormalization()(x)
         previous_block_activation = x 
         residual = layers.Conv2D(256, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("sigmoid")(x)
+        x = layers.Activation("relu")(x)
         x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
         x = layers.BatchNormalization()(x)
         x = layers.add([x, residual])  # Add back residual
@@ -105,25 +104,22 @@ def TwoFiftySix(x):
 
 def FiveTwelve(x):
     for i in range(0,3):
-        x = layers.Activation("sigmoid")(x)
+        x = layers.Activation("relu")(x)
         x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
         x = layers.BatchNormalization()(x)
         previous_block_activation = x 
         residual = layers.Conv2D(512, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("sigmoid")(x)
+        x = layers.Activation("relu")(x)
         x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
         x = layers.BatchNormalization()(x)
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x    
     return x                
 
-def All(x):
-    return FiveTwelve(TwoFiftySix(OneTwentyEight(SixtyFour(x))))
+All = lambda x: FiveTwelve(TwoFiftySix(OneTwentyEight(SixtyFour(x))))
 
-# Cites this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
-# Directly Cites : https://keras.io/examples/vision/image_classification_from_scratch/
 def NModel(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
     # Image augmentation block
@@ -149,7 +145,6 @@ def NModel(input_shape, num_classes):
     outputs = layers.Dense(units, activation=activation)(x)
     return keras.Model(inputs, outputs)
    
-
 def Compile():
     model = NModel(input_shape=image_size + (3,), num_classes=2)
     keras.utils.plot_model(model, show_shapes=True)
