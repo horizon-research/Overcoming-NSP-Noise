@@ -14,7 +14,11 @@ The safety of heating the camera ensured using Python code which relies on the [
 **NOTE**
 
 Prior to March 21, 2022 images were captures by the script ```HeatTrigger.py``` enclosed below,  a poorly timed operating system update forced a move to the application : 
-```SpinView_QT``` which is a part of the Spinnaker SDK and provides a UI for image capture. 
+```SpinView_QT``` which is a part of the Spinnaker SDK and provides a UI for image capture.
+
+**Update** 
+ ```HeatTrigger.py``` Functions once again as of April 1, 2022
+
 
 <details><summary>Code Additions</summary> <p>
 
