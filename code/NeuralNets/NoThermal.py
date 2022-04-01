@@ -1,4 +1,3 @@
-
 """
 This will be the Neural Network Script
 Depends on : pydot and Graphviz
@@ -17,7 +16,7 @@ batch_size = 32
 # Creates the DataSet for training from the hot and iced coffee images
 DataSet = tf.keras.preprocessing.image_dataset_from_directory(
     "CleanTestImages",
-    validation_split=0.2,
+    validation_split=0.3,
     subset="training",
     seed=1337,
     image_size=image_size,
@@ -26,7 +25,7 @@ DataSet = tf.keras.preprocessing.image_dataset_from_directory(
 # Creates the DataSet for training from the iced and hot coffee images
 Validation = tf.keras.preprocessing.image_dataset_from_directory(
     "CleanTestImages",
-    validation_split=0.2,
+    validation_split=0.3,
     subset="validation",
     seed=1337,
     image_size=image_size,
@@ -34,11 +33,6 @@ Validation = tf.keras.preprocessing.image_dataset_from_directory(
 )
 
 
-
-
-# This is a method useful for our use-case where I doubt I can
-# capture a data set of 10,000, but 464 will do for now.
-# This does not modify the pixels but merely stretches them and
 data_augmentation = keras.Sequential(
     [layers.RandomFlip("horizontal"), layers.RandomRotation(0.1), layers.RandomRotation(0.6),
      layers.RandomFlip("vertical") , layers.RandomZoom(0.3), layers.RandomContrast(0.7),
@@ -49,96 +43,67 @@ data_augmentation = keras.Sequential(
 train_ds = DataSet.prefetch(buffer_size=32)
 val_ds = Validation.prefetch(buffer_size=32)
 
-
-
 """ Citations: 
 Cites: this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
 Cites: https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035
 """
-"""
-Sixty Four Block
-"""
+def Block(x,size):
+      x = layers.Activation("sigmoid")(x)
+      x = layers.Conv2D(size, 3, strides=2, padding="same")(x)
+      return layers.BatchNormalization()(x)
+
 def SixtyFour(x):
     for i in range(0,3):
-        x = layers.Activation("sigmoid")(x)
-        x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,64)
         previous_block_activation = x 
         residual = layers.Conv2D(64, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("sigmoid")(x)
-        x = layers.Conv2D(64, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,64)
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x 
         x = layers.Dropout(0.3)(x)
 
     return x     
-"""
-One Twenty Eight Block
-"""
+
 def OneTwentyEight(x):
     for i in range(0,4):
-        x = layers.Activation("sigmoid")(x)
-        x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-        x = layers.Dropout(0.3)(x)
+        x = Block(x,128)
         previous_block_activation = x 
         residual = layers.Conv2D(128, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("sigmoid")(x)
-        x = layers.Conv2D(128, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
-        x = layers.Dropout(0.3)(x) 
+        x = Block(x,128)
         x = layers.add([x, residual])  # Add back residual
         previous_block_activation = x 
+        x = layers.Dropout(0.3)(x)
     return x            
-"""
-Two Fifty Six Block
-"""
+
 def TwoFiftySix(x):
     for i in range(0,6):
-        x = layers.Activation("sigmoid")(x)
-        x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,256)
         previous_block_activation = x 
         residual = layers.Conv2D(256, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("sigmoid")(x)
-        x = layers.Conv2D(256, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,256)
         x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x        
+        previous_block_activation = x 
+        x = layers.Dropout(0.3)(x)        
     return x         
-"""
-Five Twelve Block
-"""
+
 def FiveTwelve(x):
     for i in range(0,3):
-        x = layers.Activation("sigmoid")(x)
-        x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,512)
         previous_block_activation = x 
         residual = layers.Conv2D(512, 3, strides=2, padding="same")(
             previous_block_activation
         )
-        x = layers.Activation("sigmoid")(x)
-        x = layers.Conv2D(512, 3, strides=2, padding="same")(x)
-        x = layers.BatchNormalization()(x)
+        x = Block(x,512)
         x = layers.add([x, residual])  # Add back residual
-        previous_block_activation = x    
+        previous_block_activation = x 
+        x = layers.Dropout(0.3)(x)
     return x                
-"""
-Putting the blocks together
-"""
-def All(x):
-    return FiveTwelve(TwoFiftySix(OneTwentyEight(SixtyFour(x))))
-
-def llA(x):
-    return SixtyFour(OneTwentyEight(TwoFiftySix(FiveTwelve(x))))
 
 """
 Assembling the model
@@ -152,9 +117,10 @@ def NModel(input_shape, num_classes):
     """
     x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
-    x = All(x)
+    x = layers.Conv2D(64, 7, strides=2, padding="same")(x)
+    x =  (lambda x: FiveTwelve(TwoFiftySix(OneTwentyEight(SixtyFour(x)))))(x)
     x = layers.Rescaling(1.0 / 2)(x)
-    x = All(x)
+    x = (lambda x: FiveTwelve(TwoFiftySix(OneTwentyEight(SixtyFour(x)))))(x)
     x = layers.GlobalAveragePooling2D()(x)
 
     if num_classes == 2:
@@ -283,7 +249,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-
-"""
-More Accurate 
-"""

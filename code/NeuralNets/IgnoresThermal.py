@@ -16,7 +16,7 @@ batch_size = 32
 # Creates the DataSet for training from the hot and iced coffee images
 DataSet = tf.keras.preprocessing.image_dataset_from_directory(
     "Training_Data",
-    validation_split=0.2,
+    validation_split=0.3,
     subset="training",
     seed=1337,
     image_size=image_size,
@@ -25,7 +25,7 @@ DataSet = tf.keras.preprocessing.image_dataset_from_directory(
 # Creates the DataSet for training from the iced and hot coffee images
 Validation = tf.keras.preprocessing.image_dataset_from_directory(
     "Training_Data",
-    validation_split=0.2,
+    validation_split=0.3,
     subset="validation",
     seed=1337,
     image_size=image_size,
@@ -85,7 +85,7 @@ def TwoFiftySix(x):
     for i in range(0,6):
         x = Block(x,256)
         previous_block_activation = x 
-        residual = layers.Conv2D(128, 3, strides=2, padding="same")(
+        residual = layers.Conv2D(256, 3, strides=2, padding="same")(
             previous_block_activation
         )
         x = Block(x,256)
@@ -98,7 +98,7 @@ def FiveTwelve(x):
     for i in range(0,3):
         x = Block(x,512)
         previous_block_activation = x 
-        residual = layers.Conv2D(128, 3, strides=2, padding="same")(
+        residual = layers.Conv2D(512, 3, strides=2, padding="same")(
             previous_block_activation
         )
         x = Block(x,512)
@@ -119,9 +119,9 @@ def NModel(input_shape, num_classes):
     x = data_augmentation(inputs)
     x = layers.Rescaling(1.0 / 255)(x)
     x = layers.Conv2D(64, 7, strides=2, padding="same")(x)
-    x = All(x)
+    x =  (lambda x: FiveTwelve(TwoFiftySix(OneTwentyEight(SixtyFour(x)))))(x)
     x = layers.Rescaling(1.0 / 2)(x)
-    x = All(x)
+    x =  (lambda x: FiveTwelve(TwoFiftySix(OneTwentyEight(SixtyFour(x)))))(x)
     x = layers.GlobalAveragePooling2D()(x)
 
     if num_classes == 2:
