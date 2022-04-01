@@ -12,13 +12,9 @@ Images will be captured using a [Flir BlackFly USB3](https://www.flir.com/produc
 The safety of heating the camera ensured using Python code which relies on the [Spinnaker SDK](https://www.flir.com/products/spinnaker-sdk/) to moniter the camera temperature which is limited by the camera to less than 100°C. Having now pushed the camera to 100°C it is evident that the camera has a safety shutoff at this temperature.  
 
 **NOTE**
-
+#11 Was Solved to fix this, however : 
 Prior to March 21, 2022 images were captures by the script ```HeatTrigger.py``` enclosed below,  a poorly timed operating system update forced a move to the application : 
-```SpinView_QT``` which is a part of the Spinnaker SDK and provides a UI for image capture.
-
-**Update** 
- ```HeatTrigger.py``` Functions once again as of April 1, 2022
-
+```SpinView_QT``` which is a part of the Spinnaker SDK and provides a UI for image capture a time period during the repair of the script. As of April 1, 2022 it was functional once again. 
 
 <details><summary>Code Additions</summary> <p>
 
