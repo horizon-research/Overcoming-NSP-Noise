@@ -7,7 +7,19 @@ Essentially this script is a temperature trigger for the camera that continues r
 import PySpin
 import sys
 import time
+
+import importlib_metadata
 import Trigger as t
+import asyncio
+import kasa
+
+
+powerstrip = kasa.SmartStrip('1.1.1.1')
+
+
+
+
+
 
 # My Additions to this script:
 # Grabs the temperature of the camera, returns it as a float
@@ -38,12 +50,14 @@ def Go(cam, GoalTemperature):
 
     # Capture 1 image
     if Temp >= GoalTemperature:
-        print("Capturing, please continue heating")
+        print("Capturing, heating has been discontinued")
+        powerstrip.turn_off
         t.run_single_camera(cam) 
 
-
-# Bootstrap
-def main():
+"""
+Communicates with the camera via Trigger.py
+"""
+def CameraModule():
     system = PySpin.System.GetInstance()
 
     # Retrieve list of cameras from the system
@@ -59,7 +73,7 @@ def main():
         # Release system instance
         system.ReleaseInstance()
         print("\n")
-        print('Camera(s) not detected, please check your connection and try again.')
+        print('Please check the status of your camera(s)')
         print("\n")
         return False
 
@@ -67,6 +81,7 @@ def main():
     for i, cam in enumerate(cam_list):
         # List of Temperatures
         for t in range(70, 95, 1):
+            powerstrip.turn_on
             # Initiates Capture
             cam.Init()
             Go(cam, t)
@@ -82,8 +97,19 @@ def main():
     system.ReleaseInstance()
 
 
+
+
+# Bootstrap
+def main():
+    # CameraModule()
+    print("end of file")
+
+    
+
+
 if __name__ == '__main__':
-    if main():
-        sys.exit(0)
-    else:
-        sys.exit(1)
+    main()
+    # if main():
+    #     sys.exit(0)
+    # else:
+    #     sys.exit(1)
