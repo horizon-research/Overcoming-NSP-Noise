@@ -32,17 +32,18 @@ TODO (Research into why this code sometimes throws a segmentation fault)
 import sys
 import time
 import json
-# import kasa
 import PySpin
+from kasa import smartplug
+
 try:
     import PySpin
-    print("PySpin imported, no issues stated.")
+    from kasa import smartplug
+    print("PySpin and kasa imported, no issues stated.")
 except:
     print("During import, issues stated")
 
 # # Take two images per click.
 NUM_IMAGES = 5  # number of images to grab
-
 
 # What type of trigger?
 class TriggerType:
@@ -205,8 +206,8 @@ def grab_next_image_by_trigger(nodemap):
 # # From Spinnaker SDK : Examples : (copyright) FLIR
 def acquire_images(cam, nodemap, nodemap_tldevice):
     """
-    This function acquires and saves 2 images from a device.
-    Please see Acquisition example for more in-depth comments on acquiring images.
+    This function acquires and saves _5_ images from a device.
+    This has been modified to acquire images after the camera has reached a certain tempertature. 
 
     :param cam: Camera to acquire images from.
     :param nodemap: Device nodemap.
@@ -247,6 +248,11 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
             print('Unable to set acquisition mode to continuous (entry retrieval). Aborting...')
             return False
 
+        # TODO : see if this is legit? This is for tomorrow. 
+        node_pixel_format = PySpin.IEnumerationPtr('PixelFormat')
+        if not PySpin.IsAvailable(node_file_format) or not PySpin.IsReadable(
+               node_pixel_format):
+            return False
 
         # Retrieve integer value from entry node
         acquisition_mode_continuous = node_acquisition_mode_continuous.GetValue()
@@ -286,7 +292,8 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
                         filename = 'sample-%s-%d-%d.png' % (device_serial_number, i +
                                                             image_num_config, GetCameraTemperature(cam))
                     else:  # if serial number is empty
-                        filename = 'sample-%d.png' % i + str(image_num_config)
+                         filename = 'sample-%s-%d.png' % (i +
+                                                            image_num_config, GetCameraTemperature(cam))
 
                     # Save image
                     #  *** NOTES ***
@@ -357,8 +364,9 @@ def reset_trigger(nodemap):
     return result
 
 
-# # From Spinnaker SDK : Examples : (copyright) FLIR
-def Capture(cam):
+# TODO Add in the functionality of Go() here. I believe that will take care of some of the camera initialization issues
+# as they are not issues in the origional script.  
+def Capture(cam,temp):
     """
     This function acts as the body of the example; please see NodeMapInfo example
     for more in-depth comments on setting up cameras.
@@ -383,6 +391,8 @@ def Capture(cam):
         # Configure trigger
         if configure_trigger(cam) is False:
             return False
+
+        result&= Heat(cam,temp)
 
         # Acquire images
         result &= acquire_images(cam, nodemap, nodemap_tldevice)
@@ -417,9 +427,8 @@ def GetCameraTemperature(cam):
     return x
 
 # # Does the temperature sensing during the loops.
-def Go(cam, GoalTemperature):
+def Heat(cam, GoalTemperature):
     # Get Temperature of Camera
-
     Temp = GetCameraTemperature(cam)
     print(GoalTemperature)
 
@@ -431,8 +440,9 @@ def Go(cam, GoalTemperature):
 
     # Capture 1 image
     if Temp > GoalTemperature:
-        print("Capturing, please continue heating")
-        Capture(cam)  # Cites : FLIR TELEDYNE
+        print("Heating Paused")
+        """~———TODO insert kasa code here to shut the heat gun off.———~"""
+        return True
 
 
 # # # Bootstrap
@@ -462,9 +472,7 @@ def main():
         # List of Temperatures
         for t in range(30, 95, 1):
             # Initiates Capture
-            cam.Init()
-            Go(cam, t)
-            time.sleep(2)
+            Capture(cam, t)
 
     print("Capture Complete, please cool the camera.")
     print("Please do not touch the camera, it is most likely 50°C+.")
