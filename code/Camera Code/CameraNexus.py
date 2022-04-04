@@ -9,26 +9,24 @@ import sys
 import time
 
 import importlib_metadata
-import Trigger as t
+import Trigger as trigger 
 import asyncio
 import kasa
 
+"""
+Initialize the power strip
+"""
+powerstrip = kasa.SmartPlug('IP Address')
 
-powerstrip = kasa.SmartStrip('1.1.1.1')
-
-
-
-
-
-
-# My Additions to this script:
-# Grabs the temperature of the camera, returns it as a float
+"""
+My Additions to the automation
+Grabs the temperature of the camera, returns it as a float
+"""
 def GetCameraTemperature(cam):
     x = 0
     if cam.DeviceTemperature.GetAccessMode() == PySpin.RO:
         x = cam.DeviceTemperature.ToString()
     x = float(x)
-
     return x
 
 
@@ -49,10 +47,10 @@ def Go(cam, GoalTemperature):
         time.sleep(5)  # Protects the camera.
 
     # Capture 1 image
-    if Temp >= GoalTemperature:
+    if Temp == GoalTemperature:
         print("Capturing, heating has been discontinued")
-        powerstrip.turn_off
-        t.run_single_camera(cam) 
+        powerstrip.turn_off()
+        trigger.run_single_camera(cam) 
 
 """
 Communicates with the camera via Trigger.py

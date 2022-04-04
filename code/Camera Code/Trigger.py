@@ -31,7 +31,8 @@ import os
 import time
 import PySpin
 import sys
-import HeatTrigger as hT
+import asyncio
+import CameraNexus as Nexus
 
 NUM_IMAGES = 2  # number of images to grab
 
@@ -272,7 +273,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
                     # Create a unique filename
                     if device_serial_number:
                         filename = 'sample-%s-%d-%d.png' % (device_serial_number, i +
-                                                            image_num_config, hT.GetCameraTemperature(cam))
+                                                            image_num_config, Nexus.GetCameraTemperature(cam))
                     else:  # if serial number is empty
                         filename = 'sample-%d.png' % i + str(image_num_config)
 
