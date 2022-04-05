@@ -69,12 +69,12 @@ Heat Gun Automation
 class HeatGun:
     async def On():
         print("Heat Gun Power On")
-        HeatGun = s.SmartPlug("127.0.0.1")
+        HeatGun = s.SmartPlug("X.X.X.X")
         await HeatGun.turn_on()
 
     async def Off():
         print("Heat Gun Power Off")
-        HeatGun = s.SmartPlug("127.0.0.1")
+        HeatGun = s.SmartPlug("X.X.X.X")
         await HeatGun.turn_off()
 ```
     
@@ -275,6 +275,8 @@ Current final accuracy is 0.550496:
     Imaging. Kodukula Et Al.
 
 > Dirty Pixels: Towards End-to-End Image Processing and Perception Diamond Et. Al.
+
+> Feng, Vincent. 2017. “An Overview of ResNet and its Variants | by Vincent Feng.” Towards Data Science. https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035.
 
 > FLIR. (n.d.). Spinnaker-SDKVersion (Trigger.py). Spinnaker SDK. Retrieved from https://www.flir.com/products/spinnaker-sdk/. 
 
