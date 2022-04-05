@@ -30,43 +30,57 @@ def GetCameraTemperature(cam):
     x = float(x)
     return x
 ```
-as well as:  ```Go(cam,GoalTemperature)```
+as well as:  ```Heat(cam,GoalTemperature)``` from ```Capture(cam,temp)```
 
 ```python
-def Go(cam, GoalTemperature):
+def Heat(cam, GoalTemperature):
     # Get Temperature of Camera
-
     Temp = GetCameraTemperature(cam)
     print(GoalTemperature)
 
     # Heating
+    asyncio.run(HeatGun.HeatGunOn()) 
     while Temp < GoalTemperature:
-        cam.Init()
         Temp = GetCameraTemperature(cam)
-        print(Temp)
-        time.sleep(3)  # Protects the camera.
+        print("Camera is currently", Temp, "°C")
+        time.sleep(5)  # Protects the camera.
 
-    # Capture 2 images
+    # Capture 1 image
     if Temp > GoalTemperature:
-        # cam.DeInit() This makes the who thing crash much more quickly
-        print("Capturing, please continue heating")
-        Capture(cam)  # Cites : FLIR TELEDYNE
+        asyncio.run(HeatGun.Off)
+        print("Heating Paused")
+        """~———TODO insert kasa code here to shut the heat gun off.———~"""
+        return True
 ```
+    
+Heat Gun Automation
+    
+```python
+class HeatGun:
+    async def On():
+        print("Heat Gun Power On")
+        HeatGun = s.SmartPlug("127.0.0.1")
+        await HeatGun.turn_on()
 
-The heat testing is done using a loop in the ``` main()``` method. 
+    async def Off():
+        print("Heat Gun Power Off")
+        HeatGun = s.SmartPlug("127.0.0.1")
+        await HeatGun.turn_off()
+```
+    
+  
+
+The heat testing is done using a loop in the ```main()``` method. 
 
 ```python
-def main():
-    •••
-    # List of Cameras
+ # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
-        for t in range(60, 95, 1): # Capture more images per cycle
+        for t in range(30, 95, 1):
             # Initiates Capture
-            Go(cam, t)
-            time.sleep(2)
+            Capture(cam, t)
     
-    print("Capture Complete, please cool the camera.")
+    print("Capture Complete")
     ••• 
 ```
 </p>
@@ -75,9 +89,16 @@ def main():
 #### Depends on
 
 ```python
-import PySpin
 import sys
 import time
+import json
+import asyncio
+try:
+    import PySpin
+    import kasa as s
+    print("PySpin and kasa imported, no issues stated.")
+except:
+    print("During import, issues stated")
 ```
 
 #### Runs as 
@@ -112,10 +133,10 @@ $ Trigger mode disabled...
 Due to the nature of image processing of noisy images, max-pooling will likely be used alongside some kind of edge dectection algorthim. This aspect very much remains in the research stage, but as of right now the goal is to train a Convolution Neural Network to indentify cups of coffee that are either hot or iced. 
 This implementation relies on [TensorFlow.Keras](https://keras.io).
 
-This machine-learning model relies heavily on ```2DConvolutions``` and ```Batch Normalizations```. However, at present it is currently not very effective, the goal now is to add more ```maxPooling``` to the model. 
+This machine-learning model relies heavily on the **ResNet** model and has 34 layers which use the implementation of residual being added back. 
 
 #### Runs as
-```$ IgnoresThermal.py``` 
+```$ IgnoresThermal.py``` and ```$ NoThermal.py```
 
 #### Intent 
 Indentify cups of coffee as either iced or hot. This will be done using a variety of coffee cups from the on-campus Starbucks here at the Univeristy that contain hot or iced coffee. 
