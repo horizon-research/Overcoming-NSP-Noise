@@ -20,19 +20,23 @@
 # This script relies on the Trigger.py script provided Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
 #
 # Essentially this script is a temperature trigger for the camera that continues running until all captures are taken
-# This script is being used under the alias of HeatTrigger.py for CSC 391 Part I | Automation
+# This script has been heavily modified Spring '22  under the alias of HeatTrigger.py for CSC 391 Part I | Automation 
 # =============================================================================
 
 
 """
+
 TODO (Add Kasa code to enable and disable the heatgun this is critical)
+
 TODO (Research into why this code sometimes throws a segmentation fault)
+
 """
 
 import sys
 import time
 import json
 import PySpin
+import asyncio
 from kasa import smartplug
 
 try:
@@ -384,6 +388,7 @@ def Capture(cam,temp):
         nodemap_tldevice = cam.GetTLDeviceNodeMap()
 
         # result &= print_device_info(nodemap_tldevice)
+        cam.Init()
 
         # Retrieve GenICam nodemap
         nodemap = cam.GetNodeMap()
@@ -399,6 +404,8 @@ def Capture(cam,temp):
 
         # Reset trigger
         result &= reset_trigger(nodemap)
+        
+        cam.DeInit()
 
 
     except PySpin.SpinnakerException as ex:
