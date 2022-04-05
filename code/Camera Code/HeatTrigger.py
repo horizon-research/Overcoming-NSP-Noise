@@ -27,7 +27,6 @@
 """
 
 TODO (Add Kasa code to enable and disable the heatgun this is critical)
-
 TODO (Research into why this code sometimes throws a segmentation fault)
 
 """
@@ -37,7 +36,24 @@ import time
 import json
 import PySpin
 import asyncio
-from kasa import smartplug
+import kasa as  s
+
+
+"""
+Controls power to the heatgun. This whole asyncio thing is going to prove challenging. 
+We want these things to work in tandem. Perhaps 
+"""
+
+class HeatGun:
+    async def On():
+        print("Heat Gun Power On")
+        HeatGun = s.SmartPlug("127.0.0.1")
+        await HeatGun.turn_on()
+
+    async def Off():
+        print("Heat Gun Power Off")
+        HeatGun = s.SmartPlug("127.0.0.1")
+        await HeatGun.turn_off()
 
 try:
     import PySpin
@@ -53,7 +69,6 @@ NUM_IMAGES = 5  # number of images to grab
 class TriggerType:
     SOFTWARE = 1
     HARDWARE = 2
-
 
 CHOSEN_TRIGGER = TriggerType.SOFTWARE
 
@@ -367,7 +382,6 @@ def reset_trigger(nodemap):
 
     return result
 
-
 # TODO Add in the functionality of Go() here. I believe that will take care of some of the camera initialization issues
 # as they are not issues in the origional script.  
 def Capture(cam,temp):
@@ -388,6 +402,8 @@ def Capture(cam,temp):
         nodemap_tldevice = cam.GetTLDeviceNodeMap()
 
         # result &= print_device_info(nodemap_tldevice)
+       
+
         cam.Init()
 
         # Retrieve GenICam nodemap
@@ -407,13 +423,11 @@ def Capture(cam,temp):
         
         cam.DeInit()
 
-
     except PySpin.SpinnakerException as ex:
         print('Error: %s' % ex)
         result = False
 
     return result
-
 
 """ 
 My Additions to this script are below
@@ -440,6 +454,7 @@ def Heat(cam, GoalTemperature):
     print(GoalTemperature)
 
     # Heating
+    asyncio.run(HeatGun.HeatGunOn()) 
     while Temp < GoalTemperature:
         Temp = GetCameraTemperature(cam)
         print("Camera is currently", Temp, "°C")
@@ -447,6 +462,7 @@ def Heat(cam, GoalTemperature):
 
     # Capture 1 image
     if Temp > GoalTemperature:
+        asyncio.run(HeatGun.Off)
         print("Heating Paused")
         """~———TODO insert kasa code here to shut the heat gun off.———~"""
         return True
@@ -496,3 +512,5 @@ if __name__ == '__main__':
         sys.exit(0)
     else:
         sys.exit(1)
+
+   
