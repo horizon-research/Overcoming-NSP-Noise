@@ -21,29 +21,34 @@
 #
 # Essentially this script is a temperature trigger for the camera that continues running until all captures are taken
 # This script has been heavily modified Spring '22  under the alias of HeatTrigger.py for CSC 391 Part I | Automation 
+# This Script also draws on Exposure_QuickSpin.py for auto exposure. 
 # =============================================================================
 
 
 """
-
 TODO (Add Kasa code to enable and disable the heatgun this is critical)
-TODO (Research into why this code sometimes throws a segmentation fault)
-
+TODO (Research into why this code sometimes throws a segmentation fault) Maybe fixed with new cam.Init()
 """
-
 import sys
 import time
 import json
-import PySpin
 import asyncio
-import kasa as  s
 
+"""
+Python Virtual Enviroments can be challenging at times...
+This only works with Python3.8. This is crucial. 
+"""
+try:
+    import PySpin
+    import kasa as s
+    print("PySpin and kasa imported, no issues stated.")
+except:
+    print("During import, issues stated")
 
 """
 Controls power to the heatgun. This whole asyncio thing is going to prove challenging. 
 We want these things to work in tandem. Perhaps 
 """
-
 class HeatGun:
     async def On():
         print("Heat Gun Power On")
@@ -55,13 +60,6 @@ class HeatGun:
         HeatGun = s.SmartPlug("127.0.0.1")
         await HeatGun.turn_off()
 
-try:
-    import PySpin
-    from kasa import smartplug
-    print("PySpin and kasa imported, no issues stated.")
-except:
-    print("During import, issues stated")
-
 # # Take two images per click.
 NUM_IMAGES = 5  # number of images to grab
 
@@ -72,7 +70,7 @@ class TriggerType:
 
 CHOSEN_TRIGGER = TriggerType.SOFTWARE
 
-# # From Spinnaker SDK : Examples : (copyright) FLIR
+# From Spinnaker SDK : Examples : (copyright) FLIR
 def configure_trigger(cam):
     """
     This function configures the camera to use a trigger. First, trigger mode is
@@ -178,8 +176,7 @@ def configure_trigger(cam):
 
     return result
 
-
-# # From Spinnaker SDK : Examples : (copyright) FLIR
+# From Spinnaker SDK : Examples : (copyright) FLIR
 def grab_next_image_by_trigger(nodemap):
     """
     This function acquires an image by executing the trigger node.
@@ -211,7 +208,8 @@ def grab_next_image_by_trigger(nodemap):
                 return False
 
             node_softwaretrigger_cmd.Execute()
-            time.sleep(2)
+            time.sleep(2) # Implemented the sleep command for that two second delay.
+
 
         elif CHOSEN_TRIGGER == TriggerType.HARDWARE:
             print('Use the hardware to trigger image acquisition.')
@@ -222,7 +220,7 @@ def grab_next_image_by_trigger(nodemap):
 
     return result
 
-# # From Spinnaker SDK : Examples : (copyright) FLIR
+# From Spinnaker SDK : Examples : (copyright) FLIR
 def acquire_images(cam, nodemap, nodemap_tldevice):
     """
     This function acquires and saves _5_ images from a device.
@@ -267,9 +265,13 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
             print('Unable to set acquisition mode to continuous (entry retrieval). Aborting...')
             return False
 
+        # Change to RGB rather than Mono 8
+        if cam.PixelFormat.GetAccessMode() == PySpin.RW:
+            cam.PixelFormat.SetValue(PySpin.PixelFormat_BayerRG8)
+
         # TODO : see if this is legit? This is for tomorrow. 
         node_pixel_format = PySpin.IEnumerationPtr('PixelFormat')
-        if not PySpin.IsAvailable(node_file_format) or not PySpin.IsReadable(
+        if not PySpin.IsAvailable(node_pixel_format) or not PySpin.IsReadable(
                node_pixel_format):
             return False
 
@@ -308,10 +310,10 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
 
                     # Create a unique filename
                     if device_serial_number:
-                        filename = 'sample-%s-%d-%d.png' % (device_serial_number, i +
+                        filename = 'sample-%s-%d-%d.raw' % (device_serial_number, i +
                                                             image_num_config, GetCameraTemperature(cam))
                     else:  # if serial number is empty
-                         filename = 'sample-%s-%d.png' % (i +
+                         filename = 'sample-%s-%d.raw' % (i +
                                                             image_num_config, GetCameraTemperature(cam))
 
                     # Save image
@@ -349,8 +351,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
 
     return result
 
-
-# # # From Spinnaker SDK : Examples : (copyright) FLIR
+# From Spinnaker SDK : Examples : (copyright) FLIR
 def reset_trigger(nodemap):
     """
     This function returns the camera to a normal state by turning off trigger mode.
@@ -373,7 +374,7 @@ def reset_trigger(nodemap):
             return False
 
         node_trigger_mode.SetIntValue(node_trigger_mode_off.GetValue())
-
+    
         print('Trigger mode disabled...')
 
     except PySpin.SpinnakerException as ex:
@@ -381,6 +382,13 @@ def reset_trigger(nodemap):
         result = False
 
     return result
+
+# Auto Expose Images Between each image. 
+def AutoExposure(cam):
+    if cam.ExposureAuto.GetAccessMode() == PySpin.RW:
+        cam.ExposureAuto.setValue(PySpin.ExposureAuto_Continuous)
+        return True
+    return False
 
 # TODO Add in the functionality of Go() here. I believe that will take care of some of the camera initialization issues
 # as they are not issues in the origional script.  
@@ -400,12 +408,7 @@ def Capture(cam,temp):
 
         # Retrieve TL device nodemap and print device information
         nodemap_tldevice = cam.GetTLDeviceNodeMap()
-
-        # result &= print_device_info(nodemap_tldevice)
-       
-
         cam.Init()
-
         # Retrieve GenICam nodemap
         nodemap = cam.GetNodeMap()
 
@@ -414,6 +417,8 @@ def Capture(cam,temp):
             return False
 
         result&= Heat(cam,temp)
+
+        result &= AutoExposure(cam)
 
         # Acquire images
         result &= acquire_images(cam, nodemap, nodemap_tldevice)
@@ -467,8 +472,7 @@ def Heat(cam, GoalTemperature):
         """~———TODO insert kasa code here to shut the heat gun off.———~"""
         return True
 
-
-# # # Bootstrap
+# Bootstrap
 def main():
     print("End of File")
     system = PySpin.System.GetInstance()
@@ -505,7 +509,6 @@ def main():
 
     # Release system instance
     system.ReleaseInstance()
-
 
 if __name__ == '__main__':
     if main():
