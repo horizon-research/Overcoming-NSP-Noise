@@ -13,11 +13,10 @@ Images will be captured using a [Flir BlackFly USB3](https://www.flir.com/produc
 
 The safety of heating the camera ensured using Python code which relies on the [Spinnaker SDK](https://www.flir.com/products/spinnaker-sdk/) to moniter the camera temperature which is limited by the camera to less than 100°C. The heat gun is also automated around the temperature of the camera. This is achieved through the use of [Python-Kasa](https://python-kasa.readthedocs.io/en/latest/) which will power on and off the heat-gun by turning on and off a [Smart-plug](https://www.kasasmart.com/us/products/smart-plugs)
 For the main code, I have heavily modified the FLIR SDK example: ```Trigger.py```. 
-Added to this was the following : 
 
-**For the device temperature: ```GetCameraTemperature(cam)``` :**
+Under the alias of [HeatTrigger.py](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/b6b2682504cde2be44bf4a3e9def78783bd7c998/code/Camera%20Code/HeatTrigger.py)
 
-#### Depends on
+*Depends on*:
 
 ```python
 import sys
@@ -31,6 +30,7 @@ try:
 except:
     print("During import, issues stated")
 ```
+This was added to dynamically access the camera temperature **:** ```GetCameraTemperature(cam)``` 
 
 ```python
 def GetCameraTemperature(cam):
@@ -41,7 +41,7 @@ def GetCameraTemperature(cam):
     return x
 ```
 
-**I have added as well:  ```Heat(cam,GoalTemperature)``` from ```Capture(cam,temp)```**
+I have added as well:  ```Heat(cam,GoalTemperature)``` from ```Capture(cam,temp)```
 
 ```python
 def Heat(cam, GoalTemperature):
@@ -63,7 +63,7 @@ def Heat(cam, GoalTemperature):
         return True
 ```
 
-**Heat Gun Automation**
+Heat Gun Automation
 
 ```python
 class HeatGun:
@@ -79,7 +79,7 @@ class HeatGun:
 ```
     
   
-**The heat testing is done using a loop in the ```main()``` method.**
+The heat testing is done using a loop in the ```main()``` method.
 
 ```python
  # List of Cameras
@@ -96,7 +96,7 @@ class HeatGun:
 #### Runs as 
 ```$ Python3.8 HeatTrigger.py```
 
-Images are saved as  ```sample-serialNumber-capNum-temp.png```. These are RAW image files. 
+Images are saved as  ```sample-serialNumber-capNum-temp.raw```. These are RAW image files. 
 
 The numbering relies on the ```Accuracy.json``` which stores the number of captures after each capture.
 In the terminal it looks like the following
@@ -104,21 +104,16 @@ In the terminal it looks like the following
 ```python
 •••
 $ Acquiring images...
-$ Image saved at sample-18255214-12-39.png
+$ Image saved at sample-18255214-12-39.raw
 
-$ Image saved at sample-18255214-13-39.png
+$ Image saved at sample-18255214-13-39.raw
 
 $ Trigger mode disabled...
 •••
 ```
 
-
-### This image was taken at 67°C
-![Here is an example of a noisy image](sample-18255214-326-67.png)
-
-### This is that same image denoised 
-![Here is an example of a clean image](CleanTrainingData-162.jpg)
-
+#### Metrics 
+The main metric measured for images in this project is the [Signal-To-Noise](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/b6b2682504cde2be44bf4a3e9def78783bd7c998/code/Metrics/SNR.py) ratio of these images. This is done using ```SNR.py```
  
 ## Machine Learning
 Due to the nature of image processing of noisy images, max-pooling will likely be used alongside some kind of edge dectection algorthim. This aspect very much remains in the research stage, but as of right now the goal is to train a Convolution Neural Network to indentify cups of coffee that are either hot or iced. 
@@ -151,10 +146,6 @@ I have done the following to create a neural network that uses data augmentation
 convolution kernels, batch normalization, making more dense the layers of the network and finally dropping layers out at each iteration to help train the network of more key characteristics. 
 
 ```python 
-""" Citations: 
-Cites: this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
-Cites: https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035
-"""
 """ Citations: 
 Cites: this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
 Cites: https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035
@@ -276,9 +267,8 @@ This image is cold coffee
 Current final accuracy is 0.550496: 
 ```
 
-
 ### Analysis
-*To soon to be determined*. Images only number 600 and overfitting is quite a risk. 
+*Too soon to be determined*. Images only number 600 and overfitting is quite a risk. 
 
 ### **Works Cited** :
 > Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
@@ -290,9 +280,13 @@ Current final accuracy is 0.550496:
 
 > FLIR. (n.d.). Spinnaker-SDKVersion (Exposure_QuickSpin.py). Spinnaker SDK. Retrieved from https://www.flir.com/products/spinnaker-sdk/. 
 
+> FLIR. (n.d.). Spinnaker-SDKVersion (ImageFormatControl_QuickSpin.py). Spinnaker SDK. Retrieved from https://www.flir.com/products/spinnaker-sdk/. 
+
 > FLIR Integrated Imaging Solutions, Inc. (n.d.). PySpinDoc. 
 
 > François Chollet, Team, K. (n.d.). Keras documentation: Image Classification From Scratch. Keras. Retrieved February 22, 2022, from 
    https://keras.io/examples/vision/image_classification_from_scratch/ 
 
 > n.d. python-kasa — python-kasa documentation. Accessed April 5, 2022. https://python-kasa.readthedocs.io/en/latest/.
+
+> University of Rochester and Yuhao Zhu. n.d. “Lecture 8: Image Sensing and Sensor Design II.” Fall 2021. Rochester, New York. Accessed March, 2022. https://www.cs.rochester.edu/courses/572/fall2020/decks/sensor-2.pd
