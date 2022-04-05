@@ -288,7 +288,7 @@ Current final accuracy is 0.550496:
 
 > FLIR. (n.d.). Spinnaker-SDKVersion (Trigger.py). Spinnaker SDK. Retrieved from https://www.flir.com/products/spinnaker-sdk/. 
 
-> FLIR. (n.d.). Spinnaker-SDKVersion (Exposure_QuickSpinr.py). Spinnaker SDK. Retrieved from https://www.flir.com/products/spinnaker-sdk/. 
+> FLIR. (n.d.). Spinnaker-SDKVersion (Exposure_QuickSpin.py). Spinnaker SDK. Retrieved from https://www.flir.com/products/spinnaker-sdk/. 
 
 > FLIR Integrated Imaging Solutions, Inc. (n.d.). PySpinDoc. 
 
