@@ -14,22 +14,27 @@ Images will be captured using a [Flir BlackFly USB3](https://www.flir.com/produc
 The safety of heating the camera ensured using Python code which relies on the [Spinnaker SDK](https://www.flir.com/products/spinnaker-sdk/) to moniter the camera temperature which is limited by the camera to less than 100°C. The heat gun is also automated around the temperature of the camera. This is achieved through the use of [Python-Kasa](https://python-kasa.readthedocs.io/en/latest/) which will power on and off the heat-gun by turning on and off a [Smart-plug](https://www.kasasmart.com/us/products/smart-plugs)
 For the main code, I have heavily modified the FLIR SDK example: ```Trigger.py```. 
 
+Dependencies
+
+```
+Python3.8
+sys
+asyncio     : pip install asyncio 
+tensorflow  : pip install tensorflow 
+Poetry      : pip install poetry 
+json
+PySpin      : pip install spinnaker_python-2.6.0.156-cp38-cp38-macosx_10_14_x86_64.whl 
+kasa        : pip install kasa
+keras       : pip install keras
+time
+graphviz    : pip install graphviz
+pydot       : pip install pydot
+
+```
+
+### Code
 Under the alias of [HeatTrigger.py](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/b6b2682504cde2be44bf4a3e9def78783bd7c998/code/Camera%20Code/HeatTrigger.py)
 
-*Depends on*:
-
-```python
-import sys
-import time
-import json
-import asyncio
-try:
-    import PySpin
-    import kasa as s
-    print("PySpin and kasa imported, no issues stated.")
-except:
-    print("During import, issues stated")
-```
 This was added to dynamically access the camera temperature **:** ```GetCameraTemperature(cam)``` 
 
 ```python
@@ -125,20 +130,7 @@ This machine-learning model relies heavily on the **ResNet** model and has 34 la
 ```$ IgnoresThermal.py``` and ```$ NoThermal.py```
 
 #### Intent 
-Indentify cups of coffee as either iced or hot. This will be done using a variety of coffee cups from the on-campus Starbucks here at the Univeristy that contain hot or iced coffee. 
-These are contained within the ```Training_Data``` and ```CleanTestImages``` folders. 
-
-#### Depends on
-
-```python
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
-```
-***As well as*** ```pydot``` ***and*** ```graphviz```.
-
-
-The data used is from the ```training_images``` folder which contains 599+ images taken by the **Blackfly** camera of cofee cupts of iced or hot varieties taken at various temperatures ranging from 60-97°C. These images are divided into two classes ```Hot``` and ```Iced``` and futher into ```training``` and ```validation``` within their respective folders. 
+Indentify cups of coffee as either iced or hot. This will be done using a variety of coffee cups from the on-campus Starbucks here at the Univeristy that contain hot or iced coffee. These are contained within the ```Training_Data``` and ```CleanTestImages``` folders. 
 
 #### The Code
 
