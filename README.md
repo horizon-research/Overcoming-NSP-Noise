@@ -11,8 +11,7 @@ Christopher Bruinsma and Yuhao Zhu at Horizon Research, *Univerisity of Rocheste
 
 Images will be captured using a [Flir BlackFly USB3](https://www.flir.com/products/blackfly-s-usb3/) camera which has thermal-noise induced using a heat gun from [Wagner](https://www.wagnerspraytech.com/products/heat-guns/ht400-heat-gun/).
 
-The safety of heating the camera ensured using Python code which relies on the [Spinnaker SDK](https://www.flir.com/products/spinnaker-sdk/) to moniter the camera temperature which is limited by the camera to less than 100°C. The heat gun is also automated around the temperature of the camera. This is achieved through the use of [Python-Kasa](https://python-kasa.readthedocs.io/en/latest/) which will power on and off the heat-gun by turning on and off a [Smart-plug](https://www.kasasmart.com/us/products/smart-plugs)
-For the main code, I have heavily modified the FLIR SDK example: ```Trigger.py```. 
+The safety of heating the camera ensured using Python code which relies on the [Spinnaker SDK](https://www.flir.com/products/spinnaker-sdk/) to moniter the camera temperature which is limited by the camera to less than 100°C. The heat gun is also automated around the temperature of the camera. This is achieved through the use of [Python-Kasa](https://python-kasa.readthedocs.io/en/latest/) which will power on and off the heat-gun by turning on and off a [Smart-Plug](https://www.kasasmart.com/us/products/smart-plugs)
 
 Dependencies
 
@@ -33,7 +32,7 @@ pydot       : pip install pydot
 ```
 
 ### Code
-Under the alias of [HeatTrigger.py](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/b6b2682504cde2be44bf4a3e9def78783bd7c998/code/Camera%20Code/HeatTrigger.py)
+Under the alias of [HeatTrigger.py](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/b6b2682504cde2be44bf4a3e9def78783bd7c998/code/Camera%20Code/HeatTrigger.py) this code adds on to the code written by the Spinnaker SDK ```Trigger.py```
 
 This was added to dynamically access the camera temperature **:** ```GetCameraTemperature(cam)``` 
 
