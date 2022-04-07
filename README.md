@@ -116,6 +116,18 @@ $ Trigger mode disabled...
 
 #### Metrics 
 The main metric measured for images in this project is the [Signal-To-Noise](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/b6b2682504cde2be44bf4a3e9def78783bd7c998/code/Metrics/SNR.py) ratio of these images. This is done using ```SNR.py```
+
+```
+(env) (base) chris@Chriss-MacBook-Pro-2 CSC_Independent % python3.8 SNR.py
+The SNR for the 60 Degree Training Images 3.005 
+
+The SNR for the 70 Degree Training Images 2.566 
+
+The SNR for the 80 Degree Training Images 2.481 
+
+The SNR for the 90 Degree Training Images 2.696 
+```
+
  
 ## Machine Learning
 Due to the nature of image processing of noisy images, max-pooling will likely be used alongside some kind of edge dectection algorthim. This aspect very much remains in the research stage, but as of right now the goal is to train a Convolution Neural Network to indentify cups of coffee that are either hot or iced. 
