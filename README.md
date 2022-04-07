@@ -93,8 +93,7 @@ The heat testing is done using a loop in the ```main()``` method.
             # Initiates Capture
             Capture(cam, t)
     
-    print("Capture Complete")
-    ••• 
+    print("Capture Complete") 
 ```
 
 #### Runs as 
@@ -109,9 +108,7 @@ In the terminal it looks like the following
 •••
 $ Acquiring images...
 $ Image saved at sample-18255214-12-39.raw
-
 $ Image saved at sample-18255214-13-39.raw
-
 $ Trigger mode disabled...
 •••
 ```
