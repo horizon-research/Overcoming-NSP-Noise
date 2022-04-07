@@ -104,13 +104,14 @@ Images are saved as  ```sample-serialNumber-capNum-temp.raw```. These are RAW im
 The numbering relies on the ```Accuracy.json``` which stores the number of captures after each capture.
 In the terminal it looks like the following
 
-```python
-•••
+```
 $ Acquiring images...
+
 $ Image saved at sample-18255214-12-39.raw
+
 $ Image saved at sample-18255214-13-39.raw
+
 $ Trigger mode disabled...
-•••
 ```
 
 #### Metrics 
