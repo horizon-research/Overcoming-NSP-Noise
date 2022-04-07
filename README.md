@@ -117,6 +117,19 @@ $ Trigger mode disabled...
 #### Metrics 
 The main metric measured for images in this project is the [Signal-To-Noise](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/b6b2682504cde2be44bf4a3e9def78783bd7c998/code/Metrics/SNR.py) ratio of these images. This is done using ```SNR.py```
 
+### This is the SNR of the Data Set Overall
+```
+(env) (base) chris@Chriss-MacBook-Pro-2 CSC_Independent % python3.8 SNR.py
+The SNR for the 60 Degree Training Images 2.973 
+
+The SNR for the 70 Degree Training Images 3.595 
+
+The SNR for the 80 Degree Training Images 3.649 
+
+The SNR for the 90 Degree Training Images 3.333 
+```
+
+#### This is the SNR of the Cold Coffee Training set
 ```
 (env) (base) chris@Chriss-MacBook-Pro-2 CSC_Independent % python3.8 SNR.py
 The SNR for the 60 Degree Training Images 3.005 
@@ -127,6 +140,20 @@ The SNR for the 80 Degree Training Images 2.481
 
 The SNR for the 90 Degree Training Images 2.696 
 ```
+
+#### This is the SNR for the Hot Coffee Training Set
+```
+(env) (base) chris@Chriss-MacBook-Pro-2 CSC_Independent % python3.8 SNR.py
+The SNR for the 60 Degree Training Images 2.88 
+
+The SNR for the 70 Degree Training Images 4.236 
+
+The SNR for the 80 Degree Training Images 4.117 
+
+The SNR for the 90 Degree Training Images 3.91 
+```
+
+While this might be counterintuitive, the rise in signal-to-noise ratio, it can be accounted for the use of different exposure compensation settings. For example, images taken with at f16 show quite a bit more noise than images taken at f2. Given that the hot images were mostly taken at f2 by combining them with the cold images the signal to noise ratio is much higher. Noise is always more evident at longer exposures and when there is less light on the sensor. 
 
  
 ## Machine Learning
