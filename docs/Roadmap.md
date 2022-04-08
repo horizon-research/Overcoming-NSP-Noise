@@ -21,9 +21,9 @@ This is my tentative plan for the semester that takes into account the online po
 
 - [x] A Neural Network (how should these be implemented? Tensorflow? PyTorch?)
 
-- [ ] Around 1000 Images for object detection **[This is being neared at now 599 images]**
+- [ ] ~~Around 1000 Images for object detection **[This is being neared at now 599 images]**~~
 
-- [x] A set of coffee cups to image that are iced and hot varietals. 
+- [x] ~~A set of coffee cups to image that are iced and hot varietals.~~
 
 - [x] Camera Specific Capture Code using Spinnaker SDK 
 
