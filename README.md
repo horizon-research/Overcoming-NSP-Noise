@@ -20,7 +20,7 @@ Python3.8
 sys
 asyncio     : pip install asyncio 
 tensorflow  : pip install tensorflow 
-Poetry      : pip install poetry 
+poetry      : pip install poetry 
 json
 PySpin      : pip install spinnaker_python-2.6.0.156-cp38-cp38-macosx_10_14_x86_64.whl 
 kasa        : pip install kasa
@@ -28,7 +28,10 @@ keras       : pip install keras
 time
 graphviz    : pip install graphviz
 pydot       : pip install pydot
-
+numpy       : pip install numpy
+PIL
+cv2         : pip install cv2
+       
 ```
 
 ### Code
