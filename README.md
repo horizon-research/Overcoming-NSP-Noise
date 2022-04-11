@@ -1,17 +1,17 @@
 # Overcoming NSP Noise
 
-Overcoming NSP Noise is an independet project investigating the efficacy of machine learning on images taken on cameras under high thermal load. The project has two main parts, one is establishing an automated image capture system, two is to generate a ton of images using this automated setup for the training of a noisy-image-trained neural network. 
+Overcoming NSP Noise is an independent project investigating the efficacy of machine learning on images taken on cameras under high thermal load. The project has two main parts, one is establishing an automated image capture system, and two is to generate a high quantity of  images using this automated setup for the training of a noisy-image-trained neural network.
 
 
 #### Collaborators
 
-Christopher Bruinsma and Yuhao Zhu at Horizon Research, *Univerisity of Rochester*
+Christopher Bruinsma and Yuhao Zhu at Horizon Research, *University of Rochester*
 
 ## Image Capture
 
-Images will be captured using a [Flir BlackFly USB3](https://www.flir.com/products/blackfly-s-usb3/) camera which has thermal-noise induced using a heat gun from [Wagner](https://www.wagnerspraytech.com/products/heat-guns/ht400-heat-gun/).
+Images will be captured using a [FLIR BlackFly USB3](https://www.flir.com/products/blackfly-s-usb3/) camera which has thermal-noise induced using a heat gun from [Wagner](https://www.wagnerspraytech.com/products/heat-guns/ht400-heat-gun/).
 
-The safety of heating the camera ensured using Python code which relies on the [Spinnaker SDK](https://www.flir.com/products/spinnaker-sdk/) to moniter the camera temperature which is limited by the camera to less than 100°C. The heat gun is also automated around the temperature of the camera. This is achieved through the use of [Python-Kasa](https://python-kasa.readthedocs.io/en/latest/) which will power on and off the heat-gun by turning on and off a [Smart-Plug](https://www.kasasmart.com/us/products/smart-plugs)
+In order to safely heat the camera,  Python code is used which relies on the [Spinnaker SDK](https://www.flir.com/products/spinnaker-sdk/) to monitor the camera temperature which is limited by the camera to less than 100°C. The heat gun is also automated around the temperature of the camera. This is achieved through the use of [Python-Kasa](https://python-kasa.readthedocs.io/en/latest/) which will power on and off the heat-gun by turning on and off a [Smart-Plug](https://www.kasasmart.com/us/products/smart-plugs)
 
 Dependencies
 
@@ -150,7 +150,7 @@ While this might be counterintuitive, the rise in signal-to-noise ratio, it can 
 
  
 ## Machine Learning
-Due to the nature of image processing of noisy images, max-pooling will likely be used alongside some kind of edge dectection algorthim. This aspect very much remains in the research stage, but as of right now the goal is to train a Convolution Neural Network to indentify cups of coffee that are either hot or iced. 
+Due to the nature of image processing of noisy images, max-pooling will likely be used alongside some kind of edge detection algoritm. This aspect very much remains in the research stage, but as of right now the goal is to train a Convolution Neural Network to identify cups of coffee that are either hot or iced. 
 This implementation relies on [TensorFlow.Keras](https://keras.io).
 
 This machine-learning model relies heavily on the **ResNet** model and has 34 layers which use the implementation of residual being added back. 
@@ -159,7 +159,7 @@ This machine-learning model relies heavily on the **ResNet** model and has 34 la
 ```$ IgnoresThermal.py``` and ```$ NoThermal.py```
 
 #### Intent 
-Indentify cups of coffee as either iced or hot. This will be done using a variety of coffee cups from the on-campus Starbucks here at the Univeristy that contain hot or iced coffee. These are contained within the ```Training_Data``` and ```CleanTestImages``` folders. 
+Identify cups of coffee as either iced or hot. This will be done using a variety of coffee cups from the on-campus Starbucks here at the University that contain hot or iced coffee. These are contained within the ```Training_Data``` and ```CleanTestImages``` folders. 
 
 #### The Code
 
@@ -168,7 +168,7 @@ convolution kernels, batch normalization, making more dense the layers of the ne
 
 ```python 
 """ Citations: 
-Cites: this Model as a sample : https://keras.io/examples/vision/image_classification_from_scratch/
+
 Cites: https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035
 """
 def Block(x,size):
