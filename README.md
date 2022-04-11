@@ -120,6 +120,10 @@ $ Trigger mode disabled...
 #### Metrics 
 The main metric measured for images in this project is the [Signal-To-Noise](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/b6b2682504cde2be44bf4a3e9def78783bd7c998/code/Metrics/SNR.py) ratio of these images. This is done using ```SNR.py```
 
+The SNR is taken as follows 
+
+SNR =  &mu; / &sigma;
+
 ### This is the SNR of the Data Set Overall
 
 |Temperature | 60 Degree   |   70 Degree | 80 Degree   |   90 Degree |
