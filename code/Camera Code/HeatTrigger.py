@@ -34,7 +34,6 @@ Python Virtual Enviroments can be challenging at times...
 This only works with Python3.8. This is crucial. 
 """
 """
-
 Controls power to the heatgun. This whole asyncio thing is going to prove challenging. 
 We want these things to work in tandem. Perhaps 
 """
@@ -258,7 +257,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
         if cam.PixelFormat.GetAccessMode() == PySpin.RW:
             cam.PixelFormat.SetValue(PySpin.PixelFormat_BayerRG8)
 
-        # TODO : Is not legit | This is for tomorrow. 
+        # TODO : Is not legit | This is for tonight. 
         # node_pixel_format = PySpin.CEnumerationPtr(nodemap.GetNode('PixelFormat'))
         # if not PySpin.IsAvailable(node_pixel_format) or not PySpin.IsReadable(
         #        node_pixel_format):
@@ -408,7 +407,7 @@ def Capture(cam,temp):
 
         result&= Heat(cam,temp)
 
-        # result &= AutoExposure(cam)
+        result &= AutoExposure(cam)
 
         # Acquire images
         result &= acquire_images(cam, nodemap, nodemap_tldevice)
@@ -424,16 +423,6 @@ def Capture(cam,temp):
 
     return result
 
-""" 
-My Additions to this script are below
-
-GetCameraTemperature(cam) -> gets the temperature of the camera and returns it as a float
-
-Go -> checks the temperature of the camera against a temperature value if they match, it captures five images 
-    spaced 5 second apart. 
-
-"""
-
 def GetCameraTemperature(cam):
     if cam.DeviceTemperature.GetAccessMode() == PySpin.RO:
         return float(cam.DeviceTemperature.ToString())
@@ -448,13 +437,14 @@ def Heat(cam, GoalTemperature):
     """
         Continue Heating unitl goal temperature is achieved
     """
+    print('Heating\n')
     while Temp < GoalTemperature:
         Temp = GetCameraTemperature(cam)
-        print("Camera is currently", Temp, "°C")
-        time.sleep(5)
+        # print("Camera is currently", Temp, "°C") Not necessary, camera will heatgun will automatically be turned off. This was more for me. 
 
     # Capture 1 image
-    if Temp > GoalTemperature:
+    print('Heating Paused\n')
+    if Temp >= GoalTemperature:
         """
         Discontinue Heating when goal temperature is achieved
         """
@@ -490,11 +480,10 @@ def main():
         for t in range(45, 50, 1):
             # Initiates Capture
             if(Capture(cam,t)):
-                 time.sleep(5)
+                 time.sleep(5) # Give the camera a chance to acutally capture the images. 
             else:
                 break
            
-
     print("Please do not touch the camera, it is most likely 50°C+.")
 
     # Clear camera list before releasing system, this makes a mess if not cleared
