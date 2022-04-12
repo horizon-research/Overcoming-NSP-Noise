@@ -129,7 +129,7 @@ The main metric measured for images in this project is the [Signal-To-Noise](htt
 
 The SNR is taken as follows 
 
-**SNR**<sub>TempSet</sub> =  &Sigma;(&mu;<sub>Image</sub> / &sigma;<sub>Image</sub>)
+**SNR**<sub>TempSet</sub> =  &Sigma;(&mu;<sub>ImagePixels</sub> / &sigma;<sub>ImagePixels</sub>)
 
 ### This is the SNR of the Data Set Overall
 
