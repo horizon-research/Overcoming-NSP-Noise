@@ -51,22 +51,29 @@ def GetCameraTemperature(cam):
 I have added as well:  ```Heat(cam,GoalTemperature)``` from ```Capture(cam,temp)```
 
 ```python
+# Does the temperature sensing during the loops.
 def Heat(cam, GoalTemperature):
     # Get Temperature of Camera
     Temp = GetCameraTemperature(cam)
-    print(GoalTemperature)
-
     # Heating
-    asyncio.run(HeatGun.HeatGunOn()) # Turn the heat-gun on to begin the heating (heat gun set to 'on')
+
+    asyncio.run(HeatGun.On()) 
+    """
+        Continue Heating unitl goal temperature is achieved
+    """
+    print('Heating\n')
     while Temp < GoalTemperature:
-        Temp = GetCameraTemperature(cam) 
-        print("Camera is currently", Temp, "°C")
-        time.sleep(5)  # Protects the camera.
+        Temp = GetCameraTemperature(cam)
+        # print("Camera is currently", Temp, "°C") Not necessary, camera will heatgun will automatically be turned off. This was more for me. 
 
     # Capture 1 image
-    if Temp > GoalTemperature:
-        asyncio.run(HeatGun.Off) # Turn the heat-gun off to arrest the heating
-        print("Heating Stoped, images to be captured")
+    print('Heating Paused\n')
+    if Temp >= GoalTemperature:
+        """
+        Discontinue Heating when goal temperature is achieved
+        """
+        asyncio.run(HeatGun.Off())
+        print("Heating Paused")
         return True
 ```
 
@@ -76,12 +83,12 @@ Heat Gun Automation
 class HeatGun:
     async def On():
         print("Heat Gun Power On")
-        HeatGun = s.SmartPlug("X.X.X.X")
+        HeatGun = s.SmartPlug('192.168.0.1')
         await HeatGun.turn_on()
 
     async def Off():
         print("Heat Gun Power Off")
-        HeatGun = s.SmartPlug("X.X.X.X")
+        HeatGun = s.SmartPlug('192.168.0.1')
         await HeatGun.turn_off()
 ```
     
@@ -122,7 +129,7 @@ The main metric measured for images in this project is the [Signal-To-Noise](htt
 
 The SNR is taken as follows 
 
-**SNR<sub>TempSet</sub> =  &Sigma;(&mu;<sub>Image</sub> / &sigma;<sub>Image</sub>)**
+**SNR**<sub>TempSet</sub> =  &Sigma;(&mu;<sub>Image</sub> / &sigma;<sub>Image</sub>)
 
 ### This is the SNR of the Data Set Overall
 
@@ -143,7 +150,6 @@ The SNR is taken as follows
 |Temperature Set | 60 Degree   |   70 Degree | 80 Degree   |   90 Degree |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
 | **Signal to Noise** | 2.88     | 4.236        | 4.117   | 3.91   |
-
 
 
 While this might be counterintuitive, the rise in signal-to-noise ratio, it can be accounted for the use of different exposure compensation settings. For example, images taken with at f16 show quite a bit more noise than images taken at f2. Given that the hot images were mostly taken at f2 by combining them with the cold images the signal to noise ratio is much higher. Noise is always more evident at longer exposures and when there is less light on the sensor. 
