@@ -122,25 +122,25 @@ The main metric measured for images in this project is the [Signal-To-Noise](htt
 
 The SNR is taken as follows 
 
-SNR =  &mu; / &sigma;
+**SNR<sub>TempSet</sub> =  &Sigma;(&mu;<sub>Image</sub> / &sigma;<sub>Image</sub>)**
 
 ### This is the SNR of the Data Set Overall
 
-|Temperature | 60 Degree   |   70 Degree | 80 Degree   |   90 Degree |
+|Temperature Set | 60 Degree   |   70 Degree | 80 Degree   |   90 Degree |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
 | **Signal to Noise** | 2.973    | 3.595       | 3.649  | 3.333 |
 
 
 #### This is the SNR of the Cold Coffee Training set
 
-|Temperature | 60 Degree   |   70 Degree | 80 Degree   |   90 Degree |
+|Temperature Set | 60 Degree   |   70 Degree | 80 Degree   |   90 Degree |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
 | **Signal to Noise** | 3.005     | 2.566        | 2.481   | 2.696  |
 
 
 #### This is the SNR for the Hot Coffee Training Set
 
-|Temperature | 60 Degree   |   70 Degree | 80 Degree   |   90 Degree |
+|Temperature Set | 60 Degree   |   70 Degree | 80 Degree   |   90 Degree |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
 | **Signal to Noise** | 2.88     | 4.236        | 4.117   | 3.91   |
 
