@@ -1,63 +1,52 @@
-# THIS SCRIPT IS REMAINS FUNCTIONAL!
-# coding=utf-8
-# =============================================================================
-# Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
-#
-# This software is the confidential and proprietary information of FLIR
-# Integrated Imaging Solutions, Inc. ("Confidential Information"). You
-# shall not disclose such Confidential Information and shall use it only in
-# accordance with the terms of the license agreement you entered into
-# with FLIR Integrated Imaging Solutions, Inc. (FLIR).
-#
-# FLIR MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF THE
-# SOFTWARE, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-# PURPOSE, OR NON-INFRINGEMENT. FLIR SHALL NOT BE LIABLE FOR ANY DAMAGES
-# SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
-# THIS SOFTWARE OR ITS DERIVATIVES.
-# =============================================================================
-# This is the driver script for the experimentation with the FLIR BLACKFLY S Camera
-# This script relies on the Trigger.py script provided Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
-#
-# Essentially this script is a temperature trigger for the camera that continues running until all captures are taken
-# This script has been heavily modified Spring '22  under the alias of HeatTrigger.py for CSC 391 Part I | Automation 
-# This Script also draws on Exposure_QuickSpin.py for auto exposure. 
-# =============================================================================
 
+# coding=utf-8
+"""
+~~~ This script has been heavily modified Spring '22  under the alias of HeatTrigger.py for CSC 391 Part I | Automation ~~~ 
+Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+This software is the confidential and proprietary information of FLIR
+Integrated Imaging Solutions, Inc. ("Confidential Information"). You
+shall not disclose such Confidential Information and shall use it only in
+accordance with the terms of the license agreement you entered into
+with FLIR Integrated Imaging Solutions, Inc. (FLIR).
+FLIR MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF THE
+SOFTWARE, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, OR NON-INFRINGEMENT. FLIR SHALL NOT BE LIABLE FOR ANY DAMAGES
+SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
+THIS SOFTWARE OR ITS DERIVATIVES.
+"""
 
 """
-TODO (Add Kasa code to enable and disable the heatgun this is critical)
-TODO (Research into why this code sometimes throws a segmentation fault) Maybe fixed with new cam.Init()
+This is the driver script for the experimentation with the FLIR BLACKFLY S Camera
+This script relies on the Trigger.py script provided Copyright (c) 2001-2021 FLIR Systems, Inc. All Rights Reserved.
+
+Essentially this script is a temperature trigger for the camera that continues running until all captures are taken 
+This Script also draws on Exposure_QuickSpin.py for auto exposure. 
 """
 import sys
 import time
 import json
 import asyncio
-
+import PySpin
+import kasa as s 
 """
 Python Virtual Enviroments can be challenging at times...
 This only works with Python3.8. This is crucial. 
 """
-try:
-    import PySpin
-    import kasa as s
-    print("PySpin and kasa imported, no issues stated.")
-except:
-    print("During import, issues stated")
-
 """
+
 Controls power to the heatgun. This whole asyncio thing is going to prove challenging. 
 We want these things to work in tandem. Perhaps 
 """
 class HeatGun:
     async def On():
         print("Heat Gun Power On")
-        HeatGun = s.SmartPlug("127.0.0.1")
+        HeatGun = s.SmartPlug('192.168.0.1')
         await HeatGun.turn_on()
 
     async def Off():
         print("Heat Gun Power Off")
-        HeatGun = s.SmartPlug("127.0.0.1")
+        HeatGun = s.SmartPlug('192.168.0.1')
         await HeatGun.turn_off()
 
 # # Take two images per click.
@@ -269,11 +258,13 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
         if cam.PixelFormat.GetAccessMode() == PySpin.RW:
             cam.PixelFormat.SetValue(PySpin.PixelFormat_BayerRG8)
 
-        # TODO : see if this is legit? This is for tomorrow. 
-        node_pixel_format = PySpin.IEnumerationPtr('PixelFormat')
-        if not PySpin.IsAvailable(node_pixel_format) or not PySpin.IsReadable(
-               node_pixel_format):
-            return False
+        # TODO : Is not legit | This is for tomorrow. 
+        # node_pixel_format = PySpin.CEnumerationPtr(nodemap.GetNode('PixelFormat'))
+        # if not PySpin.IsAvailable(node_pixel_format) or not PySpin.IsReadable(
+        #        node_pixel_format):
+        #     return False
+        # pixel_format_BayerBGR8 = PySpin.CEnumEntryPtr(node_pixel_format.GetEntryByName('BGR8'))
+        # node_pixel_format.SetIntValue(pixel_format_BayerBGR8)
 
         # Retrieve integer value from entry node
         acquisition_mode_continuous = node_acquisition_mode_continuous.GetValue()
@@ -386,11 +377,10 @@ def reset_trigger(nodemap):
 # Auto Expose Images Between each image. 
 def AutoExposure(cam):
     if cam.ExposureAuto.GetAccessMode() == PySpin.RW:
-        cam.ExposureAuto.setValue(PySpin.ExposureAuto_Continuous)
+        cam.ExposureAuto.SetValue(PySpin.ExposureAuto_Continuous)
         return True
     return False
 
-# TODO Add in the functionality of Go() here. I believe that will take care of some of the camera initialization issues
 # as they are not issues in the origional script.  
 def Capture(cam,temp):
     """
@@ -418,7 +408,7 @@ def Capture(cam,temp):
 
         result&= Heat(cam,temp)
 
-        result &= AutoExposure(cam)
+        # result &= AutoExposure(cam)
 
         # Acquire images
         result &= acquire_images(cam, nodemap, nodemap_tldevice)
@@ -445,36 +435,36 @@ Go -> checks the temperature of the camera against a temperature value if they m
 """
 
 def GetCameraTemperature(cam):
-    x = 0
     if cam.DeviceTemperature.GetAccessMode() == PySpin.RO:
-        x = cam.DeviceTemperature.ToString()
-    x = float(x)
+        return float(cam.DeviceTemperature.ToString())
 
-    return x
-
-# # Does the temperature sensing during the loops.
+# Does the temperature sensing during the loops.
 def Heat(cam, GoalTemperature):
     # Get Temperature of Camera
     Temp = GetCameraTemperature(cam)
-    print(GoalTemperature)
-
     # Heating
-    asyncio.run(HeatGun.HeatGunOn()) 
+
+    asyncio.run(HeatGun.On()) 
+    """
+        Continue Heating unitl goal temperature is achieved
+    """
     while Temp < GoalTemperature:
         Temp = GetCameraTemperature(cam)
         print("Camera is currently", Temp, "°C")
-        time.sleep(5)  # Protects the camera.
+        time.sleep(5)
 
     # Capture 1 image
     if Temp > GoalTemperature:
-        asyncio.run(HeatGun.Off)
+        """
+        Discontinue Heating when goal temperature is achieved
+        """
+        asyncio.run(HeatGun.Off())
         print("Heating Paused")
-        """~———TODO insert kasa code here to shut the heat gun off.———~"""
         return True
 
 # Bootstrap
 def main():
-    print("End of File")
+    print("This is a heavily modified version of FLIR Teledyne's Triggery.py Script that is being used under the Alias HeatTrigger.py\n") 
     system = PySpin.System.GetInstance()
 
     # Retrieve list of cameras from the system
@@ -490,18 +480,21 @@ def main():
         # Release system instance
         system.ReleaseInstance()
         print("\n")
-        print('Camera(s) not detected, please check your connection and try again.')
+        print('Zero Cameras Discovered.')
         print("\n")
         return False
 
     # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
-        for t in range(30, 95, 1):
+        for t in range(45, 50, 1):
             # Initiates Capture
-            Capture(cam, t)
+            if(Capture(cam,t)):
+                 time.sleep(5)
+            else:
+                break
+           
 
-    print("Capture Complete, please cool the camera.")
     print("Please do not touch the camera, it is most likely 50°C+.")
 
     # Clear camera list before releasing system, this makes a mess if not cleared
@@ -515,5 +508,3 @@ if __name__ == '__main__':
         sys.exit(0)
     else:
         sys.exit(1)
-
-   
