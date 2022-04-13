@@ -23,13 +23,13 @@ This script relies on the Trigger.py script provided Copyright (c) 2001-2021 FLI
 Essentially this script is a temperature trigger for the camera that continues running until all captures are taken 
 This Script also draws on Exposure_QuickSpin.py for auto exposure. 
 """
-import sys
-import time
-import json
-import asyncio
-import PySpin
-from progress.bar import Bar # Serves no purpose other than to look cool 
-import kasa as s 
+import sys # Camera
+import time # Camera
+import json # Camera
+import asyncio # Heat Gun
+import PySpin # Camera 
+from progress.bar import Bar # Style , arguably camera safety. 
+import kasa as s # Heat Gun
 """
 Python Virtual Enviroments can be challenging at times...
 This only works with Python3.8. This is crucial. 
@@ -49,7 +49,7 @@ class HeatGun:
         HeatGun = s.SmartPlug('192.168.0.1')
         await HeatGun.turn_off()
 
-# # Take two images per click.
+# Take five images per temperature
 NUM_IMAGES = 5  # number of images to grab
 
 # What type of trigger?
@@ -369,7 +369,7 @@ def reset_trigger(nodemap):
         print('Trigger mode disabled...')
 
     except PySpin.SpinnakerException as ex:
-        print('Error: %s' % ex)
+        # print('Error: %s' % ex)
         result = False
 
     return result
@@ -408,7 +408,7 @@ def Capture(cam,temp):
 
         result&= Heat(cam,temp)
 
-        # result &= AutoExposure(cam)
+        result &= AutoExposure(cam)
 
         # Acquire images
         result &= acquire_images(cam, nodemap, nodemap_tldevice)
@@ -419,7 +419,7 @@ def Capture(cam,temp):
         cam.DeInit()
 
     except PySpin.SpinnakerException as ex:
-        print('Error: %s' % ex)
+        # print('Error: %s' % ex)
         result = False
 
     return result
@@ -429,29 +429,27 @@ def GetCameraTemperature(cam):
         return float(cam.DeviceTemperature.ToString())
 
 def BarProg(TempNext,Temp):
-    x = 0
     if(TempNext > Temp):
-        x = TempNext-Temp
-
-    return x
+        return TempNext-Temp
+    return 0
 
 # Does the temperature sensing during the loops.
 def Heat(cam, GoalTemperature):
     # Get Temperature of Camera
     Temp = GetCameraTemperature(cam)
     # Heating
-
     asyncio.run(HeatGun.On()) 
     """
-        about: Continue Heating unitl goal temperature is achieved
+        Continue Heating unitl goal temperature is achieved
     """
     TempBar = Bar('Heating',fill='█',index=Temp,max=GoalTemperature)
-    print('Heating\n')
     while Temp < GoalTemperature:
         Temp = GetCameraTemperature(cam)
         time.sleep(5)
-        TempBar.next(BarProg(GetCameraTemperature(cam),Temp),0)
+        TempBar.index = GetCameraTemperature(cam)
+        TempBar.next(BarProg(GetCameraTemperature(cam),Temp))
     TempBar.finish()
+
     # Capture 1 image
     print('Heating Paused\n')
     if Temp >= GoalTemperature:
@@ -461,9 +459,10 @@ def Heat(cam, GoalTemperature):
         asyncio.run(HeatGun.Off())
         print("Heating Paused")
         return True
+       
 
 # Bootstrap
-def main():
+def main(argv):
     print("This is a heavily modified version of FLIR Teledyne's Triggery.py Script that is being used under the Alias HeatTrigger.py\n") 
     system = PySpin.System.GetInstance()
 
@@ -480,22 +479,20 @@ def main():
         # Release system instance
         system.ReleaseInstance()
         print("\n")
-        print('Zero Cameras Discovered.')
-        print("\n")
+        print('Zero Cameras Discovered.\n')
         return False
 
-    # List of Cameras
+    # List of Cameras, loop seems like a bad idea, perhaps argv? 
+    """
+        Takes cmdln args, and heats camera to specified temperature, more reliable than loop. 
+    """
     for i, cam in enumerate(cam_list):
-        # List of Temperatures
-        for t in range(50, 90, 1):
-            # Initiates Capture
-            if(Capture(cam,t)):
-                 time.sleep(10) # Give the camera a chance to acutally capture the images. 
-            else:
-                break
-           
-    print("Please do not touch the camera, it is most likely 50°C+.")
-
+        try: 
+            Capture(cam,int(argv))
+        except PySpin.SpinnakerException as ex:
+            break
+    del cam # It's about the little things in programming...
+    print('Capture Completed...')
     # Clear camera list before releasing system, this makes a mess if not cleared
     cam_list.Clear()
 
@@ -503,7 +500,7 @@ def main():
     system.ReleaseInstance()
 
 if __name__ == '__main__':
-    if main():
+    if main(sys.argv[1]):
         sys.exit(0)
     else:
         sys.exit(1)
