@@ -432,6 +432,7 @@ def BarProg(TempNext,Temp):
     x = 0
     if(TempNext > Temp):
         x = TempNext-Temp
+
     return x
 
 # Does the temperature sensing during the loops.
@@ -444,14 +445,12 @@ def Heat(cam, GoalTemperature):
     """
         about: Continue Heating unitl goal temperature is achieved
     """
-
-    TempBar = Bar('Heating',fill='-',index=Temp,max=GoalTemperature)
+    TempBar = Bar('Heating',fill='█',index=Temp,max=GoalTemperature)
     print('Heating\n')
     while Temp < GoalTemperature:
         Temp = GetCameraTemperature(cam)
         time.sleep(5)
-        TempBar.next(BarProg(GetCameraTemperature(cam),Temp))
-
+        TempBar.next(BarProg(GetCameraTemperature(cam),Temp),0)
     TempBar.finish()
     # Capture 1 image
     print('Heating Paused\n')
