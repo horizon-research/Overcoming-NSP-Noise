@@ -28,6 +28,7 @@ import time
 import json
 import asyncio
 import PySpin
+from progress.bar import Bar # Serves no purpose other than to look cool 
 import kasa as s 
 """
 Python Virtual Enviroments can be challenging at times...
@@ -407,7 +408,7 @@ def Capture(cam,temp):
 
         result&= Heat(cam,temp)
 
-        result &= AutoExposure(cam)
+        # result &= AutoExposure(cam)
 
         # Acquire images
         result &= acquire_images(cam, nodemap, nodemap_tldevice)
@@ -427,6 +428,12 @@ def GetCameraTemperature(cam):
     if cam.DeviceTemperature.GetAccessMode() == PySpin.RO:
         return float(cam.DeviceTemperature.ToString())
 
+def BarProg(TempNext,Temp):
+    x = 0
+    if(TempNext > Temp):
+        x = TempNext-Temp
+    return x
+
 # Does the temperature sensing during the loops.
 def Heat(cam, GoalTemperature):
     # Get Temperature of Camera
@@ -435,18 +442,22 @@ def Heat(cam, GoalTemperature):
 
     asyncio.run(HeatGun.On()) 
     """
-        Continue Heating unitl goal temperature is achieved
+        about: Continue Heating unitl goal temperature is achieved
     """
+
+    TempBar = Bar('Heating',fill='-',index=Temp,max=GoalTemperature)
     print('Heating\n')
     while Temp < GoalTemperature:
         Temp = GetCameraTemperature(cam)
-        # print("Camera is currently", Temp, "°C") Not necessary, camera will heatgun will automatically be turned off. This was more for me. 
+        time.sleep(5)
+        TempBar.next(BarProg(GetCameraTemperature(cam),Temp))
 
+    TempBar.finish()
     # Capture 1 image
     print('Heating Paused\n')
     if Temp >= GoalTemperature:
         """
-        Discontinue Heating when goal temperature is achieved
+        about: Discontinue Heating when goal temperature is achieved
         """
         asyncio.run(HeatGun.Off())
         print("Heating Paused")
@@ -477,10 +488,10 @@ def main():
     # List of Cameras
     for i, cam in enumerate(cam_list):
         # List of Temperatures
-        for t in range(45, 50, 1):
+        for t in range(50, 90, 1):
             # Initiates Capture
             if(Capture(cam,t)):
-                 time.sleep(5) # Give the camera a chance to acutally capture the images. 
+                 time.sleep(10) # Give the camera a chance to acutally capture the images. 
             else:
                 break
            
