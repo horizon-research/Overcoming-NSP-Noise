@@ -144,22 +144,51 @@ The heat testing is done using a loop in the ```main()``` method.
 ```
 
 #### Runs as 
-```$ Python3.8 HeatTrigger.py```
-
-Images are saved as  ```sample-serialNumber-capNum-temp.raw```. These are RAW image files. 
+```$ Python3.8 HeatTrigger.py temperature```
 
 The numbering relies on the ```Accuracy.json``` which stores the number of captures after each capture.
-In the terminal it looks like the following
+In the terminal it looks like the following:
+
+#### Example Capture 
+
+Cold to Hot
+```
+$ Python3.8 HeatTrigger.py 48
+•••
+Heat Gun Power On
+Heating |████████████████████████████████| 48/48
+
+Heat Gun Power Off
+Heating Paused
+*** IMAGE ACQUISITION ***
+
+Acquiring images...
+Image saved at sample-18255214-2913-45.png
+
+Image saved at sample-18255214-2914-45.png
+
+Image saved at sample-18255214-2915-46.png
+
+Image saved at sample-18255214-2916-46.png
+
+Image saved at sample-18255214-2917-46.png
+
+Trigger mode disabled...
+Capture Completed.
+```
+
+#### Example Capture
+Over Temperature
 
 ```
-$ Acquiring images...
-
-$ Image saved at sample-18255214-12-39.raw
-
-$ Image saved at sample-18255214-13-39.raw
-
-$ Trigger mode disabled...
+$ Python3.8 HeatTrigger.py 25
+•••
+Camera is 49°C your temperature was 25°C, please allow the camera to cool and try again.
+Capture Failed.
 ```
+
+
+
 
 #### Metrics 
 The main metric measured for images in this project is the [Signal-To-Noise](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/b6b2682504cde2be44bf4a3e9def78783bd7c998/code/Metrics/SNR.py) ratio of these images. This is done using ```SNR.py```
