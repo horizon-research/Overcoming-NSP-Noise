@@ -65,11 +65,9 @@ def Heat(cam, GoalTemperature):
         while Temp < GoalTemperature:
             Temp = GetCameraTemperature(cam)
             time.sleep(2)
-            TempBar.index = GetCameraTemperature(cam)
-            TempBar.next(BarProg(GetCameraTemperature(cam),Temp))
+            TempBar.next(BarProgress(GetCameraTemperature(cam),Temp))
         TempBar.finish()
         asyncio.run(HeatGun.Off())
-        print("Heating Paused")
         return True
 ```
 
