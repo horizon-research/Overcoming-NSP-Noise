@@ -53,7 +53,7 @@ def Heat(cam, GoalTemperature):
     # Get Temperature of Camera
     Temp = GetCameraTemperature(cam)
     # Heating
-    if Temp > GoalTemperature + 10:
+    if Temp > GoalTemperature + 2.5:
         return False
 
     else:
@@ -156,7 +156,8 @@ In the terminal it looks like the following:
 Cold to Hot
 ```
 $ Python3.8 HeatTrigger.py 48
-•••
+...
+
 Heat Gun Power On
 Heating |████████████████████████████████| 48/48
 
@@ -165,15 +166,15 @@ Heating Paused
 *** IMAGE ACQUISITION ***
 
 Acquiring images...
-Image saved at sample-18255214-2913-45.png
+Image saved at sample-18255214-2913-48.png
 
-Image saved at sample-18255214-2914-45.png
+Image saved at sample-18255214-2914-48.png
 
-Image saved at sample-18255214-2915-46.png
+Image saved at sample-18255214-2915-48.png
 
-Image saved at sample-18255214-2916-46.png
+Image saved at sample-18255214-2916-48.png
 
-Image saved at sample-18255214-2917-46.png
+Image saved at sample-18255214-2917-49.png
 
 Trigger mode disabled...
 Capture Completed.
@@ -184,7 +185,7 @@ Over Temperature
 
 ```
 $ Python3.8 HeatTrigger.py 25
-•••
+...
 Camera is 49°C your temperature was 25°C, please allow the camera to cool and try again.
 Capture Failed.
 ```
