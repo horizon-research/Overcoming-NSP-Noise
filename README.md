@@ -162,8 +162,6 @@ Heat Gun Power On
 Heating |████████████████████████████████| 48/48
 
 Heat Gun Power Off
-Heating Paused
-*** IMAGE ACQUISITION ***
 
 Acquiring images...
 Image saved at sample-18255214-2913-48.png
