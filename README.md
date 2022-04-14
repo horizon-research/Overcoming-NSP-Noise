@@ -41,14 +41,11 @@ This was added to dynamically access the camera temperature **:** ```GetCameraTe
 
 ```python
 def GetCameraTemperature(cam):
-    x = 0
     if cam.DeviceTemperature.GetAccessMode() == PySpin.RO:
-        x = cam.DeviceTemperature.ToString()
-    x = float(x)
-    return x
+        return float(cam.DeviceTemperature.ToString())
 ```
 
-I have added as well:  ```Heat(cam,GoalTemperature)``` from ```Capture(cam,temp)```
+I have added as well:  ```Heat(cam,GoalTemperature)``` which is run inside of ```Capture(cam,temp)```*(below)*
 
 ```python
 # Does the temperature sensing during the loops.
@@ -56,25 +53,65 @@ def Heat(cam, GoalTemperature):
     # Get Temperature of Camera
     Temp = GetCameraTemperature(cam)
     # Heating
+    if Temp > GoalTemperature + 10:
+        return False
 
-    asyncio.run(HeatGun.On()) 
-    """
-        Continue Heating unitl goal temperature is achieved
-    """
-    print('Heating\n')
-    while Temp < GoalTemperature:
-        Temp = GetCameraTemperature(cam)
-        # print("Camera is currently", Temp, "°C") Not necessary, camera will heatgun will automatically be turned off. This was more for me. 
-
-    # Capture 1 image
-    print('Heating Paused\n')
-    if Temp >= GoalTemperature:
+    else:
+        asyncio.run(HeatGun.On()) 
         """
-        Discontinue Heating when goal temperature is achieved
+            Continue Heating unitl goal temperature is achieved
         """
+        TempBar = Bar('Heating',fill='█',index=Temp,max=GoalTemperature)
+        while Temp < GoalTemperature:
+            Temp = GetCameraTemperature(cam)
+            time.sleep(2)
+            TempBar.index = GetCameraTemperature(cam)
+            TempBar.next(BarProg(GetCameraTemperature(cam),Temp))
+        TempBar.finish()
         asyncio.run(HeatGun.Off())
         print("Heating Paused")
         return True
+```
+
+```python
+def Capture(cam,temp):
+    """
+    This function acts as the body of the example; please see NodeMapInfo example
+    for more in-depth comments on setting up cameras.
+
+    :param cam: Camera to run on.
+    :type cam: CameraPtr
+    :return: True if successful, False otherwise.
+    :rtype: bool
+    """
+    try:
+        result = True
+        # Retrieve TL device nodemap and print device information
+        nodemap_tldevice = cam.GetTLDeviceNodeMap()
+        cam.Init()
+        # Retrieve GenICam nodemap
+        nodemap = cam.GetNodeMap()
+
+        # Configure trigger
+        if configure_trigger(cam) is False:
+            return False
+        result &= AutoExposure(cam)
+        if(Heat(cam,temp)):
+             # Acquire images
+            result &= acquire_images(cam, nodemap, nodemap_tldevice)
+            # Reset trigger
+            result &= reset_trigger(nodemap)
+            cam.DeInit()
+            result = True
+        else:
+            print('Camera is %d°C your temperature was %s°C, please allow the camera to cool and try again.' % (GetCameraTemperature(cam),temp))
+            cam.DeInit()
+            result = False
+    except PySpin.SpinnakerException as ex:
+        # print('Error: %s' % ex)
+        result = False
+
+    return result
 ```
 
 Heat Gun Automation
@@ -96,14 +133,14 @@ class HeatGun:
 The heat testing is done using a loop in the ```main()``` method.
 
 ```python
- # List of Cameras
     for i, cam in enumerate(cam_list):
-        # List of Temperatures
-        for t in range(30, 95, 1):
-            # Initiates Capture
-            Capture(cam, t)
-    
-    print("Capture Complete") 
+        try: 
+            if(Capture(cam,int(argv))):    
+                print('Capture Completed.')
+        except PySpin.SpinnakerException as ex:
+            print('Capture Failed.')
+            break
+    del cam # It's about the little things in programming...
 ```
 
 #### Runs as 
