@@ -104,11 +104,13 @@ def Capture(cam,temp):
             cam.DeInit()
             result = True
         else:
-            print('Camera is %d°C your temperature was %s°C, please allow the camera to cool and try again.' % (GetCameraTemperature(cam),temp))
+            print('\
+                Camera is %d°C your temperature was %s°C, please allow the camera to cool and try again.'  
+            % (GetCameraTemperature(cam),temp))
             cam.DeInit()
-            result = False
+            return False
     except PySpin.SpinnakerException as ex:
-        # print('Error: %s' % ex)
+        print('Error: %s' % ex)
         result = False
 
     return result
