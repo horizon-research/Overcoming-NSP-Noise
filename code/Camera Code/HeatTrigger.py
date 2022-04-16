@@ -1,3 +1,4 @@
+
 # coding=utf-8
 """
 ~~~ This script has been heavily modified Spring '22  under the alias of HeatTrigger.py for CSC 391 Part I | Automation ~~~ 
@@ -22,16 +23,13 @@ This script relies on the Trigger.py script provided Copyright (c) 2001-2021 FLI
 Essentially this script is a temperature trigger for the camera that continues running until all captures are taken 
 This Script also draws on Exposure_QuickSpin.py for auto exposure. 
 """
-import re
 import sys # Camera
 import time # Camera
 import json # Camera
-import asyncio # Heat Gun
 import PySpin # Camera 
-from progress.bar import Bar # Style , arguably camera safety. 
+from progress.bar import Bar # Style , arguably Camera?
+import asyncio # Heat Gun
 import kasa as s # Heat Gun
-
-FinalTemp = 0
 """
 Python Virtual Enviroments can be challenging at times...
 This only works with Python3.8. This is crucial. 
@@ -86,7 +84,7 @@ def configure_trigger(cam):
     if CHOSEN_TRIGGER == TriggerType.SOFTWARE:
         print('Software trigger chosen ...')
     elif CHOSEN_TRIGGER == TriggerType.HARDWARE:
-        print('Hardware trigger chose ...')
+        print('Hardware trigger chosen ...')
 
     try:
         # Ensure trigger mode off
@@ -232,9 +230,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
     image_num_config = int(load["NumPhotos"])
     Accuracy.close()
 
-    Accuracy = open("Accuracy.json", "w")
-    load["NumPhotos"] = int(load["NumPhotos"]) + NUM_IMAGES
-    json.dump(load, Accuracy)
+   
 
 
     
@@ -303,7 +299,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
 
                     # Create a unique filename
                     if device_serial_number:
-                        filename = 'sample-%s-%d-%d.png' % (device_serial_number, i +
+                        filename = 'sample-%s-%d-%d.raw' % (device_serial_number, i +
                                                             image_num_config, GetCameraTemperature(cam))
                     else:  # if serial number is empty
                          filename = 'sample-%s-%d.raw' % (i +
@@ -341,7 +337,10 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
     except PySpin.SpinnakerException as ex:
         print('Error: %s' % ex)
         return False
-
+        
+    Accuracy = open("Accuracy.json", "w")
+    load["NumPhotos"] = int(load["NumPhotos"]) + NUM_IMAGES
+    json.dump(load, Accuracy)
     return result
 
 # From Spinnaker SDK : Examples : (copyright) FLIR
@@ -397,6 +396,8 @@ def Capture(cam,temp):
     """
     try:
         result = True
+        err = False
+
         # Retrieve TL device nodemap and print device information
         nodemap_tldevice = cam.GetTLDeviceNodeMap()
         cam.Init()
@@ -406,18 +407,19 @@ def Capture(cam,temp):
         # Configure trigger
         if configure_trigger(cam) is False:
             return False
+
         result &= AutoExposure(cam)
-        if(Heat(cam,temp)):
-             # Acquire images
-            result &= acquire_images(cam, nodemap, nodemap_tldevice)
-            # Reset trigger
-            result &= reset_trigger(nodemap)
-            cam.DeInit()
-            result = True
-        else:
-            print('Camera is %d°C your temperature was %s°C, please allow the camera to cool and try again.' % (GetCameraTemperature(cam),temp))
-            cam.DeInit()
-            result = False
+        
+        result&= Heat(cam,temp)
+
+        # Acquire images
+        result &= acquire_images(cam, nodemap, nodemap_tldevice)
+
+        # Reset trigger
+        result &= reset_trigger(nodemap)
+        
+        cam.DeInit()
+
     except PySpin.SpinnakerException as ex:
         # print('Error: %s' % ex)
         result = False
@@ -438,25 +440,27 @@ def Heat(cam, GoalTemperature):
     # Get Temperature of Camera
     Temp = GetCameraTemperature(cam)
     # Heating
-    if Temp > GoalTemperature + 5:
-        return False
+    asyncio.run(HeatGun.On()) 
+    """
+        Continue Heating unitl goal temperature is achieved
+    """
+    TempBar = Bar('Heating',fill='█',index=Temp,max=GoalTemperature)
+    while Temp < GoalTemperature:
+        Temp = GetCameraTemperature(cam)
+        time.sleep(5)
+        TempBar.index = GetCameraTemperature(cam)
+        TempBar.next(BarProg(GetCameraTemperature(cam),Temp))
+    TempBar.finish()
 
-    else:
-        asyncio.run(HeatGun.On()) 
+    # Capture 1 image
+    print('Heating Paused\n')
+    if Temp >= GoalTemperature:
         """
-            Continue Heating unitl goal temperature is achieved
+        about: Discontinue Heating when goal temperature is achieved
         """
-        TempBar = Bar('Heating',fill='█',index=Temp,max=GoalTemperature)
-        while Temp < GoalTemperature:
-            Temp = GetCameraTemperature(cam)
-            time.sleep(2)
-            TempBar.index = GetCameraTemperature(cam)
-            TempBar.next(BarProg(GetCameraTemperature(cam),Temp))
-        TempBar.finish()
         asyncio.run(HeatGun.Off())
         print("Heating Paused")
         return True
-       
        
 
 # Bootstrap
@@ -480,23 +484,21 @@ def main(argv):
         print('Zero Cameras Discovered.\n')
         return False
 
-    # List of Cameras, loop seems like a bad idea, perhaps argv? 
     """
         Takes cmdln args, and heats camera to specified temperature, more reliable than loop. 
     """
     for i, cam in enumerate(cam_list):
         try: 
-            if(Capture(cam,int(argv))):    
-                print('Capture Completed.')
+            Capture(cam,int(argv))
+            print('Capture Completed.')
         except PySpin.SpinnakerException as ex:
-            print('Capture Failed.')
             break
     del cam # It's about the little things in programming...
-  
+
     # Clear camera list before releasing system, this makes a mess if not cleared
     cam_list.Clear()
 
-    # Release system instance
+    # Release system instance makes a mess if not cleared
     system.ReleaseInstance()
 
 if __name__ == '__main__':
