@@ -192,7 +192,7 @@ Capture Failed.
 #### Metrics 
 The main metric measured for images in this project is the [Signal-To-Noise](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/b6b2682504cde2be44bf4a3e9def78783bd7c998/code/Metrics/SNR.py) ratio of these images. This is done using ```SNR.py```
 
-The SNR is taken as follows 
+<!-- The SNR is taken as follows 
 
 **SNR**<sub>TempSet</sub> =  &Sigma;(&mu;<sub>ImagePixels</sub> / &sigma;<sub>ImagePixels</sub>)
 
@@ -214,10 +214,10 @@ The SNR is taken as follows
 
 |Temperature Set | 60 Degree   |   70 Degree | 80 Degree   |   90 Degree |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
-| **Signal to Noise** | 2.88     | 4.236        | 4.117   | 3.91   |
+| **Signal to Noise** | 2.88     | 4.236        | 4.117   | 3.91   | -->
 
 
-While this might be counterintuitive, the rise in signal-to-noise ratio, it can be accounted for the use of different exposure compensation settings. For example, images taken with at f16 show quite a bit more noise than images taken at f2. Given that the hot images were mostly taken at f2 by combining them with the cold images the signal to noise ratio is much higher. Noise is always more evident at longer exposures and when there is less light on the sensor. 
+<!-- While this might be counterintuitive, the rise in signal-to-noise ratio, it can be accounted for the use of different exposure compensation settings. For example, images taken with at f16 show quite a bit more noise than images taken at f2. Given that the hot images were mostly taken at f2 by combining them with the cold images the signal to noise ratio is much higher. Noise is always more evident at longer exposures and when there is less light on the sensor.  -->
 
  
 ## Machine Learning
