@@ -34,6 +34,8 @@ cv2         : pip install cv2
        
 ```
 
+![](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/182410a5e75a21ba176fb49616ff4616c97eafb7/docs/Main.jpg)
+
 ### Code
 Under the alias of [HeatTrigger.py](https://github.com/horizon-research/Overcoming-NSP-Noise/blob/b6b2682504cde2be44bf4a3e9def78783bd7c998/code/Camera%20Code/HeatTrigger.py) this code adds on to the code written by the Spinnaker SDK ```Trigger.py```
 
