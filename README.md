@@ -365,10 +365,10 @@ Current final accuracy is 0.550496:
 *Too soon to be determined*. Images only number 600 and overfitting is quite a risk. 
 
 ### **Works Cited** :
+> Dirty Pixels: Towards End-to-End Image Processing and Perception Diamond Et. Al.
+
 > Dynamic Temperature Management of Near-Sensor Processing for Energy-Efficient High-Fidelity 
     Imaging. Kodukula Et Al.
-
-> Dirty Pixels: Towards End-to-End Image Processing and Perception Diamond Et. Al.
 
 > Feng, Vincent. 2017. “An Overview of ResNet and its Variants | by Vincent Feng.” Towards Data Science. https://towardsdatascience.com/an-overview-of-resnet-and-its-variants-5281e2f56035.
 
